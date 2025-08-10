@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import qacartLogo from '/qacart-logo.svg'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import {Navbar} from "./components/layout/Navbar.tsx";
+import {Hero} from "./components/landing/Hero.tsx";
+import {HardTruth} from "./components/landing/HardTruth.tsx";
+import {LetsGo} from "./components/landing/LetsGo.tsx";
 
-  return (
-    <>
-      <div>
-        <a href="https://qacart.com" target="_blank">
-          <img src={qacartLogo} className="logo" alt="QACart logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>QACart + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the QACart and React logos to learn more
-      </p>
-    </>
-  )
+
+function App() {
+    return (
+        <div className="min-h-screen" dir="rtl">
+            {/* Navigation */}
+            <Navbar/>
+
+            {/* Hero Section */}
+            <Hero/>
+
+            {/* Hard Truth Section */}
+            <HardTruth />
+
+            {/* Lets Go Section */}
+            <LetsGo />
+
+        </div>
+    )
 }
 
 export default App
