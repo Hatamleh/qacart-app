@@ -1,12 +1,5 @@
 import { Play, Lock, Clock, BookOpen } from 'lucide-react'
-
-interface Lesson {
-    id: number
-    lessonOrder: number
-    title: string
-    duration: string
-    isFree: boolean
-}
+import { Lesson, formatDuration } from '@/types/course'
 
 interface CourseLessonsProps {
     lessons: Lesson[]
@@ -44,7 +37,7 @@ const LessonCard = ({ lesson, lessonIndex }: {
                             <div className="flex items-center gap-3">
                                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                                     <Clock className="w-4 h-4" />
-                                    <span>{lesson.duration}</span>
+                                    <span>{formatDuration(lesson.durationInMinutes)}</span>
                                 </div>
                                 {lesson.isFree && (
                                     <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-full">

@@ -1,12 +1,8 @@
 import { CheckCircle, Calendar, HelpCircle, Star, Target, Sparkles } from 'lucide-react'
-
-interface CourseData {
-    lastUpdated: string
-    learningPoints: string[]
-}
+import { Course } from '@/types/course'
 
 interface CourseInfoProps {
-    course: CourseData
+    course: Course
 }
 
 export const CourseInfo = ({ course }: CourseInfoProps) => {
@@ -40,9 +36,9 @@ export const CourseInfo = ({ course }: CourseInfoProps) => {
                             </p>
                         </div>
                         
-                        {/* Learning Points Grid - Fancy Cards */}
+                        {/* Learning Goals Grid - Fancy Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {course.learningPoints.map((point, index) => (
+                            {course.learningGoals.map((goal, index) => (
                                 <div key={index} className="group">
                                     <div className="glass rounded-xl p-6 border hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
                                         <div className="flex items-start gap-4">
@@ -51,7 +47,7 @@ export const CourseInfo = ({ course }: CourseInfoProps) => {
                                             </div>
                                             <div className="flex-1">
                                                 <p className="text-foreground leading-relaxed font-medium">
-                                                    {point}
+                                                    {goal}
                                                 </p>
                                             </div>
                                         </div>

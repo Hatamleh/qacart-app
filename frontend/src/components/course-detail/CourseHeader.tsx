@@ -2,21 +2,10 @@ import { Play, User } from 'lucide-react'
 import Image from 'next/image'
 import { Button } from '../ui/Button'
 import { Badge } from '../ui/Badge'
-
-interface CourseData {
-    title: string
-    shortDescription: string
-    tags: string[]
-    promoVideoUrl: string
-    videoThumbnail: string
-    instructor: {
-        name: string
-        image: string
-    }
-}
+import { Course } from '@/types/course'
 
 interface CourseHeaderProps {
-    course: CourseData
+    course: Course
 }
 
 export const CourseHeader = ({ course }: CourseHeaderProps) => {

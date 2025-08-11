@@ -4,6 +4,7 @@ import { Footer } from '@/components/layout/Footer'
 import { CoursesHero } from '@/components/courses/CoursesHero'
 import { CoursesGrid } from '@/components/courses/CoursesGrid'
 import { getAllCourses } from '@/client/courses'
+import {Course} from "@/types/course";
 
 export const metadata: Metadata = {
   title: 'الدورات - QAcart',
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 
 export default async function CoursesPage() {
   // Fetch courses using the client
-  let courses = []
+  let courses: Course[] = []
   try {
     courses = await getAllCourses()
   } catch (error) {
