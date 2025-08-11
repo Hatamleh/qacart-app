@@ -1,8 +1,9 @@
-import { Navbar } from "../components/layout/Navbar"
-import { Footer } from "../components/layout/Footer"
-import { CourseHeader } from "../components/course-detail/CourseHeader"
-import { CourseInfo } from "../components/course-detail/CourseInfo"
-import { CourseLessons } from "../components/course-detail/CourseLessons"
+import { Metadata } from 'next'
+import { Navbar } from '@/components/layout/Navbar'
+import { Footer } from '@/components/layout/Footer'
+import { CourseHeader } from '@/components/course-detail/CourseHeader'
+import { CourseInfo } from '@/components/course-detail/CourseInfo'
+import { CourseLessons } from '@/components/course-detail/CourseLessons'
 
 // Dummy course data
 const COURSE_DATA = {
@@ -38,37 +39,62 @@ const COURSE_DATA = {
     ]
 }
 
-interface CourseDetailsPageProps {
-    courseId?: number
-    onEnrollClick?: () => void
+interface CoursePageProps {
+  params: Promise<{
+    courseId: string
+  }>
 }
 
-export const CourseDetailsPage = ({ 
-    courseId = 1, 
-    onEnrollClick = () => {} 
-}: CourseDetailsPageProps) => {
-    return (
-        <div className="min-h-screen" dir="rtl">
-            {/* Navigation */}
-            <Navbar />
+export async function generateMetadata({ params }: CoursePageProps): Promise<Metadata> {
+  const { courseId } = await params
+  
+  return {
+    title: `${COURSE_DATA.title} - QAcart`,
+    description: COURSE_DATA.shortDescription,
+    keywords: ['دورة', 'اختبار البرمجيات', COURSE_DATA.title, `courseId-${courseId}`],
+    openGraph: {
+      title: `${COURSE_DATA.title} - QAcart`,
+      description: COURSE_DATA.shortDescription,
+      type: 'website',
+      locale: 'ar_SA',
+      images: [
+        {
+          url: COURSE_DATA.videoThumbnail,
+          width: 800,
+          height: 450,
+          alt: COURSE_DATA.title,
+        },
+      ],
+    },
+  }
+}
 
-            {/* Course Header */}
-            <CourseHeader 
-                course={COURSE_DATA}
-                onEnrollClick={onEnrollClick}
-            />
+export default async function CourseDetailPage({ params }: CoursePageProps) {
+  const { courseId } = await params
+  
+  // Log courseId for development purposes
+  console.log('Course ID:', courseId)
 
-            {/* Course Information */}
-            <CourseInfo course={COURSE_DATA} />
+  return (
+    <div className="min-h-screen" dir="rtl">
+      {/* Navigation */}
+      <Navbar />
 
-            {/* Course Lessons */}
-            <CourseLessons 
-                lessons={COURSE_DATA.lessons}
-                onLessonClick={(lessonId) => console.log('Lesson clicked:', lessonId)}
-            />
+      {/* Course Header */}
+      <CourseHeader 
+        course={COURSE_DATA}
+      />
 
-            {/* Footer */}
-            <Footer />
-        </div>
-    )
+      {/* Course Information */}
+      <CourseInfo course={COURSE_DATA} />
+
+      {/* Course Lessons */}
+      <CourseLessons 
+        lessons={COURSE_DATA.lessons}
+      />
+
+      {/* Footer */}
+      <Footer />
+    </div>
+  )
 }

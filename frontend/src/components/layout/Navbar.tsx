@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import { LogIn, Menu, X, BookOpen } from 'lucide-react'
+import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '../ui/Button'
 
 export const Navbar = () => {
@@ -64,19 +66,22 @@ export const Navbar = () => {
 
                     {/* Desktop Logo - Left */}
                     <div className="hidden lg:flex items-center">
-                        <a
+                        <Link
                             href="/"
                             className="flex items-center group"
                             onClick={closeAll}
                         >
                             <div className="relative w-10 h-10">
-                                <img
+                                <Image
                                     src="/qacart-logo.svg"
                                     alt="QAcart Logo"
+                                    width={40}
+                                    height={40}
                                     className="w-full h-full transition-transform duration-200 group-hover:scale-105"
+                                    priority
                                 />
                             </div>
-                        </a>
+                        </Link>
                     </div>
 
                     {/* Empty Space - Mobile Center */}
@@ -84,31 +89,34 @@ export const Navbar = () => {
 
                     {/* Mobile Logo - Right */}
                     <div className="lg:hidden flex items-center">
-                        <a
+                        <Link
                             href="/"
                             className="flex items-center group"
                             onClick={closeAll}
                         >
                             <div className="relative w-8 h-8">
-                                <img
+                                <Image
                                     src="/qacart-logo.svg"
                                     alt="QAcart Logo"
+                                    width={32}
+                                    height={32}
                                     className="w-full h-full transition-transform duration-200 group-hover:scale-105"
+                                    priority
                                 />
                             </div>
-                        </a>
+                        </Link>
                     </div>
 
                     {/* Desktop Navigation - Absolute Center */}
                     <div className="hidden lg:flex items-center absolute left-1/2 transform -translate-x-1/2">
                         <div className="flex items-center space-x-1">
-                            <a
-                                href="#"
+                            <Link
+                                href="/courses"
                                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-white/90 hover:text-white hover:bg-white/10 transition-all duration-200 font-medium text-sm"
                             >
                                 <BookOpen className="w-4 h-4" />
                                 الدورات
-                            </a>
+                            </Link>
                         </div>
                     </div>
 
@@ -135,14 +143,14 @@ export const Navbar = () => {
                     <div className="px-4 py-6 space-y-2">
 
                         {/* Mobile Courses Link */}
-                        <a
-                            href="#"
+                        <Link
+                            href="/courses"
                             onClick={closeAll}
                             className="flex items-center gap-3 p-4 rounded-xl text-white/90 hover:text-white hover:bg-white/10 transition-all duration-200 font-medium"
                         >
                             <BookOpen className="w-5 h-5" />
                             الدورات
-                        </a>
+                        </Link>
 
                         {/* Mobile Auth Button */}
                         <div className="pt-6 mt-6 border-t border-slate-800/50 space-y-3">
@@ -151,7 +159,6 @@ export const Navbar = () => {
                                 size="md"
                                 icon={LogIn}
                                 iconPosition="left"
-                                onClick={closeAll}
                                 className="w-full"
                             >
                                 تسجيل الدخول

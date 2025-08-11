@@ -1,4 +1,6 @@
 import { Heart, Shield, FileText, RefreshCw } from 'lucide-react'
+import Link from 'next/link'
+import Image from 'next/image'
 import { GridBackground } from '../ui/GridBackground'
 import { SocialLinks } from '../ui/SocialLinks'
 
@@ -10,10 +12,13 @@ export const Footer = () => {
                     {/* Logo & Description */}
                     <div className="text-center mb-8">
                         <div className="mb-6">
-                            <img
+                            <Image
                                 src="/qacart-logo.svg"
                                 alt="QACart logo"
+                                width={128}
+                                height={128}
                                 className="h-32 w-auto mx-auto"
+                                priority
                             />
                         </div>
                         <p className="text-muted-foreground leading-relaxed text-lg max-w-xl mx-auto">
@@ -32,18 +37,18 @@ export const Footer = () => {
 
                             {/* Policy Links with Icons */}
                             <div className="flex flex-wrap justify-center gap-6 text-sm">
-                                <a href="/privacy" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                                <Link href="/privacy" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
                                     <Shield className="w-4 h-4" />
                                     سياسة الخصوصية
-                                </a>
-                                <a href="/terms" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                                </Link>
+                                <Link href="/terms" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
                                     <FileText className="w-4 h-4" />
                                     الشروط والأحكام
-                                </a>
-                                <a href="/refund" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                                </Link>
+                                <Link href="/refund" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
                                     <RefreshCw className="w-4 h-4" />
                                     سياسة الاسترداد
-                                </a>
+                                </Link>
                             </div>
 
                             {/* Copyright */}

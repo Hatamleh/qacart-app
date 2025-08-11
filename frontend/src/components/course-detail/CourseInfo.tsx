@@ -1,5 +1,4 @@
 import { CheckCircle, Calendar, HelpCircle, Star, Target, Sparkles } from 'lucide-react'
-import { GridBackground } from '../ui/GridBackground'
 
 interface CourseData {
     lastUpdated: string

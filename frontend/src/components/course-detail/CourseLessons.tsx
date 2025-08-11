@@ -10,20 +10,17 @@ interface Lesson {
 
 interface CourseLessonsProps {
     lessons: Lesson[]
-    onLessonClick: (lessonId: number) => void
 }
 
-const LessonCard = ({ lesson, lessonIndex, onLessonClick }: { 
+const LessonCard = ({ lesson, lessonIndex }: { 
     lesson: Lesson, 
-    lessonIndex: number,
-    onLessonClick: (id: number) => void 
+    lessonIndex: number
 }) => {
     return (
         <div 
-            className={`glass rounded-xl p-6 hover:border-primary/50 transition-all duration-300 cursor-pointer group ${
-                lesson.isFree ? 'hover:bg-primary/5 hover:shadow-lg' : 'opacity-75 hover:opacity-90'
+            className={`glass rounded-xl p-6 hover:border-primary/50 transition-all duration-300 group ${
+                lesson.isFree ? 'hover:bg-primary/5 hover:shadow-lg cursor-pointer' : 'opacity-75 hover:opacity-90'
             }`}
-            onClick={() => onLessonClick(lesson.id)}
         >
             <div className="flex items-start gap-4">
                 {/* Lesson Number */}
@@ -74,7 +71,7 @@ const LessonCard = ({ lesson, lessonIndex, onLessonClick }: {
     )
 }
 
-export const CourseLessons = ({ lessons, onLessonClick }: CourseLessonsProps) => {
+export const CourseLessons = ({ lessons }: CourseLessonsProps) => {
     // Sort lessons by lesson order
     const sortedLessons = [...lessons].sort((a, b) => a.lessonOrder - b.lessonOrder)
     const totalLessons = lessons.length
@@ -114,14 +111,13 @@ export const CourseLessons = ({ lessons, onLessonClick }: CourseLessonsProps) =>
 
                     {/* Lessons List */}
                     <div className="space-y-4">
-                        {sortedLessons.map((lesson, index) => (
-                            <LessonCard 
-                                key={lesson.id} 
-                                lesson={lesson}
-                                lessonIndex={index}
-                                onLessonClick={onLessonClick}
-                            />
-                        ))}
+                                            {sortedLessons.map((lesson, index) => (
+                        <LessonCard 
+                            key={lesson.id} 
+                            lesson={lesson}
+                            lessonIndex={index}
+                        />
+                    ))}
                     </div>
 
                     {/* Bottom Info */}

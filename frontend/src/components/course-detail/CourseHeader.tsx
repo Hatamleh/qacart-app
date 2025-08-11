@@ -1,4 +1,5 @@
 import { Play, User } from 'lucide-react'
+import Image from 'next/image'
 import { Button } from '../ui/Button'
 import { Badge } from '../ui/Badge'
 
@@ -16,10 +17,9 @@ interface CourseData {
 
 interface CourseHeaderProps {
     course: CourseData
-    onEnrollClick: () => void
 }
 
-export const CourseHeader = ({ course, onEnrollClick }: CourseHeaderProps) => {
+export const CourseHeader = ({ course }: CourseHeaderProps) => {
     return (
         <section className="pt-32 pb-20 bg-muted/20">
             <div className="container mx-auto px-6 max-w-4xl">
@@ -56,10 +56,13 @@ export const CourseHeader = ({ course, onEnrollClick }: CourseHeaderProps) => {
                 {/* Big Video */}
                 <div className="mb-8">
                     <div className="relative rounded-xl overflow-hidden shadow-2xl">
-                        <img 
+                        <Image 
                             src={course.videoThumbnail}
                             alt="معاينة الدورة"
+                            width={800}
+                            height={450}
                             className="w-full h-64 md:h-80 lg:h-96 object-cover"
+                            priority
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors cursor-pointer">
                             <div className="bg-primary rounded-full p-6 hover:scale-110 transition-transform">
@@ -72,9 +75,11 @@ export const CourseHeader = ({ course, onEnrollClick }: CourseHeaderProps) => {
                 {/* Small Instructor Info */}
                 <div className="text-center">
                     <div className="flex items-center justify-center gap-3">
-                        <img 
+                        <Image 
                             src={course.instructor.image}
                             alt={course.instructor.name}
+                            width={32}
+                            height={32}
                             className="w-8 h-8 rounded-full object-cover"
                         />
                         <div className="text-sm text-muted-foreground">
@@ -91,7 +96,6 @@ export const CourseHeader = ({ course, onEnrollClick }: CourseHeaderProps) => {
                         size="lg"
                         icon={User}
                         iconPosition="right"
-                        onClick={onEnrollClick}
                         className="px-12 py-4 text-lg"
                     >
                         اشترك الآن

@@ -9,7 +9,6 @@ interface ButtonProps {
     loading?: boolean
     icon?: React.ComponentType<{ className?: string }>
     iconPosition?: 'left' | 'right'
-    onClick?: () => void
     type?: 'button' | 'submit' | 'reset'
 }
 
@@ -22,7 +21,6 @@ export const Button: React.FC<ButtonProps> = ({
                                                   loading = false,
                                                   icon: Icon,
                                                   iconPosition = 'right',
-                                                  onClick,
                                                   type = 'button'
                                               }) => {
     // Base styles for all buttons
@@ -54,7 +52,6 @@ export const Button: React.FC<ButtonProps> = ({
         <button
             type={type}
             className={classes}
-            onClick={onClick}
             disabled={disabled || loading}
         >
             {/* Left Icon */}

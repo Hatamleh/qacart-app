@@ -1,4 +1,5 @@
 import { Clock, Users } from 'lucide-react'
+import Link from 'next/link'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
 
@@ -62,13 +63,11 @@ const COURSES = [
 
 interface CourseCardProps {
     course: typeof COURSES[0]
-    onCourseClick: (courseId: number) => void
 }
 
-const CourseCard = ({ course, onCourseClick }: CourseCardProps) => {
+const CourseCard = ({ course }: CourseCardProps) => {
     return (
-        <div className="glass rounded-lg p-6 hover:border-primary/50 transition-colors cursor-pointer"
-             onClick={() => onCourseClick(course.id)}>
+        <div className="glass rounded-lg p-6 hover:border-primary/50 transition-colors">
             <div className="mb-4">
                 <Badge variant={course.levelVariant} className="text-xs mb-3">
                     {course.level}
@@ -88,18 +87,16 @@ const CourseCard = ({ course, onCourseClick }: CourseCardProps) => {
                     <span>{course.students}</span>
                 </div>
             </div>
-            <Button variant="outline" className="w-full">
-                عرض التفاصيل
-            </Button>
+            <Link href={`/courses/${course.id}`}>
+                <Button variant="outline" className="w-full">
+                    عرض التفاصيل
+                </Button>
+            </Link>
         </div>
     )
 }
 
-interface CoursesGridProps {
-    onCourseClick?: (courseId: number) => void
-}
-
-export const CoursesGrid = ({ onCourseClick = () => {} }: CoursesGridProps) => {
+export const CoursesGrid = () => {
     return (
         <section className="py-20">
             <div className="container mx-auto px-6">
@@ -116,7 +113,6 @@ export const CoursesGrid = ({ onCourseClick = () => {} }: CoursesGridProps) => {
                         <CourseCard 
                             key={course.id} 
                             course={course} 
-                            onCourseClick={onCourseClick}
                         />
                     ))}
                 </div>
