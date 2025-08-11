@@ -3,6 +3,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { CoursesHero } from '@/components/courses/CoursesHero'
 import { CoursesGrid } from '@/components/courses/CoursesGrid'
+import { getAllCourses } from '@/client/courses'
 
 export const metadata: Metadata = {
   title: 'الدورات - QAcart',
@@ -16,7 +17,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default function CoursesPage() {
+export default async function CoursesPage() {
+  // Fetch courses using the client
+  let courses = []
+  try {
+    courses = await getAllCourses()
+  } catch (error) {
+    console.error('Failed to load courses:', error)
+    // courses remains empty array for graceful fallback
+  }
+
   return (
     <div className="min-h-screen" dir="rtl">
       {/* Navigation */}
@@ -26,7 +36,7 @@ export default function CoursesPage() {
       <CoursesHero />
 
       {/* Courses Grid Section */}
-      <CoursesGrid />
+      <CoursesGrid courses={courses} />
 
       {/* Footer */}
       <Footer />

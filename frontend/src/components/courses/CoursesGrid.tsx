@@ -2,89 +2,46 @@ import { Clock, Users } from 'lucide-react'
 import Link from 'next/link'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
+import { Course, formatDuration } from '@/types/course'
 
-// Dummy courses data
-const COURSES = [
-    {
-        id: 1,
-        title: 'أساسيات اختبار البرمجيات',
-        description: 'تعلم المفاهيم الأساسية لاختبار البرمجيات وأفضل الممارسات في الصناعة',
-        level: 'مبتدئ',
-        levelVariant: 'primary' as const,
-        duration: '8 ساعات',
-        students: '250 طالب',
-    },
-    {
-        id: 2,
-        title: 'اختبار التطبيقات الويب',
-        description: 'تعلم كيفية اختبار تطبيقات الويب باستخدام أدوات حديثة ومتقدمة',
-        level: 'متوسط',
-        levelVariant: 'secondary' as const,
-        duration: '12 ساعة',
-        students: '180 طالب',
-    },
-    {
-        id: 3,
-        title: 'أتمتة الاختبارات',
-        description: 'اتقن أدوات أتمتة الاختبارات وبناء إطار عمل شامل للاختبار',
-        level: 'متقدم',
-        levelVariant: 'primary' as const,
-        duration: '20 ساعة',
-        students: '95 طالب',
-    },
-    {
-        id: 4,
-        title: 'اختبار واجهات برمجة التطبيقات',
-        description: 'تعلم اختبار REST APIs وGraphQL باستخدام أدوات مختلفة',
-        level: 'متوسط',
-        levelVariant: 'secondary' as const,
-        duration: '10 ساعات',
-        students: '150 طالب',
-    },
-    {
-        id: 5,
-        title: 'اختبار الأداء والحمولة',
-        description: 'اختبر أداء التطبيقات تحت الضغط وحلل النتائج',
-        level: 'متقدم',
-        levelVariant: 'primary' as const,
-        duration: '15 ساعة',
-        students: '75 طالب',
-    },
-    {
-        id: 6,
-        title: 'اختبار الأمان السيبراني',
-        description: 'تعلم كيفية اكتشاف الثغرات الأمنية واختبار الأمان',
-        level: 'متقدم',
-        levelVariant: 'primary' as const,
-        duration: '18 ساعة',
-        students: '120 طالب',
-    },
-]
+interface CoursesGridProps {
+    courses: Course[]
+}
 
 interface CourseCardProps {
-    course: typeof COURSES[0]
+    course: Course
 }
 
 const CourseCard = ({ course }: CourseCardProps) => {
+    // Determine badge variant based on course type
+    const getBadgeVariant = (type: string) => {
+        return type === 'automation' ? 'primary' : 'success'
+    }
+
+    // Format type for display
+    const getTypeLabel = (type: string) => {
+        return type === 'automation' ? 'أتمتة' : 'يدوي'
+    }
+
     return (
         <div className="glass rounded-lg p-6 hover:border-primary/50 transition-colors">
             <div className="mb-4">
-                <Badge variant={course.levelVariant} className="text-xs mb-3">
-                    {course.level}
+                <Badge variant={getBadgeVariant(course.type)} className="text-xs mb-3">
+                    {getTypeLabel(course.type)}
                 </Badge>
                 <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
                 <p className="text-muted-foreground text-sm">
-                    {course.description}
+                    {course.shortDescription}
                 </p>
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
                 <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    <span>{course.duration}</span>
+                    <span>{formatDuration(course.durationInMinutes)}</span>
                 </div>
                 <div className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
-                    <span>{course.students}</span>
+                    <span>{course.studentsCount} طالب</span>
                 </div>
             </div>
             <Link href={`/courses/${course.id}`}>
@@ -96,7 +53,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
     )
 }
 
-export const CoursesGrid = () => {
+export const CoursesGrid = ({ courses }: CoursesGridProps) => {
     return (
         <section className="py-20">
             <div className="container mx-auto px-6">
@@ -108,21 +65,29 @@ export const CoursesGrid = () => {
                 </div>
 
                 {/* Courses Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {COURSES.map((course) => (
-                        <CourseCard 
-                            key={course.id} 
-                            course={course} 
-                        />
-                    ))}
-                </div>
+                {courses.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {courses.map((course) => (
+                            <CourseCard 
+                                key={course.id} 
+                                course={course} 
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-12">
+                        <p className="text-muted-foreground text-lg">لا توجد دورات متاحة حالياً</p>
+                    </div>
+                )}
 
                 {/* View All Courses Button */}
-                <div className="text-center mt-12">
-                    <Button variant="primary" size="lg">
-                        عرض جميع الدورات
-                    </Button>
-                </div>
+                {courses.length > 0 && (
+                    <div className="text-center mt-12">
+                        <Button variant="primary" size="lg">
+                            عرض جميع الدورات
+                        </Button>
+                    </div>
+                )}
             </div>
         </section>
     )
