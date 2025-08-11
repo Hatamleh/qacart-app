@@ -50,10 +50,10 @@ export const VimeoPlayer = ({
             <img 
               src={thumbnail}
               alt={title}
-              className="w-full h-64 md:h-80 lg:h-96 object-cover"
+              className="w-full h-96 md:h-[500px] lg:h-[600px] object-cover"
             />
           ) : (
-            <div className="w-full h-64 md:h-80 lg:h-96 bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+            <div className="w-full h-96 md:h-[500px] lg:h-[600px] bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
               <Play className="w-16 h-16 text-muted-foreground" />
             </div>
           )}
@@ -87,7 +87,7 @@ export const VimeoPlayer = ({
           {/* Clean Vimeo Iframe */}
           <iframe
             src={vimeoEmbedUrl}
-            className="w-full aspect-video"
+            className="w-full h-96 md:h-[500px] lg:h-[600px]"
             style={{ minHeight: '400px' }}
             frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture; encrypted-media"

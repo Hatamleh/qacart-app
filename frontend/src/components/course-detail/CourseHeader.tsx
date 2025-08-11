@@ -1,5 +1,6 @@
 import { User } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Button } from '../ui/Button'
 import { Badge } from '../ui/Badge'
 import { VimeoPlayer } from '../video/VimeoPlayer'
@@ -72,15 +73,17 @@ export const CourseHeader = ({ course }: CourseHeaderProps) => {
 
                 {/* Enroll Button - Centered */}
                 <div className="text-center mt-12">
-                    <Button 
-                        variant="primary" 
-                        size="lg"
-                        icon={User}
-                        iconPosition="right"
-                        className="px-12 py-4 text-lg"
-                    >
-                        اشترك الآن
-                    </Button>
+                    <Link href={`/courses/${course.id}/player`}>
+                        <Button 
+                            variant="primary" 
+                            size="lg"
+                            icon={User}
+                            iconPosition="right"
+                            className="px-12 py-4 text-lg"
+                        >
+                            اشترك الآن
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </section>
