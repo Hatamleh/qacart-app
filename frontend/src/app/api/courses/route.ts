@@ -7,7 +7,7 @@ const COURSES: Course[] = [
     id: 1,
     title: 'إعداد الجهاز للتطوير',
     shortDescription: 'تعلم كيفية إعداد جهازك للبرمجة والتطوير من الصفر حتى الاحتراف',
-    promoVideoUrl: 'https://example.com/promo-laptop-setup.mp4',
+    promoVideoUrl: '1085509305',
     videoThumbnail: 'https://picsum.photos/800/450?random=1',
     instructor: {
       name: 'حاتم حتامله',
@@ -87,7 +87,7 @@ const COURSES: Course[] = [
     id: 2,
     title: 'أساسيات الاختبار اليدوي',
     shortDescription: 'تعلم أساسيات اختبار البرمجيات اليدوي وأفضل الممارسات في الصناعة',
-    promoVideoUrl: 'https://example.com/promo-manual-testing.mp4',
+    promoVideoUrl: '1085509305',
     videoThumbnail: 'https://picsum.photos/800/450?random=2',
     instructor: {
       name: 'حاتم حتامله',
@@ -176,7 +176,7 @@ const COURSES: Course[] = [
     id: 3,
     title: 'Selenium مع Java',
     shortDescription: 'تعلم أتمتة اختبار تطبيقات الويب باستخدام Selenium WebDriver و Java',
-    promoVideoUrl: 'https://example.com/promo-selenium-java.mp4',
+    promoVideoUrl: '1085509305',
     videoThumbnail: 'https://picsum.photos/800/450?random=3',
     instructor: {
       name: 'Hatem Hatamleh',
@@ -256,7 +256,7 @@ const COURSES: Course[] = [
     id: 4,
     title: 'Playwright مع TypeScript',
     shortDescription: 'أتمتة الاختبارات الحديثة باستخدام Playwright و TypeScript للتطبيقات المتقدمة',
-    promoVideoUrl: 'https://example.com/promo-playwright-ts.mp4',
+    promoVideoUrl: '1085509305',
     videoThumbnail: 'https://picsum.photos/800/450?random=4',
     instructor: {
       name: 'Hatem Hatamleh',

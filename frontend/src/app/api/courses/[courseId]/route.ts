@@ -6,7 +6,7 @@ const COURSE: Course = {
   id: 1,
   title: 'أساسيات الاختبار اليدوي',
   shortDescription: 'تعلم أساسيات اختبار البرمجيات اليدوي وأفضل الممارسات في الصناعة',
-  promoVideoUrl: 'https://example.com/promo-manual-testing.mp4',
+  promoVideoUrl: '1085509305',
   videoThumbnail: 'https://picsum.photos/800/450?random=1',
   instructor: {
     name: 'حاتم حتامله',

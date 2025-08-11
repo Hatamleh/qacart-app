@@ -1,7 +1,8 @@
-import { Play, User } from 'lucide-react'
+import { User } from 'lucide-react'
 import Image from 'next/image'
 import { Button } from '../ui/Button'
 import { Badge } from '../ui/Badge'
+import { VimeoPlayer } from '../video/VimeoPlayer'
 import { Course } from '@/types/course'
 
 interface CourseHeaderProps {
@@ -44,21 +45,12 @@ export const CourseHeader = ({ course }: CourseHeaderProps) => {
 
                 {/* Big Video */}
                 <div className="mb-8">
-                    <div className="relative rounded-xl overflow-hidden shadow-2xl">
-                        <Image 
-                            src={course.videoThumbnail}
-                            alt="معاينة الدورة"
-                            width={800}
-                            height={450}
-                            className="w-full h-64 md:h-80 lg:h-96 object-cover"
-                            priority
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors cursor-pointer">
-                            <div className="bg-primary rounded-full p-6 hover:scale-110 transition-transform">
-                                <Play className="w-12 h-12 text-white fill-current" />
-                            </div>
-                        </div>
-                    </div>
+                    <VimeoPlayer 
+                        vimeoId={course.promoVideoUrl}
+                        title={`معاينة دورة ${course.title}`}
+                        thumbnail={course.videoThumbnail}
+                        className="w-full"
+                    />
                 </div>
 
                 {/* Small Instructor Info */}
