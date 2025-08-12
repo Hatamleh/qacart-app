@@ -11,14 +11,14 @@ interface GridBackgroundProps {
 export const GridBackground = ({
                                    children,
                                    className = "",
-                                   gridOpacity = 0.2,
-                                   gridColor = "rgb(96, 165, 250, 0.3)",
+                                   gridOpacity = 0.15,
+                                   gridColor = "rgba(96, 165, 250, 0.25)",
                                    gridSize = 30
                                }: GridBackgroundProps) => {
     return (
         <div className={`relative ${className}`}>
             {/* Grid Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-secondary/20">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-background to-background">
                 <div
                     className="absolute inset-0"
                     style={{

@@ -3,69 +3,36 @@
 
 /* ===== CSS VARIABLES FOR THEMING ===== */
 :root {
-    --background: #0f172a;
-    --foreground: #f9fafb;
-    --primary: #60a5fa;
-    --primary-foreground: #ffffff;
-    --secondary: #1e293b;
-    --secondary-foreground: #d1d5db;
-    --muted: #1f2937;
-    --muted-foreground: #94a3b8;
-    --accent: #334155;
-    --accent-foreground: #f9fafb;
-    --destructive: #dc2626;
-    --destructive-foreground: #f9fafb;
-    --border: #374151;
-    --input: #374151;
-    --ring: #60a5fa;
-    --radius: 0.5rem;
+    /* Core Colors - Only the colors actually used in components */
+    --background: #0f172a;     /* Dark blue background */
+    --foreground: #f9fafb;     /* Light text */
+    --primary: #60a5fa;        /* QAcart brand blue */
+    --primary-foreground: #ffffff; /* White text on primary */
+    --muted: #1f2937;          /* Muted backgrounds */
+    --muted-foreground: #94a3b8; /* Muted text */
+    --border: #374151;         /* Border color */
+    --radius: 0.5rem;          /* Border radius */
 
-    /* QAcart Brand Colors */
-    --brand-blue: #60a5fa;
-    --brand-blue-dark: #3b82f6;
-    --brand-slate: #94a3b8;
-    --brand-dark: #0f172a;
-
-    /* Cairo font */
+    /* Typography */
     --font-cairo: 'Cairo', 'Tajawal', 'Noto Sans Arabic', sans-serif;
 }
 
 /* ===== TAILWIND THEME CONFIGURATION ===== */
 @theme inline {
-    /* Colors */
+    /* Core Colors */
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-primary: var(--primary);
     --color-primary-foreground: var(--primary-foreground);
-    --color-secondary: var(--secondary);
-    --color-secondary-foreground: var(--secondary-foreground);
     --color-muted: var(--muted);
     --color-muted-foreground: var(--muted-foreground);
-    --color-accent: var(--accent);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-destructive: var(--destructive);
-    --color-destructive-foreground: var(--destructive-foreground);
     --color-border: var(--border);
-    --color-input: var(--input);
-    --color-ring: var(--ring);
-
-    /* QAcart Brand Colors */
-    --color-brand: var(--brand-blue);
-    --color-brand-dark: var(--brand-blue-dark);
-    --color-brand-slate: var(--brand-slate);
-    --color-brand-bg: var(--brand-dark);
 
     /* Typography - Cairo font */
-    --font-cairo: var(--font-cairo);
     --font-sans: var(--font-cairo);
 
     /* Border radius */
-    --radius: var(--radius);
     --border-radius: var(--radius);
-    --border-radius-sm: calc(var(--radius) - 2px);
-    --border-radius-md: var(--radius);
-    --border-radius-lg: calc(var(--radius) + 2px);
-    --border-radius-xl: calc(var(--radius) + 4px);
 }
 
 /* ===== BASE STYLES ===== */
@@ -111,7 +78,7 @@ body {
 
 /* ===== FOCUS STYLES ===== */
 *:focus-visible {
-    outline: 2px solid var(--ring);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
@@ -121,13 +88,13 @@ body {
 .glass {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    background: rgba(31, 41, 55, 0.5);
-    border: 1px solid rgba(75, 85, 99, 0.3);
+    background: var(--muted);
+    border: 1px solid var(--border);
 }
 
-/* Gradient text - Used in App.tsx for QAcart logo text */
+/* Gradient text - Used for QAcart logo text */
 .gradient-text {
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

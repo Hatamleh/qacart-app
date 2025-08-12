@@ -36,9 +36,9 @@ export const Card: React.FC<CardProps> = ({
         default: 'text-muted-foreground',
         primary: 'text-primary',
         secondary: 'text-secondary-foreground',
-        success: 'text-green-400',
-        warning: 'text-yellow-400',
-        danger: 'text-red-400'
+        success: 'text-primary',
+        warning: 'text-primary',
+        danger: 'text-primary'
     }
 
     const classes = `${baseStyles} ${hoverStyles} ${className}`

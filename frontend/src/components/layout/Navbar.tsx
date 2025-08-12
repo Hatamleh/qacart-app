@@ -44,7 +44,7 @@ export const Navbar = () => {
       fixed top-0 left-0 right-0 z-50 duration-300
       border-b transition-colors
       ${isScrolled
-            ? 'bg-slate-900/95 backdrop-blur-md border-slate-800/50 shadow-xl'
+            ? 'bg-background/95 backdrop-blur-md border-border/50 shadow-xl'
             : 'bg-transparent backdrop-blur-sm border-transparent'
         }
     `}>
@@ -136,7 +136,7 @@ export const Navbar = () => {
                 {/* Mobile Menu */}
                 <div className={`
           lg:hidden absolute top-full left-0 right-0 
-          bg-slate-900/98 backdrop-blur-md border-b border-slate-800/50
+          bg-background/98 backdrop-blur-md border-b border-border/50
           transition-all duration-300 overflow-hidden
           ${isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}
         `}>
@@ -153,7 +153,7 @@ export const Navbar = () => {
                         </Link>
 
                         {/* Mobile Auth Button */}
-                        <div className="pt-6 mt-6 border-t border-slate-800/50 space-y-3">
+                        <div className="pt-6 mt-6 border-t border-border/50 space-y-3">
                             <Button
                                 variant="primary"
                                 size="md"

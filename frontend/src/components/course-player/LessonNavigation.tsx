@@ -49,10 +49,10 @@ export const LessonNavigation = ({
                   <div className="flex-shrink-0 mt-0.5">
                     {isLocked ? (
                       <div className="w-6 h-6 flex items-center justify-center">
-                        <Lock className="w-4 h-4 text-purple-500" />
+                        <Lock className="w-4 h-4 text-muted-foreground" />
                       </div>
                     ) : isCompleted ? (
-                      <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+                      <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
                         <Check className="w-4 h-4 text-white" />
                       </div>
                     ) : (

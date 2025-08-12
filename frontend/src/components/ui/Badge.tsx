@@ -32,9 +32,9 @@ export const Badge: React.FC<BadgeProps> = ({
         default: 'bg-muted/50 border border-border text-muted-foreground',
         primary: 'bg-primary/10 border border-primary/20 text-primary',
         secondary: 'bg-secondary/10 border border-secondary/20 text-secondary-foreground',
-        success: 'bg-green-500/10 border border-green-500/20 text-green-400',
-        warning: 'bg-yellow-500/10 border border-yellow-500/20 text-yellow-400',
-        danger: 'bg-red-500/10 border border-red-500/20 text-red-400'
+        success: 'bg-primary/10 border border-primary/20 text-primary',
+        warning: 'bg-primary/10 border border-primary/20 text-primary',
+        danger: 'bg-primary/10 border border-primary/20 text-primary'
     }
 
     const classes = `${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`

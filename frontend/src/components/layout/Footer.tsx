@@ -59,7 +59,7 @@ export const Footer = () => {
                             {/* Made with Love */}
                             <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                                 <span>صُنع بحب من QAcart</span>
-                                <Heart className="w-4 h-4 text-red-500 fill-current" />
+                                <Heart className="w-4 h-4 text-primary fill-current" />
                             </div>
                         </div>
                     </div>
