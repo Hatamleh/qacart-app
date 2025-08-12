@@ -3,8 +3,8 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { CoursesHero } from '@/components/courses/CoursesHero'
 import { CoursesGrid } from '@/components/courses/CoursesGrid'
-import { getAllCourses } from '@/client/courses'
-import {Course} from "@/types/course";
+import { getAllCourses } from '@/data'
+import { Course } from "@/types/course"
 
 export const metadata: Metadata = {
   title: 'الدورات - QAcart',
@@ -18,15 +18,9 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function CoursesPage() {
-  // Fetch courses using the client
-  let courses: Course[] = []
-  try {
-    courses = await getAllCourses()
-  } catch (error) {
-    console.error('Failed to load courses:', error)
-    // courses remains empty array for graceful fallback
-  }
+export default function CoursesPage() {
+  // Get courses from local JSON data
+  const courses: Course[] = getAllCourses()
 
   return (
     <div className="min-h-screen" dir="rtl">
