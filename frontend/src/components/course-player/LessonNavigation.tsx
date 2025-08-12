@@ -16,7 +16,7 @@ export const LessonNavigation = ({
   onLessonSelect
 }: LessonNavigationProps) => {
   return (
-    <div className="min-h-screen bg-background flex flex-col mr-2"> {/* Changed from h-screen to min-h-screen */}
+    <div className="min-h-screen bg-primary/10 flex flex-col mr-2 rounded-lg"> {/* Added blue background with opacity */}
       {/* Header */}
       <div className="p-4"> {/* Removed border-b border-border */}
         <div className="mb-2">
@@ -42,7 +42,7 @@ export const LessonNavigation = ({
                 onClick={() => onLessonSelect(lesson)}
                 className={`w-full text-right p-3 h-auto justify-start ${
                   isActive 
-                    ? 'bg-primary/10 border border-primary/20 hover:bg-primary/15' 
+                    ? 'bg-primary/10 hover:bg-primary/15' 
                     : 'hover:bg-muted/30'
                 }`}
               >
@@ -51,7 +51,7 @@ export const LessonNavigation = ({
                   <div className="flex-shrink-0 mt-0.5">
                     {isLocked ? (
                       <div className="w-6 h-6 flex items-center justify-center">
-                        <Lock className="w-4 h-4 text-muted-foreground" />
+                        <Lock className="w-4 h-4 text-premium" />
                       </div>
                     ) : isCompleted ? (
                       <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
@@ -84,15 +84,7 @@ export const LessonNavigation = ({
         </div>
       </div>
 
-      {/* Course Info Footer */}
-      <div className="p-4"> {/* Removed border-t border-border */}
-        <div className="text-center">
-          <h4 className="font-medium text-sm mb-1">{course.title}</h4>
-          <div className="text-xs text-muted-foreground">
-            بواسطة {course.instructor.name}
-          </div>
-        </div>
-      </div>
+
     </div>
   )
 }

@@ -17,10 +17,9 @@ export const VimeoPlayer = ({
   vimeoId, 
   title = 'Video', 
   className = '', 
-  autoplay = false,
   thumbnail 
 }: VimeoPlayerProps) => {
-  const [showPlayer, setShowPlayer] = useState(autoplay)
+  const [showPlayer, setShowPlayer] = useState(true) // Always show player
   const [isLoading, setIsLoading] = useState(false)
 
   // Extract Vimeo ID from URL if full URL is provided

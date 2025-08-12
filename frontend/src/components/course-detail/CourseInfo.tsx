@@ -1,4 +1,4 @@
-import { CheckCircle, Calendar, HelpCircle, Star, Target, Sparkles } from 'lucide-react'
+import { CheckCircle, Target, Sparkles, UserPlus } from 'lucide-react'
 import { Course } from '@/types/course'
 
 interface CourseInfoProps {
@@ -57,65 +57,33 @@ export const CourseInfo = ({ course }: CourseInfoProps) => {
                         </div>
                     </div>
 
-                    {/* Course Details - Redesigned */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        
-                        {/* Last Updated - Enhanced */}
-                        <div className="lg:col-span-1">
-                            <div className="glass rounded-2xl p-8 border hover:border-primary/30 transition-colors h-full">
-                                <div className="text-center">
-                                    <div className="mx-auto w-16 h-16 bg-gradient-to-r from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mb-6">
-                                        <Calendar className="w-8 h-8 text-primary" />
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-4">آخر تحديث</h3>
-                                    <div className="space-y-2">
-                                        <p className="text-2xl font-bold text-primary">{course.lastUpdated}</p>
-                                        <p className="text-sm text-muted-foreground">
-                                            محتوى محدث ومواكب للتطورات الحديثة
-                                        </p>
-                                    </div>
-                                </div>
+                    {/* How to Enroll - Centered */}
+                    <div className="max-w-4xl mx-auto">
+                        <div className="glass rounded-2xl p-12 border hover:border-primary/30 transition-colors text-center">
+                            <div className="flex items-center justify-center gap-3 mb-8">
+                                <UserPlus className="w-8 h-8 text-primary" />
+                                <h3 className="text-3xl font-bold">كيفية التسجيل؟</h3>
                             </div>
-                        </div>
-
-                        {/* How to Enroll - Enhanced */}
-                        <div className="lg:col-span-2">
-                            <div className="glass rounded-2xl p-8 border hover:border-primary/30 transition-colors h-full">
-                                <div className="flex items-start gap-6">
-                                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center">
-                                        <HelpCircle className="w-8 h-8 text-primary" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="text-2xl font-bold mb-6">كيفية التسجيل؟</h3>
-                                        <div className="space-y-4">
-                                            <div className="p-4 bg-primary/5 rounded-lg border border-primary/10">
-                                                <p className="text-lg leading-relaxed">
-                                                    🎯 الفيديوهات الأولى <span className="text-primary font-bold text-xl">مجانية تماماً</span>، 
-                                                    ابدأ التعلم فوراً واستكشف المحتوى!
-                                                </p>
-                                            </div>
-                                            <div className="p-4 bg-muted/20 rounded-lg">
-                                                <p className="text-muted-foreground leading-relaxed">
-                                                    عندما تصل إلى المحتوى المتقدم، ستحتاج للاشتراك في 
-                                                    <span className="text-primary font-semibold"> QAcart PRO </span> 
-                                                    للوصول لجميع الدورات والمحتوى المتقدم.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div className="space-y-6 max-w-2xl mx-auto">
+                                <div className="p-6 bg-primary/5 rounded-xl border border-primary/10">
+                                    <p className="text-lg leading-relaxed flex items-center justify-center gap-2">
+                                        <Target className="w-5 h-5 text-primary flex-shrink-0" />
+                                        الفيديوهات الأولى <span className="text-primary font-bold text-xl">مجانية تماماً</span>، 
+                                        ابدأ التعلم فوراً واستكشف المحتوى!
+                                    </p>
+                                </div>
+                                <div className="p-6 bg-muted/20 rounded-xl">
+                                    <p className="text-muted-foreground leading-relaxed">
+                                        عندما تصل إلى المحتوى المتقدم، ستحتاج للاشتراك في 
+                                        <span className="text-primary font-semibold"> QAcart بريميوم </span> 
+                                        للوصول لجميع الدورات والمحتوى المتقدم.
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Course Quality Badge */}
-                    <div className="mt-16 text-center">
-                        <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-primary/10 to-primary/5 rounded-full border border-primary/20">
-                            <Star className="w-5 h-5 text-primary fill-current" />
-                            <span className="text-primary font-semibold">دورة عالية الجودة ومعتمدة</span>
-                            <Star className="w-5 h-5 text-primary fill-current" />
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </section>

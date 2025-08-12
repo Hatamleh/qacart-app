@@ -1,4 +1,4 @@
-import { User } from 'lucide-react'
+import { User, Calendar } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '../ui/Button'
@@ -38,10 +38,19 @@ export const CourseHeader = ({ course }: CourseHeaderProps) => {
                 </div>
 
                 {/* Short Description */}
-                <div className="text-center mb-12">
+                <div className="text-center mb-8">
                     <p className="text-xl lg:text-2xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
                         {course.shortDescription}
                     </p>
+                </div>
+
+                {/* Last Updated - Compact */}
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-primary/10 rounded-full border border-primary/20">
+                        <Calendar className="w-5 h-5 text-primary" />
+                        <span className="text-sm text-muted-foreground">آخر تحديث:</span>
+                        <span className="text-sm font-semibold text-primary">{course.lastUpdated}</span>
+                    </div>
                 </div>
 
                 {/* Big Video */}
@@ -71,9 +80,9 @@ export const CourseHeader = ({ course }: CourseHeaderProps) => {
                     </div>
                 </div>
 
-                {/* Enroll Button - Centered */}
+                {/* Premium Subscription Button - Centered */}
                 <div className="text-center mt-12">
-                    <Link href={`/courses/${course.id}/player`}>
+                    <Link href="/premium">
                         <Button 
                             variant="primary" 
                             size="lg"
@@ -81,7 +90,7 @@ export const CourseHeader = ({ course }: CourseHeaderProps) => {
                             iconPosition="right"
                             className="px-12 py-4 text-lg"
                         >
-                            اشترك الآن
+                            اشترك في بريميوم
                         </Button>
                     </Link>
                 </div>

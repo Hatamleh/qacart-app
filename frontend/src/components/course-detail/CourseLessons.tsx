@@ -1,19 +1,38 @@
+'use client'
+
 import { Play, Lock, Clock, BookOpen } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { Lesson, formatDuration } from '@/types/course'
 
 interface CourseLessonsProps {
     lessons: Lesson[]
+    courseId: string | number
 }
 
-const LessonCard = ({ lesson, lessonIndex }: { 
+const LessonCard = ({ lesson, lessonIndex, courseId }: { 
     lesson: Lesson, 
-    lessonIndex: number
+    lessonIndex: number,
+    courseId: string | number
 }) => {
+    const router = useRouter()
+    
+    const handleLessonClick = () => {
+        if (lesson.isFree) {
+            // Navigate to course player for free lessons
+            router.push(`/courses/${courseId}/player?lesson=${lesson.id}`)
+        } else {
+            // Navigate to premium page for premium lessons
+            router.push('/premium')
+        }
+    }
     return (
         <div 
-            className={`glass rounded-xl p-6 hover:border-primary/50 transition-all duration-300 group ${
-                lesson.isFree ? 'hover:bg-primary/5 hover:shadow-lg cursor-pointer' : 'opacity-75 hover:opacity-90'
+            className={`glass rounded-xl p-6 transition-all duration-300 group cursor-pointer ${
+                lesson.isFree 
+                    ? 'hover:border-primary/50 hover:bg-primary/5 hover:shadow-lg' 
+                    : 'hover:border-premium/50 hover:bg-premium/5 hover:shadow-lg'
             }`}
+            onClick={handleLessonClick}
         >
             <div className="flex items-start gap-4">
                 {/* Lesson Number */}
@@ -39,17 +58,12 @@ const LessonCard = ({ lesson, lessonIndex }: {
                                     <Clock className="w-4 h-4" />
                                     <span>{formatDuration(lesson.durationInMinutes)}</span>
                                 </div>
-                                {lesson.isFree && (
-                                    <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-full">
-                                        مجاني
-                                    </span>
-                                )}
                             </div>
                         </div>
                         
                         {/* Play/Lock Icon */}
                         <div className={`p-2 rounded-lg ${
-                            lesson.isFree ? 'bg-primary/10 text-primary' : 'bg-muted/50 text-muted-foreground'
+                            lesson.isFree ? 'bg-primary/10 text-primary' : 'bg-premium/10 text-premium'
                         }`}>
                             {lesson.isFree ? (
                                 <Play className="w-5 h-5" />
@@ -64,7 +78,7 @@ const LessonCard = ({ lesson, lessonIndex }: {
     )
 }
 
-export const CourseLessons = ({ lessons }: CourseLessonsProps) => {
+export const CourseLessons = ({ lessons, courseId }: CourseLessonsProps) => {
     // Sort lessons by lesson order
     const sortedLessons = [...lessons].sort((a, b) => a.lessonOrder - b.lessonOrder)
     const totalLessons = lessons.length
@@ -89,9 +103,9 @@ export const CourseLessons = ({ lessons }: CourseLessonsProps) => {
                                 </span>
                             </div>
                             <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 bg-muted-foreground rounded-full"></div>
+                                <div className="w-3 h-3 bg-primary rounded-full"></div>
                                 <span className="text-muted-foreground">
-                                    {totalLessons - freeLessonsCount} درس بالاشتراك
+                                    {totalLessons - freeLessonsCount} فيديو بريميوم
                                 </span>
                             </div>
                             <div className="flex items-center gap-2">
@@ -104,25 +118,17 @@ export const CourseLessons = ({ lessons }: CourseLessonsProps) => {
 
                     {/* Lessons List */}
                     <div className="space-y-4">
-                                            {sortedLessons.map((lesson, index) => (
-                        <LessonCard 
-                            key={lesson.id} 
-                            lesson={lesson}
-                            lessonIndex={index}
-                        />
-                    ))}
+                        {sortedLessons.map((lesson, index) => (
+                            <LessonCard 
+                                key={lesson.id} 
+                                lesson={lesson}
+                                lessonIndex={index}
+                                courseId={courseId}
+                            />
+                        ))}
                     </div>
 
-                    {/* Bottom Info */}
-                    <div className="text-center mt-12">
-                        <div className="inline-flex items-center gap-3 px-6 py-4 bg-primary/5 rounded-xl border border-primary/10">
-                            <Lock className="w-5 h-5 text-primary" />
-                            <span className="text-muted-foreground">
-                                للوصول إلى جميع الدروس، اشترك في 
-                                <span className="text-primary font-semibold"> QAcart PRO</span>
-                            </span>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </section>

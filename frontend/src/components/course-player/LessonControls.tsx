@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Check, Star } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Lesson } from '@/types/course'
 
@@ -11,6 +11,7 @@ interface LessonControlsProps {
   onPrevious: () => void
   onNext: () => void
   onMarkComplete: () => void
+  afterArticle?: boolean
 }
 
 export const LessonControls = ({
@@ -19,26 +20,24 @@ export const LessonControls = ({
   nextLesson,
   onPrevious,
   onNext,
-  onMarkComplete
+  onMarkComplete,
+  afterArticle = false
 }: LessonControlsProps) => {
   return (
-    <div className="bg-background p-6 mx-6">
+    <div className={`p-6 mx-8 rounded-lg border border-primary/10 ${afterArticle ? 'mb-24' : ''}`} style={{ backgroundColor: '#152038' }}>
       <div className="flex items-center justify-between max-w-2xl mx-auto">
         {/* Previous Button */}
         <div className="flex-1 flex justify-start">
-          {previousLesson ? (
-            <Button
-              variant="outline"
-              onClick={onPrevious}
-              icon={ChevronRight}
-              iconPosition="right"
-              className="text-sm"
-            >
-              السابق
-            </Button>
-          ) : (
-            <div /> // Empty div for spacing
-          )}
+          <Button
+            variant="outline"
+            onClick={previousLesson ? onPrevious : undefined}
+            icon={ChevronRight}
+            iconPosition="right"
+            className="text-sm"
+            disabled={!previousLesson}
+          >
+            السابق
+          </Button>
         </div>
 
         {/* Mark Complete Button - Center */}
@@ -46,29 +45,26 @@ export const LessonControls = ({
           <Button
             variant={currentLesson.isCompleted ? "secondary" : "primary"}
             onClick={onMarkComplete}
-            icon={Check}
+            icon={currentLesson.isCompleted ? Check : Star}
             iconPosition="left"
             className="text-sm px-6"
           >
-            {currentLesson.isCompleted ? 'مكتمل' : 'تم الانتهاء'}
+            {currentLesson.isCompleted ? 'مكتمل' : 'أكمل الدرس الآن'}
           </Button>
         </div>
 
         {/* Next Button */}
         <div className="flex-1 flex justify-end">
-          {nextLesson ? (
-            <Button
-              variant="outline"
-              onClick={onNext}
-              icon={ChevronLeft}
-              iconPosition="left"
-              className="text-sm"
-            >
-              التالي
-            </Button>
-          ) : (
-            <div /> // Empty div for spacing
-          )}
+          <Button
+            variant="outline"
+            onClick={nextLesson ? onNext : undefined}
+            icon={ChevronLeft}
+            iconPosition="left"
+            className="text-sm"
+            disabled={!nextLesson}
+          >
+            التالي
+          </Button>
         </div>
       </div>
     </div>

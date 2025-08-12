@@ -2,7 +2,7 @@ import React from 'react'
 
 interface BadgeProps {
     children: React.ReactNode
-    variant?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'
+    variant?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'premium'
     size?: 'sm' | 'md' | 'lg'
     className?: string
     withPulse?: boolean
@@ -34,7 +34,8 @@ export const Badge: React.FC<BadgeProps> = ({
         secondary: 'bg-secondary/10 border border-secondary/20 text-secondary-foreground',
         success: 'bg-primary/10 border border-primary/20 text-primary',
         warning: 'bg-primary/10 border border-primary/20 text-primary',
-        danger: 'bg-primary/10 border border-primary/20 text-primary'
+        danger: 'bg-primary/10 border border-primary/20 text-primary',
+        premium: 'bg-premium/10 border border-premium/20 text-premium'
     }
 
     const classes = `${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`

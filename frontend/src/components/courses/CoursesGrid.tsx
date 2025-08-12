@@ -55,7 +55,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
 
 export const CoursesGrid = ({ courses }: CoursesGridProps) => {
     return (
-        <section className="py-20">
+        <section id="courses-grid-section" className="py-20">
             <div className="container mx-auto px-6">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl lg:text-4xl font-bold mb-4">الدورات الشائعة</h2>
@@ -80,14 +80,7 @@ export const CoursesGrid = ({ courses }: CoursesGridProps) => {
                     </div>
                 )}
 
-                {/* View All Courses Button */}
-                {courses.length > 0 && (
-                    <div className="text-center mt-12">
-                        <Button variant="primary" size="lg">
-                            عرض جميع الدورات
-                        </Button>
-                    </div>
-                )}
+
             </div>
         </section>
     )

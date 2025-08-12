@@ -9,9 +9,10 @@ import { Lesson } from '@/types/course'
 
 interface LessonArticleProps {
   lesson: Lesson
+  noTopPadding?: boolean
 }
 
-export const LessonArticle = ({ lesson }: LessonArticleProps) => {
+export const LessonArticle = ({ lesson, noTopPadding = false }: LessonArticleProps) => {
   // Add copy functionality for code blocks
   const addCopyButtons = () => {
     const codeBlocks = document.querySelectorAll('.markdown-content pre')
@@ -71,7 +72,7 @@ export const LessonArticle = ({ lesson }: LessonArticleProps) => {
   return (
     <div className="bg-background">
       {lesson.articleContent ? (
-        <div className="max-w-4xl mx-auto px-8 py-12">
+        <div className={`max-w-4xl mx-auto px-8 ${noTopPadding ? 'pt-0 pb-12' : 'py-12'}`}>
           {/* Beautiful CSS for markdown elements */}
           <style jsx global>{`            
             .markdown-content {
@@ -418,13 +419,7 @@ export const LessonArticle = ({ lesson }: LessonArticleProps) => {
               line-height: 1.6;
             }
             
-            /* Horizontal rule */
-            .markdown-content hr {
-              border: none;
-              height: 1px;
-              background: linear-gradient(to left, transparent, #d1d5db, transparent);
-              margin: 3rem 0;
-            }
+
             
             /* Strong and emphasis */
             .markdown-content strong {

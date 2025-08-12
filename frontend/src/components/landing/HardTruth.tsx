@@ -1,18 +1,24 @@
-import { AlertTriangle, X, CheckCircle } from 'lucide-react'
+'use client'
+
+import { X, CheckCircle } from 'lucide-react'
 import { Button } from '../ui/Button'
 
 export const HardTruth = () => {
+    const scrollToNextSection = () => {
+        const nextSection = document.getElementById('lets-go-section')
+        if (nextSection) {
+            nextSection.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            })
+        }
+    }
     return (
-        <section className="py-20 lg:py-32 bg-gradient-to-b from-background to-secondary/20">
+        <section id="hard-truth-section" className="py-20 lg:py-32 bg-gradient-to-b from-background to-secondary/20">
             <div className="container mx-auto px-6">
                 <div className="max-w-4xl mx-auto text-center">
 
-                    {/* Warning Icon */}
-                    <div className="mb-8">
-                        <div className="inline-flex items-center justify-center w-20 h-20 bg-primary/10 border border-primary/20 rounded-full">
-                            <AlertTriangle className="w-10 h-10 text-primary" />
-                        </div>
-                    </div>
+
 
                     {/* Hard Truth Statement */}
                     <h2 className="text-4xl lg:text-6xl font-bold mb-8 text-foreground">
@@ -94,6 +100,7 @@ export const HardTruth = () => {
                             size="lg"
                             icon={CheckCircle}
                             iconPosition="right"
+                            onClick={scrollToNextSection}
                         >
                             نعم، أريد أن أتعلم بشكل صحيح
                         </Button>

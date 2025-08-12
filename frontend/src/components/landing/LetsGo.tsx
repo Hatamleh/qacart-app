@@ -1,10 +1,17 @@
-import { Rocket, Play, Gift } from 'lucide-react'
-import { Card } from '../ui/Card'
+'use client'
+
+import { Rocket, BookOpen } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { Button } from '../ui/Button'
 
 export const LetsGo = () => {
+    const router = useRouter()
+    
+    const goToCourses = () => {
+        router.push('/courses')
+    }
     return (
-        <section className="py-20 lg:py-32 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5">
+        <section id="lets-go-section" className="py-20 lg:py-32 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5">
             <div className="container mx-auto px-6">
                 <div className="max-w-4xl mx-auto text-center">
 
@@ -26,35 +33,18 @@ export const LetsGo = () => {
                         <Rocket className="w-6 h-6 text-primary animate-bounce" />
                     </div>
 
-                    {/* Feature Cards */}
-                    <div className="grid md:grid-cols-2 gap-8 mb-12 max-w-4xl mx-auto">
 
-                        {/* Try Before Buy */}
-                        <Card
-                            icon={Play}
-                            title="جرب قبل الشراء"
-                            description="كل دورة لها دروس مجانية لتتأكد من جودتها"
-                            hover={true}
-                        />
-
-                        {/* No Risk */}
-                        <Card
-                            icon={Gift}
-                            title="محتوى مجاني غني"
-                            description="ابدأ بالدروس المجانية واكتشف جودة المحتوى"
-                            hover={true}
-                        />
-                    </div>
 
                     {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                         <Button
                             variant="primary"
                             size="lg"
-                            icon={Gift}
+                            icon={BookOpen}
                             iconPosition="right"
+                            onClick={goToCourses}
                         >
-                            تصفح الدورات المجانية
+                            تصفح الدورات
                         </Button>
                     </div>
 

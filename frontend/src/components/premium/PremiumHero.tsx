@@ -1,6 +1,6 @@
 import { Crown } from 'lucide-react'
 
-export const ProHero = () => {
+export const PremiumHero = () => {
   return (
     <div className="pt-48 lg:pt-56 pb-12">
       <div className="container mx-auto px-6">

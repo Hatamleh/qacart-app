@@ -5,11 +5,11 @@ import { Check, Gift, MessageCircle, Code, Unlock, RefreshCw } from 'lucide-reac
 import { Button } from '../ui/Button'
 import { ProPlan, PricingOption, PlanFeature } from '@/types/plan'
 
-interface ProSubscriptionCardProps {
+interface PremiumSubscriptionCardProps {
   plan: ProPlan
 }
 
-export const ProSubscriptionCard = ({ plan }: ProSubscriptionCardProps) => {
+export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) => {
   const [selectedOption, setSelectedOption] = useState(plan.pricingOptions[1].id) // Default to quarterly (popular)
 
   const selectedPricing = plan.pricingOptions.find((option: PricingOption) => option.id === selectedOption)

@@ -1,9 +1,20 @@
+'use client'
+
 import { BookOpen, Award } from 'lucide-react'
 import { GridBackground } from '../ui/GridBackground'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
 
 export const Hero = () => {
+    const scrollToNextSection = () => {
+        const nextSection = document.getElementById('hard-truth-section')
+        if (nextSection) {
+            nextSection.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            })
+        }
+    }
     return (
         <GridBackground className="overflow-hidden min-h-screen flex items-center justify-center">
             <div className="container mx-auto px-6 py-32 lg:py-40">
@@ -33,6 +44,7 @@ export const Hero = () => {
                             size="lg"
                             icon={BookOpen}
                             iconPosition="right"
+                            onClick={scrollToNextSection}
                         >
                             ابدأ من هنا
                         </Button>

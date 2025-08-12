@@ -1,9 +1,20 @@
-import { BookOpen, Play, Users } from 'lucide-react'
+'use client'
+
+import { BookOpen, Play, Download } from 'lucide-react'
 import { GridBackground } from '../ui/GridBackground'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
 
 export const CoursesHero = () => {
+    const scrollToCoursesGrid = () => {
+        const coursesSection = document.getElementById('courses-grid-section')
+        if (coursesSection) {
+            coursesSection.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            })
+        }
+    }
     return (
         <GridBackground className="overflow-hidden">
             <div className="container mx-auto px-6 py-20 lg:py-32">
@@ -49,16 +60,17 @@ export const CoursesHero = () => {
                             size="lg"
                             icon={Play}
                             iconPosition="right"
+                            onClick={scrollToCoursesGrid}
                         >
                             تصفح الدورات
                         </Button>
                         <Button
                             variant="secondary"
                             size="lg"
-                            icon={Users}
+                            icon={Download}
                             iconPosition="right"
                         >
-                            انضم للمجتمع
+                            تحميل خطة الدراسة
                         </Button>
                     </div>
                 </div>

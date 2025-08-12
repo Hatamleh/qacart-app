@@ -53,7 +53,7 @@ export default async function CourseDetailPage({ params }: CoursePageProps) {
       <CourseInfo course={course} />
 
       {/* Course Lessons */}
-      <CourseLessons lessons={course.lessons} />
+      <CourseLessons lessons={course.lessons} courseId={courseId} />
 
       {/* Footer */}
       <Footer />

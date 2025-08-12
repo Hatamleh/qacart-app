@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { ProHero } from '@/components/pro/ProHero'
-import { ProSubscriptionCard } from '@/components/pro/ProSubscriptionCard'
+import { PremiumHero } from '@/components/premium/PremiumHero'
+import { PremiumSubscriptionCard } from '@/components/premium/PremiumSubscriptionCard'
 import { getPremiumPlan } from '@/data'
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default function ProPage() {
+export default function PremiumPage() {
   const premiumPlan = getPremiumPlan()
 
   return (
@@ -26,13 +26,13 @@ export default function ProPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <ProHero />
+      <PremiumHero />
 
       {/* Subscription Card Section */}
       <section className="pb-20 bg-muted/10">
         <div className="container mx-auto px-6">
           <div className="max-w-lg mx-auto">
-            <ProSubscriptionCard plan={premiumPlan} />
+            <PremiumSubscriptionCard plan={premiumPlan} />
           </div>
         </div>
       </section>
