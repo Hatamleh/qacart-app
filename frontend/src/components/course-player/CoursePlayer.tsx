@@ -6,6 +6,7 @@ import { LessonNavigation } from './LessonNavigation'
 import { LessonVideoArea } from './LessonVideoArea'
 import { LessonControls } from './LessonControls'
 import { LessonArticle } from './LessonArticle'
+import { CoursePlayerHeader } from './CoursePlayerHeader'
 import { Course, Lesson } from '@/types/course'
 
 interface CoursePlayerProps {
@@ -61,41 +62,50 @@ export const CoursePlayer = ({ course, currentLesson: initialLesson }: CoursePla
   }
 
   return (
-    <div className="flex min-h-screen"> {/* Changed from h-full overflow-hidden to min-h-screen */}
-      {/* Lesson Navigation Sidebar - Always visible */}
-      <div className="w-80 flex-shrink-0">
-        <LessonNavigation
-          course={course}
-          currentLesson={currentLesson}
-          onLessonSelect={navigateToLesson}
-        />
-      </div>
+    <div className="min-h-screen bg-background">
+      {/* Course Player Header - Fixed at top */}
+      <CoursePlayerHeader 
+        course={course}
+        currentLesson={currentLesson}
+      />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col"> {/* Removed h-screen overflow-hidden */}
-        {/* Video Area */}
-        <div className="flex-shrink-0">
-          <LessonVideoArea
-            lesson={currentLesson}
+      {/* Main Layout */}
+      <div className="flex">
+        {/* Lesson Navigation Sidebar - Always visible */}
+        <div className="w-80 flex-shrink-0">
+          <LessonNavigation
             course={course}
+            currentLesson={currentLesson}
+            onLessonSelect={navigateToLesson}
           />
         </div>
 
-        {/* Lesson Controls */}
-        <div className="flex-shrink-0"> {/* Removed border-b */}
-                  <LessonControls
-          currentLesson={currentLesson}
-          previousLesson={previousLesson}
-          nextLesson={nextLesson}
-          onPrevious={handlePrevious}
-          onNext={handleNext}
-          onMarkComplete={handleMarkComplete}
-        />
-        </div>
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col">
+          {/* Video Area */}
+          <div className="flex-shrink-0">
+            <LessonVideoArea
+              lesson={currentLesson}
+              course={course}
+            />
+          </div>
 
-        {/* Lesson Article */}
-        <div className="flex-1">
-          <LessonArticle lesson={currentLesson} />
+          {/* Lesson Controls */}
+          <div className="flex-shrink-0">
+            <LessonControls
+              currentLesson={currentLesson}
+              previousLesson={previousLesson}
+              nextLesson={nextLesson}
+              onPrevious={handlePrevious}
+              onNext={handleNext}
+              onMarkComplete={handleMarkComplete}
+            />
+          </div>
+
+          {/* Lesson Article */}
+          <div className="flex-1">
+            <LessonArticle lesson={currentLesson} />
+          </div>
         </div>
       </div>
     </div>

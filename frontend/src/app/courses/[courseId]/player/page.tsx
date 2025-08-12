@@ -1,5 +1,4 @@
 import { Metadata } from 'next'
-import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { CoursePlayer } from '@/components/course-player/CoursePlayer'
 import { getCourseById } from '@/client/courses'
@@ -64,11 +63,8 @@ export default async function CoursePlayerPage({ params, searchParams }: CourseP
 
   return (
     <div className="min-h-screen bg-background flex flex-col" dir="rtl">
-      {/* Navigation */}
-      <Navbar />
-
-      {/* Course Player - Takes remaining space */}
-      <div className="flex-1 pt-20"> {/* Add top padding to account for fixed navbar */}
+      {/* Course Player - Full screen immersive experience */}
+      <div className="flex-1">
         <CoursePlayer 
           course={course}
           currentLesson={currentLesson}

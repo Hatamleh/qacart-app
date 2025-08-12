@@ -5,7 +5,6 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeRaw from 'rehype-raw'
-import { Copy, Check } from 'lucide-react'
 import { Lesson } from '@/types/course'
 
 interface LessonArticleProps {
@@ -21,66 +20,41 @@ export const LessonArticle = ({ lesson }: LessonArticleProps) => {
       const existingButton = block.querySelector('.copy-button')
       if (existingButton) existingButton.remove()
       
-      // Create copy button with Lucide icons
+      // Create copy button
       const copyButton = document.createElement('button')
       copyButton.className = 'copy-button'
       copyButton.innerHTML = `
-        <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
           <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
         </svg>
       `
-      copyButton.style.cssText = `
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        background: transparent;
-        color: #cbd5e1;
-        border: none;
-        border-radius: 6px;
-        padding: 8px;
-        cursor: pointer;
-        transition: all 0.2s;
-        z-index: 10;
-        opacity: 0.6;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `
       
-      copyButton.addEventListener('click', () => {
+      const handleCopy = async () => {
         const code = block.querySelector('code')?.textContent || ''
-        navigator.clipboard.writeText(code).then(() => {
+        try {
+          await navigator.clipboard.writeText(code)
           copyButton.innerHTML = `
-            <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 6 9 17l-5-5"/>
             </svg>
           `
           copyButton.style.color = '#10b981'
           setTimeout(() => {
             copyButton.innerHTML = `
-              <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
                 <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
               </svg>
             `
             copyButton.style.color = '#cbd5e1'
           }, 2000)
-        })
-      })
+        } catch (err) {
+          console.error('Failed to copy:', err)
+        }
+      }
       
-      copyButton.addEventListener('mouseenter', () => {
-        copyButton.style.opacity = '1'
-        copyButton.style.color = '#60a5fa'
-        copyButton.style.transform = 'scale(1.05)'
-      })
-      
-      copyButton.addEventListener('mouseleave', () => {
-        copyButton.style.opacity = '0.6'
-        copyButton.style.color = '#cbd5e1'
-        copyButton.style.transform = 'scale(1)'
-      })
-      
+      copyButton.addEventListener('click', handleCopy)
       block.appendChild(copyButton)
     })
   }
@@ -193,7 +167,7 @@ export const LessonArticle = ({ lesson }: LessonArticleProps) => {
               min-width: 1.5rem;
             }
             
-                        /* Custom QAcart Code Blocks - Clean & Modern */
+            /* Custom QAcart Code Blocks - Clean & Modern */
             .markdown-content pre {
               direction: ltr !important;
               text-align: left !important;
@@ -210,8 +184,31 @@ export const LessonArticle = ({ lesson }: LessonArticleProps) => {
                 0 4px 15px rgba(59, 130, 246, 0.2),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
             }
-            
-            /* Code blocks now use JavaScript copy buttons */
+
+            /* Copy button styling */
+            .markdown-content pre .copy-button {
+              position: absolute;
+              top: 12px;
+              right: 12px;
+              background: transparent;
+              color: #cbd5e1;
+              border: none;
+              border-radius: 6px;
+              padding: 8px;
+              cursor: pointer;
+              transition: all 0.2s;
+              z-index: 10;
+              opacity: 0.6;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .markdown-content pre .copy-button:hover {
+              opacity: 1;
+              color: #60a5fa;
+              transform: scale(1.05);
+            }
             
             /* Code text styling */
             .markdown-content pre code {
@@ -310,75 +307,7 @@ export const LessonArticle = ({ lesson }: LessonArticleProps) => {
               color: #60a5fa !important; /* Blue for HTML tags if needed */
             }
             
-            /* QAcart Brand Color Palette for Syntax - Suppress unused selector warnings */
-            /* noinspection CssUnusedSymbol */
-            .markdown-content pre,
-            .markdown-content pre {
-              color: #64748b !important; /* Muted gray for comments */
-              font-style: italic !important;
-            }
-            
-            .markdown-content pre,
-            .markdown-content pre,
-            .markdown-content pre {
-              color: #60a5fa !important; /* Primary blue - your brand color */
-              font-weight: 600 !important;
-            }
-            
-            .markdown-content pre,
-            .markdown-content pre {
-              color: #34d399 !important; /* Emerald green - fresh and modern */
-            }
-            
-            .markdown-content pre,
-            .markdown-content pre {
-              color: #fbbf24 !important; /* Warm amber - easy on eyes */
-            }
-            
-            .markdown-content pre,
-            .markdown-content pre {
-              color: #a78bfa !important; /* Soft purple - elegant */
-            }
-            
-            .markdown-content pre,
-            .markdown-content pre {
-              color: #fb7185 !important; /* Rose pink - distinctive */
-            }
-            
-            .markdown-content pre,
-            .markdown-content pre {
-              color: #38bdf8 !important; /* Sky blue - tech feel */
-            }
-            
-            .markdown-content pre,
-            .markdown-content pre {
-              color: #cbd5e1 !important; /* Light gray for operators */
-            }
-            
-            .markdown-content pre,
-            .markdown-content pre {
-              color: #f472b6 !important; /* Hot pink for meta */
-            }
-            
-            /* Special styling for bash/shell commands */
-            .markdown-content pre[class*="language-bash"],
-            .markdown-content pre[class*="language-shell"] {
-              color: #10b981 !important; /* Green for bash comments */
-            }
-            
-            .markdown-content pre[class*="language-bash"],
-            .markdown-content pre[class*="language-shell"] {
-              color: #06b6d4 !important; /* Cyan for bash commands */
-            }
-            
-            /* JavaScript specific styling */
-            .markdown-content pre[class*="language-javascript"]{
-              color: #8b5cf6 !important; /* Purple for JS keywords */
-            }
-            
-            .markdown-content pre[class*="language-javascript"] {
-              color: #f59e0b !important; /* Orange for JS functions */
-            }
+
             
             /* Inline code */
             .markdown-content code {
@@ -428,7 +357,7 @@ export const LessonArticle = ({ lesson }: LessonArticleProps) => {
               background: #f9fafb;
             }
             
-            /* Links - Softer blue color */
+            /* Links */
             .markdown-content a {
               color: #64748b;
               text-decoration: underline;
@@ -442,7 +371,7 @@ export const LessonArticle = ({ lesson }: LessonArticleProps) => {
               text-decoration-thickness: 2px;
             }
             
-            /* Beautiful Blockquotes matching code blocks */
+            /* Blockquotes */
             .markdown-content blockquote {
               margin: 1.5rem 0;
               padding: 1.5rem;
@@ -458,7 +387,6 @@ export const LessonArticle = ({ lesson }: LessonArticleProps) => {
               color: #f1f5f9 !important;
             }
             
-            /* Add subtle glow effect like code blocks */
             .markdown-content blockquote::before {
               content: '';
               position: absolute;
@@ -470,8 +398,6 @@ export const LessonArticle = ({ lesson }: LessonArticleProps) => {
               border-radius: 1rem;
               pointer-events: none;
             }
-            
-            /* Left accent border for different types */
             .markdown-content blockquote::after {
               content: '';
               position: absolute;
@@ -482,14 +408,10 @@ export const LessonArticle = ({ lesson }: LessonArticleProps) => {
               background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
               border-radius: 0 1rem 1rem 0;
             }
-            
-            /* Style the emoji and bold text */
             .markdown-content blockquote strong {
               color: #60a5fa !important;
               font-weight: 600;
             }
-            
-            /* Style regular blockquote text */
             .markdown-content blockquote p {
               color: #cbd5e1 !important;
               margin: 0;
@@ -559,7 +481,7 @@ export const LessonArticle = ({ lesson }: LessonArticleProps) => {
                 background: #1f2937;
               }
               
-              /* Dark mode blockquotes - keep the same beautiful dark styling */
+
               .markdown-content blockquote {
                 background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%) !important;
                 color: #f1f5f9 !important;

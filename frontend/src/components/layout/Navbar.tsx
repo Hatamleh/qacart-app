@@ -49,7 +49,7 @@ export const Navbar = () => {
         }
     `}>
             <div className="relative">
-                <nav className="flex items-center justify-between h-14 lg:h-16 px-4 lg:px-6 max-w-7xl mx-auto">
+                <nav className="flex items-center justify-between h-16 lg:h-20 px-4 lg:px-6 max-w-7xl mx-auto">
 
                     {/* Mobile Menu Toggle - Left */}
                     <button
@@ -71,12 +71,12 @@ export const Navbar = () => {
                             className="flex items-center group"
                             onClick={closeAll}
                         >
-                            <div className="relative w-10 h-10">
+                            <div className="relative w-14 h-14">
                                 <Image
                                     src="/qacart-logo.svg"
                                     alt="QAcart Logo"
-                                    width={40}
-                                    height={40}
+                                    width={56}
+                                    height={56}
                                     className="w-full h-full transition-transform duration-200 group-hover:scale-105"
                                     priority
                                 />
@@ -94,12 +94,12 @@ export const Navbar = () => {
                             className="flex items-center group"
                             onClick={closeAll}
                         >
-                            <div className="relative w-8 h-8">
+                            <div className="relative w-12 h-12">
                                 <Image
                                     src="/qacart-logo.svg"
                                     alt="QAcart Logo"
-                                    width={32}
-                                    height={32}
+                                    width={48}
+                                    height={48}
                                     className="w-full h-full transition-transform duration-200 group-hover:scale-105"
                                     priority
                                 />
