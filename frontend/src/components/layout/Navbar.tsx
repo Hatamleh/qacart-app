@@ -122,14 +122,16 @@ export const Navbar = () => {
 
                     {/* Auth Buttons - Desktop Right */}
                     <div className="hidden lg:flex items-center gap-3">
-                        <Button
-                            variant="primary"
-                            size="sm"
-                            icon={LogIn}
-                            iconPosition="left"
-                        >
-                            تسجيل الدخول
-                        </Button>
+                        <Link href="/auth">
+                            <Button
+                                variant="primary"
+                                size="sm"
+                                icon={LogIn}
+                                iconPosition="left"
+                            >
+                                تسجيل الدخول
+                            </Button>
+                        </Link>
                     </div>
                 </nav>
 
@@ -164,15 +166,17 @@ export const Navbar = () => {
 
                         {/* Mobile Auth Button */}
                         <div className="pt-6 mt-6 border-t border-border/50 space-y-3">
-                            <Button
-                                variant="primary"
-                                size="md"
-                                icon={LogIn}
-                                iconPosition="left"
-                                className="w-full"
-                            >
-                                تسجيل الدخول
-                            </Button>
+                            <Link href="/auth" onClick={closeAll}>
+                                <Button
+                                    variant="primary"
+                                    size="md"
+                                    icon={LogIn}
+                                    iconPosition="left"
+                                    className="w-full"
+                                >
+                                    تسجيل الدخول
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                 </div>
