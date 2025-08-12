@@ -10,22 +10,22 @@ interface PremiumSubscriptionCardProps {
 }
 
 export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) => {
-  const [selectedOption, setSelectedOption] = useState(plan.pricingOptions[1].id) // Default to quarterly (popular)
+  const [selectedOption, setSelectedOption] = useState(plan.pricingOptions[0].id) // Default to monthly
 
   const selectedPricing = plan.pricingOptions.find((option: PricingOption) => option.id === selectedOption)
 
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'unlock':
-        return <Unlock className="w-5 h-5 text-primary" />
+        return <Unlock className="w-5 h-5 text-primary/80" />
       case 'message':
-        return <MessageCircle className="w-5 h-5 text-primary" />
+        return <MessageCircle className="w-5 h-5 text-primary/80" />
       case 'code':
-        return <Code className="w-5 h-5 text-primary" />
+        return <Code className="w-5 h-5 text-primary/80" />
       case 'gift':
-        return <Gift className="w-5 h-5 text-primary" />
+        return <Gift className="w-5 h-5 text-primary/80" />
       default:
-        return <Check className="w-5 h-5 text-primary" />
+        return <Check className="w-5 h-5 text-primary/80" />
     }
   }
 
@@ -36,70 +36,96 @@ export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) 
   }
 
   return (
-    <div className="bg-background border-2 border-primary/20 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-      
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 pointer-events-none" />
-      
-      {/* Header */}
-      <div className="relative">
+    <div className="max-w-lg mx-auto">
+      {/* Modern Glass Card */}
+      <div className="relative bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-xl border border-primary/10 rounded-3xl overflow-hidden shadow-[0_20px_70px_-10px_rgba(59,130,246,0.15)] hover:shadow-[0_25px_80px_-5px_rgba(59,130,246,0.2)] transition-all duration-500">
+        
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] via-transparent to-primary/[0.04] pointer-events-none" />
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+        
+        {/* Card Content */}
+        <div className="relative p-8 lg:p-10">
 
-        {/* Price Display */}
-        <div className="text-center mb-8">
-          <div className="flex items-baseline justify-center gap-1">
-            <span className="text-4xl font-light text-muted-foreground">{selectedPricing?.currency}</span>
-            <span className="text-6xl lg:text-7xl font-bold gradient-text">{selectedPricing?.price}</span>
-            <span className="text-xl text-muted-foreground">/{selectedPricing?.duration}</span>
-          </div>
-        </div>
-
-        {/* Pricing Options */}
-        <div className="flex gap-2 mb-8 p-1 bg-muted/30 rounded-xl">
-          {plan.pricingOptions.map((option: PricingOption) => (
-            <Button
-              key={option.id}
-              variant={selectedOption === option.id ? 'primary' : 'ghost'}
-              size="sm"
-              onClick={() => setSelectedOption(option.id)}
-              className="flex-1"
-            >
-              {option.duration}
-            </Button>
-          ))}
-        </div>
-
-        {/* Features List */}
-        <div className="space-y-4 mb-8">
-          {plan.features.map((feature: PlanFeature) => (
-            <div key={feature.id} className="flex items-start gap-3">
-              <div className="flex-shrink-0 w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center mt-0.5">
-                {getIcon(feature.icon)}
-              </div>
-              <span className="text-foreground leading-relaxed">{feature.title}</span>
+          {/* Plan Badge */}
+          <div className="flex justify-center mb-8">
+            <div className="px-6 py-2 bg-primary/10 border border-primary/20 rounded-full">
+              <h3 className="text-lg font-semibold text-primary tracking-wide">{plan.name}</h3>
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* Subscribe Button */}
-        <Button
-          variant="primary"
-          size="lg"
-          className="w-full text-lg font-bold py-4 shadow-lg"
-          onClick={handleSubscribe}
-        >
-          {plan.cta.buttonText}
-        </Button>
+          {/* Price Section */}
+          <div className="text-center mb-10">
+            <div className="flex items-end justify-center gap-2 mb-4">
+              <span className="text-2xl font-medium text-muted-foreground self-start mt-2">{selectedPricing?.currency}</span>
+              <span className="text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-primary to-primary/80 bg-clip-text text-transparent leading-none">{selectedPricing?.price}</span>
+              <span className="text-lg text-muted-foreground self-end mb-1">/{selectedPricing?.duration}</span>
+            </div>
+            <p className="text-sm text-muted-foreground/70">يتم الدفع {selectedPricing?.duration === 'شهرياً' ? 'كل شهر' : selectedPricing?.duration === 'ربع سنوي' ? 'كل 3 أشهر' : 'مرة واحدة في السنة'}</p>
+          </div>
 
-        {/* Guarantee */}
-        <div className="text-center mt-4">
-          <p className="text-sm text-muted-foreground">
-            <a href="/refund-policy" className="hover:text-primary transition-colors flex items-center justify-center gap-2">
-              <RefreshCw className="w-4 h-4" />
-              اقرأ المزيد حول سياسة الاسترداد
+          {/* Modern Pricing Tabs */}
+          <div className="mb-10">
+            <div className="grid grid-cols-3 gap-2 p-1.5 bg-muted/20 rounded-2xl border border-muted/30">
+              {plan.pricingOptions.map((option: PricingOption) => (
+                <button
+                  key={option.id}
+                  onClick={() => setSelectedOption(option.id)}
+                  className={`relative py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    selectedOption === option.id 
+                      ? 'bg-primary text-background shadow-lg shadow-primary/25 scale-[1.02]' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                  }`}
+                >
+                  {option.duration}
+                  {selectedOption === option.id && (
+                    <div className="absolute inset-0 bg-primary/10 rounded-xl blur-xl" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Features Grid */}
+          <div className="mb-10">
+            <div className="space-y-5">
+              {plan.features.map((feature: PlanFeature) => (
+                <div key={feature.id} className="group flex items-start gap-2 p-3 rounded-xl hover:bg-primary/[0.02] transition-colors">
+                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-primary/15 to-primary/25 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    {getIcon(feature.icon)}
+                  </div>
+                  <div className="flex-1 pt-1">
+                    <span className="text-muted-foreground/70 leading-relaxed font-medium">{feature.title}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <div className="mb-6">
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full py-4 text-lg font-semibold rounded-2xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] transition-all duration-300"
+              onClick={handleSubscribe}
+            >
+              {plan.cta.buttonText}
+            </Button>
+          </div>
+
+          {/* Guarantee */}
+          <div className="text-center">
+            <a 
+              href="/refund-policy" 
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground/70 hover:text-primary transition-colors group"
+            >
+              <RefreshCw className="w-4 h-4 group-hover:rotate-45 transition-transform duration-300" />
+              <span>اقرأ المزيد حول سياسة الاسترداد</span>
             </a>
-          </p>
-        </div>
+          </div>
 
+        </div>
       </div>
     </div>
   )
