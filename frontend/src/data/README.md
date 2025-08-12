@@ -26,11 +26,15 @@ const results = searchCourses('اختبار')
 
 ## Available Functions
 
+### Course Functions
 - `getAllCourses()` - Returns all courses
 - `getCourseById(id)` - Returns specific course by ID (defaults to first course)
 - `getCoursesByType(type)` - Filter courses by type
 - `getFeaturedCourses()` - Returns first 3 courses for homepage
 - `searchCourses(query)` - Search courses by title, description, or tags
+
+### Plan Functions
+- `getProPlan()` - Returns the Pro subscription plan data
 
 **Note:** All functions always return valid data for design purposes - no error handling needed!
 

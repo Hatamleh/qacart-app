@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Play, Loader2 } from 'lucide-react'
 import Image from 'next/image'
+import { Button } from '../ui/Button'
 
 interface VimeoPlayerProps {
   vimeoId: string
@@ -63,13 +64,13 @@ export const VimeoPlayer = ({
           
           {/* Play Button Overlay */}
           <div className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors cursor-pointer">
-            <button
+            <Button
+              variant="primary"
               onClick={handlePlayClick}
-              className="bg-primary rounded-full p-6 hover:scale-110 transition-all duration-300 hover:bg-primary/90 shadow-lg"
-              aria-label={`تشغيل ${title}`}
+              className="rounded-full p-6 hover:scale-110 shadow-lg"
+              icon={Play}
             >
-              <Play className="w-12 h-12 text-white fill-current" />
-            </button>
+            </Button>
           </div>
         </div>
       )}

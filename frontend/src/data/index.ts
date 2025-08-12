@@ -1,13 +1,16 @@
 import { Course } from '@/types/course'
+import { ProPlan } from '@/types/plan'
 import coursesData from './courses.json'
+import plansData from './plans.json'
 
 /**
- * Static course data for frontend design purposes
+ * Static data for frontend design purposes
  * This replaces API calls for development
  */
 
-// Type-safe access to courses data
+// Type-safe access to data
 export const courses: Course[] = coursesData as Course[]
+export const plans = plansData
 
 /**
  * Get all courses
@@ -56,4 +59,12 @@ export const searchCourses = (query: string): Course[] => {
     course.shortDescription.toLowerCase().includes(searchTerm) ||
     course.tags.some(tag => tag.toLowerCase().includes(searchTerm))
   )
+}
+
+/**
+ * Get the Pro plan data
+ * @returns Pro plan object
+ */
+export const getProPlan = (): ProPlan => {
+  return plans.proPlan as ProPlan
 }

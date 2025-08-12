@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { LogIn, Menu, X, BookOpen } from 'lucide-react'
+import { LogIn, Menu, X, BookOpen, Crown } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '../ui/Button'
@@ -30,11 +30,6 @@ export const Navbar = () => {
         }
     }, [isMenuOpen])
 
-    const toggleMenu = (e: React.MouseEvent) => {
-        e.stopPropagation()
-        setIsMenuOpen(!isMenuOpen)
-    }
-
     const closeAll = () => {
         setIsMenuOpen(false)
     }
@@ -52,20 +47,18 @@ export const Navbar = () => {
                 <nav className="flex items-center justify-between h-16 lg:h-20 px-4 lg:px-6 max-w-7xl mx-auto">
 
                     {/* Mobile Menu Toggle - Left */}
-                    <button
-                        onClick={toggleMenu}
-                        className="lg:hidden p-2 -ml-2 rounded-xl text-white/90 hover:text-white hover:bg-white/10 transition-all duration-200"
-                        aria-label="Toggle navigation menu"
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        className="lg:hidden p-2 -ml-2 text-white/90 hover:text-white hover:bg-white/10"
+                        icon={isMenuOpen ? X : Menu}
                     >
-                        {isMenuOpen ? (
-                            <X className="w-5 h-5 transition-transform duration-200" />
-                        ) : (
-                            <Menu className="w-5 h-5 transition-transform duration-200" />
-                        )}
-                    </button>
+                    </Button>
 
-                    {/* Desktop Logo - Left */}
-                    <div className="hidden lg:flex items-center">
+                    {/* Logo + Navigation - Desktop Left */}
+                    <div className="hidden lg:flex items-center gap-8">
+                        {/* Logo */}
                         <Link
                             href="/"
                             className="flex items-center group"
@@ -82,6 +75,26 @@ export const Navbar = () => {
                                 />
                             </div>
                         </Link>
+
+                        {/* Navigation Items */}
+                        <div className="flex items-center space-x-2">
+                            <Link
+                                href="/courses"
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl text-white/90 hover:text-white hover:bg-white/10 transition-all duration-200 font-medium text-sm"
+                            >
+                                <BookOpen className="w-4 h-4" />
+                                الدورات
+                            </Link>
+                            
+                            {/* Pro Plan - Standout */}
+                            <Link
+                                href="/pro"
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 hover:border-primary/50 transition-all duration-200 font-semibold text-sm shadow-lg hover:shadow-xl"
+                            >
+                                <Crown className="w-4 h-4" />
+                                خطة الاحتراف
+                            </Link>
+                        </div>
                     </div>
 
                     {/* Empty Space - Mobile Center */}
@@ -105,19 +118,6 @@ export const Navbar = () => {
                                 />
                             </div>
                         </Link>
-                    </div>
-
-                    {/* Desktop Navigation - Absolute Center */}
-                    <div className="hidden lg:flex items-center absolute left-1/2 transform -translate-x-1/2">
-                        <div className="flex items-center space-x-1">
-                            <Link
-                                href="/courses"
-                                className="flex items-center gap-2 px-4 py-2 rounded-xl text-white/90 hover:text-white hover:bg-white/10 transition-all duration-200 font-medium text-sm"
-                            >
-                                <BookOpen className="w-4 h-4" />
-                                الدورات
-                            </Link>
-                        </div>
                     </div>
 
                     {/* Auth Buttons - Desktop Right */}
@@ -150,6 +150,16 @@ export const Navbar = () => {
                         >
                             <BookOpen className="w-5 h-5" />
                             الدورات
+                        </Link>
+                        
+                        {/* Pro Plan - Mobile */}
+                        <Link
+                            href="/pro"
+                            onClick={closeAll}
+                            className="flex items-center gap-3 p-4 rounded-xl bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 hover:border-primary/50 transition-all duration-200 font-semibold"
+                        >
+                            <Crown className="w-5 h-5" />
+                            خطة الاحتراف
                         </Link>
 
                         {/* Mobile Auth Button */}

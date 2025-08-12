@@ -2,6 +2,7 @@
 
 import { Lock, Check, Clock, Circle } from 'lucide-react'
 import { Course, Lesson, formatDuration } from '@/types/course'
+import { Button } from '../ui/Button'
 
 interface LessonNavigationProps {
   course: Course
@@ -35,16 +36,17 @@ export const LessonNavigation = ({
             const isCompleted = lesson.isCompleted || false
 
             return (
-              <button
+              <Button
                 key={lesson.id}
+                variant="ghost"
                 onClick={() => onLessonSelect(lesson)}
-                className={`w-full text-right p-3 rounded-lg transition-all duration-200 hover:bg-muted/50 ${
+                className={`w-full text-right p-3 h-auto justify-start ${
                   isActive 
-                    ? 'bg-primary/10 border border-primary/20' 
+                    ? 'bg-primary/10 border border-primary/20 hover:bg-primary/15' 
                     : 'hover:bg-muted/30'
                 }`}
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-3 w-full">
                   {/* Lesson Status Icon */}
                   <div className="flex-shrink-0 mt-0.5">
                     {isLocked ? (
@@ -63,7 +65,7 @@ export const LessonNavigation = ({
                   </div>
 
                   {/* Lesson Info */}
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 text-left">
                     <div className={`text-sm font-medium mb-1 ${
                       isActive ? 'text-primary' : 'text-foreground'
                     }`}>
@@ -76,7 +78,7 @@ export const LessonNavigation = ({
                     </div>
                   </div>
                 </div>
-              </button>
+              </Button>
             )
           })}
         </div>
