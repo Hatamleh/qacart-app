@@ -57,7 +57,7 @@ export const CoursePlayer = ({ course, currentLesson: initialLesson }: CoursePla
   // Simple mark as complete handler (just for UI demo)
   const handleMarkComplete = () => {
     console.log('Lesson marked as complete:', currentLesson.title)
-    // TODO: Implement actual completion logic later
+    // Note: Completion logic will be implemented with backend integration
   }
 
   return (

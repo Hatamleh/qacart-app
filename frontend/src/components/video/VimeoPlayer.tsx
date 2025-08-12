@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Play, Loader2 } from 'lucide-react'
+import Image from 'next/image'
 
 interface VimeoPlayerProps {
   vimeoId: string
@@ -47,9 +48,11 @@ export const VimeoPlayer = ({
       {!showPlayer && (
         <div className="relative">
           {thumbnail ? (
-            <img 
+            <Image 
               src={thumbnail}
-              alt={title}
+              alt={title || 'Video thumbnail'}
+              width={800}
+              height={600}
               className="w-full h-96 md:h-[500px] lg:h-[600px] object-cover"
             />
           ) : (

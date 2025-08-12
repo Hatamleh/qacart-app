@@ -10,9 +10,8 @@ interface LessonVideoAreaProps {
   course: Course
 }
 
-export const LessonVideoArea = ({ 
-  lesson, 
-  course
+export const LessonVideoArea = ({
+  lesson,
 }: LessonVideoAreaProps) => {
   return (
     <div className="relative bg-background p-6">

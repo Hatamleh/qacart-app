@@ -28,7 +28,10 @@ export const AccessGate = ({ lesson, userHasPaidAccess = false }: AccessGateProp
       </div>
 
       {/* Access Gate Content */}
-      <Card className="mx-6 p-8 max-w-md text-center shadow-xl border-2 border-primary/20 bg-background/95 backdrop-blur-sm">
+      <Card 
+        title="هذا الدرس مدفوع"
+        className="mx-6 p-8 max-w-md text-center shadow-xl border-2 border-primary/20 bg-background/95 backdrop-blur-sm"
+      >
         {/* Lock Icon */}
         <div className="flex justify-center mb-6">
           <div className="relative">
@@ -41,10 +44,7 @@ export const AccessGate = ({ lesson, userHasPaidAccess = false }: AccessGateProp
           </div>
         </div>
 
-        {/* Title */}
-        <h3 className="text-2xl font-bold mb-3 text-foreground">
-          هذا الدرس مدفوع
-        </h3>
+        {/* Title is now handled by Card component */}
 
         {/* Description */}
         <p className="text-muted-foreground mb-6 leading-relaxed">
