@@ -3,22 +3,22 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { ProHero } from '@/components/pro/ProHero'
 import { ProSubscriptionCard } from '@/components/pro/ProSubscriptionCard'
-import { getProPlan } from '@/data'
+import { getPremiumPlan } from '@/data'
 
 export const metadata: Metadata = {
-  title: 'خطة الاحتراف - QAcart',
-  description: 'انضم إلى خطة الاحتراف واحصل على وصول كامل لجميع الدورات المتقدمة والمميزات الحصرية',
-  keywords: ['اشتراك', 'خطة الاحتراف', 'دورات متقدمة', 'QA', 'Testing'],
+  title: 'خطة بريميوم - QAcart',
+  description: 'انضم إلى خطة بريميوم واحصل على وصول كامل لجميع الدورات المتقدمة والمميزات الحصرية',
+  keywords: ['اشتراك', 'خطة بريميوم', 'دورات متقدمة', 'QA', 'Testing'],
   openGraph: {
-    title: 'خطة الاحتراف - QAcart',
-    description: 'انضم إلى خطة الاحتراف واحصل على وصول كامل لجميع الدورات المتقدمة',
+    title: 'خطة بريميوم - QAcart',
+    description: 'انضم إلى خطة بريميوم واحصل على وصول كامل لجميع الدورات المتقدمة',
     type: 'website',
     locale: 'ar_SA',
   },
 }
 
 export default function ProPage() {
-  const proPlan = getProPlan()
+  const premiumPlan = getPremiumPlan()
 
   return (
     <div className="min-h-screen" dir="rtl">
@@ -32,7 +32,7 @@ export default function ProPage() {
       <section className="pb-20 bg-muted/10">
         <div className="container mx-auto px-6">
           <div className="max-w-lg mx-auto">
-            <ProSubscriptionCard plan={proPlan} />
+            <ProSubscriptionCard plan={premiumPlan} />
           </div>
         </div>
       </section>

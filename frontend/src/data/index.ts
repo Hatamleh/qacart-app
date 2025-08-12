@@ -1,7 +1,10 @@
 import { Course } from '@/types/course'
 import { ProPlan } from '@/types/plan'
+import { UserData } from '@/types/profile'
 import coursesData from './courses.json'
 import plansData from './plans.json'
+import userData from './user.json'
+import faqData from './faq.json'
 
 /**
  * Static data for frontend design purposes
@@ -62,9 +65,25 @@ export const searchCourses = (query: string): Course[] => {
 }
 
 /**
- * Get the Pro plan data
- * @returns Pro plan object
+ * Get the Premium plan data
+ * @returns Premium plan object
  */
-export const getProPlan = (): ProPlan => {
-  return plans.proPlan as ProPlan
+export const getPremiumPlan = (): ProPlan => {
+  return plans.premiumPlan as ProPlan
+}
+
+// =============================================================================
+// Profile Functions
+// =============================================================================
+
+export const getUserData = (): UserData => {
+  return userData as UserData
+}
+
+export const getFAQQuestions = () => {
+  return faqData.faqQuestions
+}
+
+export const getCurrentUser = () => {
+  return userData.user
 }

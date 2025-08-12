@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { LogIn, Menu, X, BookOpen, Crown } from 'lucide-react'
+import { LogIn, Menu, X, BookOpen, Crown, User } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '../ui/Button'
@@ -86,13 +86,13 @@ export const Navbar = () => {
                                 الدورات
                             </Link>
                             
-                            {/* Pro Plan - Standout */}
+                            {/* Premium Plan - Standout */}
                             <Link
                                 href="/pro"
                                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 hover:border-primary/50 transition-all duration-200 font-semibold text-sm shadow-lg hover:shadow-xl"
                             >
                                 <Crown className="w-4 h-4" />
-                                خطة الاحتراف
+                                بريميوم
                             </Link>
                         </div>
                     </div>
@@ -122,6 +122,17 @@ export const Navbar = () => {
 
                     {/* Auth Buttons - Desktop Right */}
                     <div className="hidden lg:flex items-center gap-3">
+                        <Link href="/profile">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                icon={User}
+                                iconPosition="left"
+                            >
+                                الملف الشخصي
+                            </Button>
+                        </Link>
+                        
                         <Link href="/auth">
                             <Button
                                 variant="primary"
@@ -154,18 +165,30 @@ export const Navbar = () => {
                             الدورات
                         </Link>
                         
-                        {/* Pro Plan - Mobile */}
+                        {/* Premium Plan - Mobile */}
                         <Link
                             href="/pro"
                             onClick={closeAll}
                             className="flex items-center gap-3 p-4 rounded-xl bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 hover:border-primary/50 transition-all duration-200 font-semibold"
                         >
                             <Crown className="w-5 h-5" />
-                            خطة الاحتراف
+                            بريميوم
                         </Link>
 
-                        {/* Mobile Auth Button */}
+                        {/* Mobile Auth Buttons */}
                         <div className="pt-6 mt-6 border-t border-border/50 space-y-3">
+                            <Link href="/profile" onClick={closeAll}>
+                                <Button
+                                    variant="outline"
+                                    size="md"
+                                    icon={User}
+                                    iconPosition="left"
+                                    className="w-full"
+                                >
+                                    الملف الشخصي
+                                </Button>
+                            </Link>
+                            
                             <Link href="/auth" onClick={closeAll}>
                                 <Button
                                     variant="primary"
