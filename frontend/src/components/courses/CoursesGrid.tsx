@@ -2,7 +2,7 @@ import { Clock, Users } from 'lucide-react'
 import Link from 'next/link'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
-import { Course, formatDuration } from '@/types/course'
+import { Course, formatDuration } from '@/types/course.type'
 
 interface CoursesGridProps {
     courses: Course[]
@@ -68,9 +68,9 @@ export const CoursesGrid = ({ courses }: CoursesGridProps) => {
                 {courses.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {courses.map((course) => (
-                            <CourseCard 
-                                key={course.id} 
-                                course={course} 
+                            <CourseCard
+                                key={course.id}
+                                course={course}
                             />
                         ))}
                     </div>
