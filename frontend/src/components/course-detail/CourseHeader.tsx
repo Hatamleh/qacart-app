@@ -4,7 +4,13 @@ import Link from 'next/link'
 import { Button } from '../ui/Button'
 import { Badge } from '../ui/Badge'
 import { VimeoPlayer } from '../video/VimeoPlayer'
-import { Course } from '@/types/course'
+import type { Course } from '@/types'
+
+// Hardcoded instructor data (since it's always Hatem)
+const INSTRUCTOR = {
+    name: "حاتم حتامله",
+    image: "/instructor-hatem.jpg" // We'll need to add this image
+}
 
 interface CourseHeaderProps {
     course: Course
@@ -67,15 +73,15 @@ export const CourseHeader = ({ course }: CourseHeaderProps) => {
                 <div className="text-center">
                     <div className="flex items-center justify-center gap-3">
                         <Image 
-                            src={course.instructor.image}
-                            alt={course.instructor.name}
+                            src={INSTRUCTOR.image}
+                            alt={INSTRUCTOR.name}
                             width={32}
                             height={32}
                             className="w-8 h-8 rounded-full object-cover"
                         />
                         <div className="text-sm text-muted-foreground">
                             <span>تدريس بواسطة </span>
-                            <span className="font-medium text-foreground">{course.instructor.name}</span>
+                            <span className="font-medium text-foreground">{INSTRUCTOR.name}</span>
                         </div>
                     </div>
                 </div>

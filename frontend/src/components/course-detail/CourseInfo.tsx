@@ -1,5 +1,5 @@
 import { CheckCircle, Target, Sparkles, UserPlus } from 'lucide-react'
-import { Course } from '@/types/course'
+import type { Course } from '@/types'
 
 interface CourseInfoProps {
     course: Course
