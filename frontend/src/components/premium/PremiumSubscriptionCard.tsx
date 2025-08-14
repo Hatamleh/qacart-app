@@ -1,49 +1,24 @@
-'use client'
-
-import { useState } from 'react'
-import { Check, Gift, MessageCircle, Code, Unlock, RefreshCw } from 'lucide-react'
+import { Check, RefreshCw } from 'lucide-react'
 import { Button } from '../ui/Button'
-import { ProPlan, PricingOption, PlanFeature } from '@/types/plan'
+import { Plan, PricingOption } from '@/types'
 
 interface PremiumSubscriptionCardProps {
-  plan: ProPlan
+  plan: Plan
 }
 
 export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) => {
-  const [selectedOption, setSelectedOption] = useState(plan.pricingOptions[0].id) // Default to monthly
-
-  const selectedPricing = plan.pricingOptions.find((option: PricingOption) => option.id === selectedOption)
-
-  const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'unlock':
-        return <Unlock className="w-5 h-5 text-primary/80" />
-      case 'message':
-        return <MessageCircle className="w-5 h-5 text-primary/80" />
-      case 'code':
-        return <Code className="w-5 h-5 text-primary/80" />
-      case 'gift':
-        return <Gift className="w-5 h-5 text-primary/80" />
-      default:
-        return <Check className="w-5 h-5 text-primary/80" />
-    }
-  }
-
-  const handleSubscribe = () => {
-    // TODO: Implement Stripe integration
-    console.log('Subscribing to:', selectedOption, selectedPricing)
-    alert(`سيتم إضافة تكامل Stripe قريباً!\nالخطة المختارة: ${selectedPricing?.duration}\nالسعر: ${selectedPricing?.currency}${selectedPricing?.price}`)
-  }
+  // Use the first pricing option by default for a design-first approach
+  const selectedPricing = plan.pricingOptions[0]
 
   return (
     <div className="max-w-lg mx-auto">
       {/* Modern Glass Card */}
       <div className="relative bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-xl border border-primary/10 rounded-3xl overflow-hidden shadow-[0_20px_70px_-10px_rgba(59,130,246,0.15)] hover:shadow-[0_25px_80px_-5px_rgba(59,130,246,0.2)] transition-all duration-500">
-        
+
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] via-transparent to-primary/[0.04] pointer-events-none" />
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-        
+
         {/* Card Content */}
         <div className="relative p-8 lg:p-10">
 
@@ -64,24 +39,23 @@ export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) 
             <p className="text-sm text-muted-foreground/70">يتم الدفع {selectedPricing?.duration === 'شهرياً' ? 'كل شهر' : selectedPricing?.duration === 'ربع سنوي' ? 'كل 3 أشهر' : 'مرة واحدة في السنة'}</p>
           </div>
 
-          {/* Modern Pricing Tabs */}
+          {/* Pricing Options Display */}
           <div className="mb-10">
             <div className="grid grid-cols-3 gap-2 p-1.5 bg-muted/20 rounded-2xl border border-muted/30">
-              {plan.pricingOptions.map((option: PricingOption) => (
-                <button
+              {plan.pricingOptions.map((option: PricingOption, index: number) => (
+                <div
                   key={option.id}
-                  onClick={() => setSelectedOption(option.id)}
                   className={`relative py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 ${
-                    selectedOption === option.id 
+                    index === 0 
                       ? 'bg-primary text-background shadow-lg shadow-primary/25 scale-[1.02]' 
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                      : 'text-muted-foreground'
                   }`}
                 >
                   {option.duration}
-                  {selectedOption === option.id && (
+                  {index === 0 && (
                     <div className="absolute inset-0 bg-primary/10 rounded-xl blur-xl" />
                   )}
-                </button>
+                </div>
               ))}
             </div>
           </div>
@@ -89,13 +63,13 @@ export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) 
           {/* Features Grid */}
           <div className="mb-10">
             <div className="space-y-5">
-              {plan.features.map((feature: PlanFeature) => (
-                <div key={feature.id} className="group flex items-start gap-2 p-3 rounded-xl hover:bg-primary/[0.02] transition-colors">
+              {plan.features.map((feature: string, index: number) => (
+                <div key={index} className="group flex items-start gap-2 p-3 rounded-xl hover:bg-primary/[0.02] transition-colors">
                   <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-primary/15 to-primary/25 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    {getIcon(feature.icon)}
+                    <Check className="w-5 h-5 text-primary/80" />
                   </div>
                   <div className="flex-1 pt-1">
-                    <span className="text-muted-foreground/70 leading-relaxed font-medium">{feature.title}</span>
+                    <span className="text-muted-foreground/70 leading-relaxed font-medium">{feature}</span>
                   </div>
                 </div>
               ))}
@@ -108,16 +82,15 @@ export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) 
               variant="primary"
               size="lg"
               className="w-full py-4 text-lg font-semibold rounded-2xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] transition-all duration-300"
-              onClick={handleSubscribe}
             >
-              {plan.cta.buttonText}
+              اشترك الآن
             </Button>
           </div>
 
           {/* Guarantee */}
           <div className="text-center">
-            <a 
-              href="/refund-policy" 
+            <a
+              href="/refund-policy"
               className="inline-flex items-center gap-2 text-sm text-muted-foreground/70 hover:text-primary transition-colors group"
             >
               <RefreshCw className="w-4 h-4 group-hover:rotate-45 transition-transform duration-300" />
