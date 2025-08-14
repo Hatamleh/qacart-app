@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeRaw from 'rehype-raw'
-import { Lesson } from '@/types/course'
+import { Lesson } from '@/types'
 
 interface LessonArticleProps {
   lesson: Lesson
@@ -17,11 +17,11 @@ export const LessonArticle = ({ lesson, noTopPadding = false }: LessonArticlePro
   const addCopyButtons = () => {
     const codeBlocks = document.querySelectorAll('.markdown-content pre')
     codeBlocks.forEach((block) => {
-      // Remove existing copy button if any
+      // Remove the existing copy button if any
       const existingButton = block.querySelector('.copy-button')
       if (existingButton) existingButton.remove()
-      
-      // Create copy button
+
+      // Create a copy button
       const copyButton = document.createElement('button')
       copyButton.className = 'copy-button'
       copyButton.innerHTML = `
@@ -30,7 +30,7 @@ export const LessonArticle = ({ lesson, noTopPadding = false }: LessonArticlePro
           <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
         </svg>
       `
-      
+
       const handleCopy = async () => {
         const code = block.querySelector('code')?.textContent || ''
         try {
@@ -54,7 +54,7 @@ export const LessonArticle = ({ lesson, noTopPadding = false }: LessonArticlePro
           console.error('Failed to copy:', err)
         }
       }
-      
+
       copyButton.addEventListener('click', handleCopy)
       block.appendChild(copyButton)
     })
@@ -65,7 +65,7 @@ export const LessonArticle = ({ lesson, noTopPadding = false }: LessonArticlePro
     const timer = setTimeout(() => {
       addCopyButtons()
     }, 100) // Small delay to ensure DOM is ready
-    
+
     return () => clearTimeout(timer)
   }, [lesson.articleContent])
 

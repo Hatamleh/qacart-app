@@ -14,7 +14,7 @@ interface CoursePageProps {
 
 export async function generateMetadata({ params }: CoursePageProps): Promise<Metadata> {
   const { courseId } = await params
-  const course = coursesData.find(c => c.id === parseInt(courseId)) || coursesData[0]
+  const course = coursesData.find(c => c.id === courseId) || coursesData[0]
   
   return {
     title: `${course.title} - QAcart`,
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: CoursePageProps): Promise<Met
 
 export default async function CourseDetailPage({ params }: CoursePageProps) {
   const { courseId } = await params
-  const course = coursesData.find(c => c.id === parseInt(courseId)) || coursesData[0]
+  const course = coursesData.find(c => c.id === courseId) || coursesData[0]
 
   return (
     <div className="min-h-screen" dir="rtl">

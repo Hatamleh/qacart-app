@@ -1,20 +1,26 @@
 'use client'
 
 import { Lock, Check, Clock, Circle } from 'lucide-react'
-import { Course, Lesson, formatDuration } from '@/types/course'
+import { Course, Lesson } from '@/types'
 import { Button } from '../ui/Button'
+import { currentUserData, userProgressData } from '@/data'
 
 interface LessonNavigationProps {
   course: Course
   currentLesson: Lesson
-  onLessonSelect: (lesson: Lesson) => void
+  onLessonSelect?: (lesson: Lesson) => void
 }
 
-export const LessonNavigation = ({ 
-  course, 
-  currentLesson, 
+export const LessonNavigation = ({
+  course,
+  currentLesson,
   onLessonSelect
 }: LessonNavigationProps) => {
+  // Get current user's progress for this course
+  const userProgress = userProgressData.find(
+    p => p.userId === currentUserData.id && p.courseId === course.id
+  )
+
   return (
     <div className="min-h-screen bg-primary/10 flex flex-col mr-2 rounded-lg"> {/* Added blue background with opacity */}
       {/* Header */}
@@ -23,7 +29,7 @@ export const LessonNavigation = ({
           <h3 className="font-semibold text-lg">محتوى الدورة</h3>
         </div>
         <div className="text-sm text-muted-foreground">
-          {course.lessons.length} درس • {formatDuration(course.durationInMinutes)}
+          {course.lessons.length} درس • {course.durationInMinutes} دقيقة
         </div>
       </div>
 
@@ -33,13 +39,13 @@ export const LessonNavigation = ({
           {course.lessons.map((lesson) => {
             const isActive = lesson.id === currentLesson.id
             const isLocked = !lesson.isFree
-            const isCompleted = lesson.isCompleted || false
+            const isCompleted = userProgress ? userProgress.completedLessons.includes(lesson.id) : false
 
             return (
               <Button
                 key={lesson.id}
                 variant="ghost"
-                onClick={() => onLessonSelect(lesson)}
+                onClick={() => onLessonSelect?.(lesson)}
                 className={`w-full text-right p-3 h-auto justify-start ${
                   isActive 
                     ? 'bg-primary/10 hover:bg-primary/15' 
@@ -71,10 +77,10 @@ export const LessonNavigation = ({
                     }`}>
                       {lesson.lessonOrder}. {lesson.title}
                     </div>
-                    
+
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <Clock className="w-3 h-3" />
-                      <span>{formatDuration(lesson.durationInMinutes)}</span>
+                      <span>{lesson.durationInMinutes} دقيقة</span>
                     </div>
                   </div>
                 </div>

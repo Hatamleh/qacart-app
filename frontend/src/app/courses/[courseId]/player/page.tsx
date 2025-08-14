@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { Footer } from '@/components/layout/Footer'
 import { CoursePlayer } from '@/components/course-player/CoursePlayer'
-import { getCourseById } from '@/data'
+import { coursesData } from '@/data'
 
 interface CoursePlayerPageProps {
   params: Promise<{
@@ -14,8 +14,8 @@ interface CoursePlayerPageProps {
 
 export async function generateMetadata({ params }: CoursePlayerPageProps): Promise<Metadata> {
   const { courseId } = await params
-  const course = getCourseById(courseId)
-  
+  const course = coursesData.find(c => c.id === courseId) || coursesData[0]
+
   return {
     title: `تشغيل ${course.title} - QAcart`,
     description: `تعلم ${course.title} خطوة بخطوة`,
@@ -32,16 +32,15 @@ export async function generateMetadata({ params }: CoursePlayerPageProps): Promi
 export default async function CoursePlayerPage({ params, searchParams }: CoursePlayerPageProps) {
   const { courseId } = await params
   const { lesson } = await searchParams
-  
-  const course = getCourseById(courseId)
-  const currentLessonId = lesson ? parseInt(lesson) : course.lessons[0].id
+
+  const course = coursesData.find(c => c.id === courseId) || coursesData[0]
+  const currentLessonId = lesson || course.lessons[0].id
   const currentLesson = course.lessons.find(l => l.id === currentLessonId) || course.lessons[0]
 
   return (
     <div className="min-h-screen bg-background flex flex-col" dir="rtl">
-      {/* Course Player - Full screen immersive experience */}
       <div className="flex-1">
-        <CoursePlayer 
+        <CoursePlayer
           course={course}
           currentLesson={currentLesson}
         />

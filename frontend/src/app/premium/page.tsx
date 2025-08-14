@@ -1,9 +1,9 @@
-import { Metadata } from 'next'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
-import { PremiumHero } from '@/components/premium/PremiumHero'
-import { PremiumSubscriptionCard } from '@/components/premium/PremiumSubscriptionCard'
-import { getPremiumPlan } from '@/data'
+import {Metadata} from 'next'
+import {Navbar} from '@/components/layout/Navbar'
+import {Footer} from '@/components/layout/Footer'
+import {PremiumHero} from '@/components/premium/PremiumHero'
+import {PremiumSubscriptionCard} from '@/components/premium/PremiumSubscriptionCard'
+import {planData} from '@/data'
 
 export const metadata: Metadata = {
   title: 'خطة بريميوم - QAcart',
@@ -18,9 +18,7 @@ export const metadata: Metadata = {
 }
 
 export default function PremiumPage() {
-  const premiumPlan = getPremiumPlan()
-
-  return (
+    return (
     <div className="min-h-screen" dir="rtl">
       {/* Navigation */}
       <Navbar />
@@ -32,7 +30,7 @@ export default function PremiumPage() {
       <section className="pb-20 bg-muted/10">
         <div className="container mx-auto px-6">
           <div className="max-w-lg mx-auto">
-            <PremiumSubscriptionCard plan={premiumPlan} />
+            <PremiumSubscriptionCard plan={planData} />
           </div>
         </div>
       </section>

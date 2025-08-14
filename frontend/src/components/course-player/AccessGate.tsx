@@ -3,7 +3,7 @@
 import { Lock, Crown, Star } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
-import { Lesson } from '@/types/course'
+import { Lesson } from '@/types'
 
 interface AccessGateProps {
   lesson: Lesson
@@ -11,7 +11,7 @@ interface AccessGateProps {
 }
 
 export const AccessGate = ({ lesson, userHasPaidAccess = false }: AccessGateProps) => {
-  // If lesson is free or user has paid access, don't show gate
+  // If a lesson is free or a user has paid access, don't show a gate
   if (lesson.isFree || userHasPaidAccess) {
     return null
   }
@@ -28,7 +28,7 @@ export const AccessGate = ({ lesson, userHasPaidAccess = false }: AccessGateProp
       </div>
 
       {/* Access Gate Content */}
-      <Card 
+      <Card
         title="هذا الدرس مدفوع"
         className="mx-6 p-8 max-w-md text-center shadow-xl border-2 border-primary/20 bg-background/95 backdrop-blur-sm"
       >
@@ -44,7 +44,7 @@ export const AccessGate = ({ lesson, userHasPaidAccess = false }: AccessGateProp
           </div>
         </div>
 
-        {/* Title is now handled by Card component */}
+        {/* Title is now handled by a Card component */}
 
         {/* Description */}
         <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -69,19 +69,19 @@ export const AccessGate = ({ lesson, userHasPaidAccess = false }: AccessGateProp
 
         {/* Action Buttons */}
         <div className="space-y-3">
-          <Button 
-            variant="primary" 
-            size="lg" 
+          <Button
+            variant="primary"
+            size="lg"
             className="w-full"
             icon={Crown}
             iconPosition="right"
           >
             اشترك في PRO
           </Button>
-          
-          <Button 
-            variant="outline" 
-            size="sm" 
+
+          <Button
+            variant="outline"
+            size="sm"
             className="w-full text-sm"
           >
             شراء هذه الدورة فقط

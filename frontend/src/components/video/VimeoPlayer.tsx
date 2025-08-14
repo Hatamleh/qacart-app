@@ -13,27 +13,17 @@ interface VimeoPlayerProps {
   thumbnail?: string
 }
 
-export const VimeoPlayer = ({ 
-  vimeoId, 
-  title = 'Video', 
-  className = '', 
-  thumbnail 
+export const VimeoPlayer = ({
+  vimeoId,
+  title = 'Video',
+  className = '',
+  thumbnail
 }: VimeoPlayerProps) => {
   const [showPlayer, setShowPlayer] = useState(true) // Always show player
   const [isLoading, setIsLoading] = useState(false)
 
-  // Extract Vimeo ID from URL if full URL is provided
-  const extractVimeoId = (url: string): string => {
-    if (url.includes('vimeo.com/')) {
-      return url.split('/').pop() || url
-    }
-    return url
-  }
-
-  const videoId = extractVimeoId(vimeoId)
-
   // Clean Vimeo embed URL with your brand color
-  const vimeoEmbedUrl = `https://player.vimeo.com/video/${videoId}?badge=0&autopause=0&title=0&byline=0&portrait=0&color=5D5FA3&responsive=1`
+  const vimeoEmbedUrl = `https://player.vimeo.com/video/${vimeoId}?badge=0&autopause=0&title=0&byline=0&portrait=0&color=5D5FA3&responsive=1`
 
   const handlePlayClick = () => {
     setShowPlayer(true)
@@ -48,7 +38,7 @@ export const VimeoPlayer = ({
       {!showPlayer && (
         <div className="relative">
           {thumbnail ? (
-            <Image 
+            <Image
               src={thumbnail}
               alt={title || 'Video thumbnail'}
               width={800}
@@ -60,7 +50,7 @@ export const VimeoPlayer = ({
               <Play className="w-16 h-16 text-muted-foreground" />
             </div>
           )}
-          
+
           {/* Play Button Overlay */}
           <div className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors cursor-pointer">
             <Button
@@ -92,7 +82,6 @@ export const VimeoPlayer = ({
             src={vimeoEmbedUrl}
             className="w-full h-96 md:h-[500px] lg:h-[600px]"
             style={{ minHeight: '400px' }}
-            frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
             allowFullScreen
             title={title}

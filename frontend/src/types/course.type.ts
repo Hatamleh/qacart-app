@@ -2,7 +2,7 @@
 import { Lesson } from './lesson.type'
 
 export interface Course {
-  id: number
+  id: string
   title: string
   shortDescription: string
   promoVideoUrl: string

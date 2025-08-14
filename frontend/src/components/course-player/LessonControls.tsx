@@ -2,15 +2,17 @@
 
 import { ChevronLeft, ChevronRight, Check, Star } from 'lucide-react'
 import { Button } from '../ui/Button'
-import { Lesson } from '@/types/course'
+import { Lesson } from '@/types'
+import { currentUserData, userProgressData } from '@/data'
 
 interface LessonControlsProps {
   currentLesson: Lesson
   previousLesson: Lesson | null
   nextLesson: Lesson | null
-  onPrevious: () => void
-  onNext: () => void
-  onMarkComplete: () => void
+  courseId?: string
+  onPrevious?: () => void
+  onNext?: () => void
+  onMarkComplete?: () => void
   afterArticle?: boolean
 }
 
@@ -18,11 +20,18 @@ export const LessonControls = ({
   currentLesson,
   previousLesson,
   nextLesson,
+  courseId,
   onPrevious,
   onNext,
   onMarkComplete,
   afterArticle = false
 }: LessonControlsProps) => {
+  // Check if the current lesson is completed
+  const userProgress = userProgressData.find(
+    p => p.userId === currentUserData.id && p.courseId === courseId
+  )
+  const isLessonCompleted = userProgress ? userProgress.completedLessons.includes(currentLesson.id) : false
+
   return (
     <div className={`p-6 mx-8 rounded-lg border border-primary/10 ${afterArticle ? 'mb-24' : ''}`} style={{ backgroundColor: '#152038' }}>
       <div className="flex items-center justify-between max-w-2xl mx-auto">
@@ -30,7 +39,7 @@ export const LessonControls = ({
         <div className="flex-1 flex justify-start">
           <Button
             variant="outline"
-            onClick={previousLesson ? onPrevious : undefined}
+            onClick={previousLesson ? () => onPrevious?.() : undefined}
             icon={ChevronRight}
             iconPosition="right"
             className="text-sm"
@@ -43,13 +52,13 @@ export const LessonControls = ({
         {/* Mark Complete Button - Center */}
         <div className="flex-1 flex justify-center">
           <Button
-            variant={currentLesson.isCompleted ? "secondary" : "primary"}
-            onClick={onMarkComplete}
-            icon={currentLesson.isCompleted ? Check : Star}
+            variant={isLessonCompleted ? "secondary" : "primary"}
+            onClick={() => onMarkComplete?.()}
+            icon={isLessonCompleted ? Check : Star}
             iconPosition="left"
             className="text-sm px-6"
           >
-            {currentLesson.isCompleted ? 'مكتمل' : 'أكمل الدرس الآن'}
+            {isLessonCompleted ? 'مكتمل' : 'أكمل الدرس الآن'}
           </Button>
         </div>
 
@@ -57,7 +66,7 @@ export const LessonControls = ({
         <div className="flex-1 flex justify-end">
           <Button
             variant="outline"
-            onClick={nextLesson ? onNext : undefined}
+            onClick={nextLesson ? () => onNext?.() : undefined}
             icon={ChevronLeft}
             iconPosition="left"
             className="text-sm"

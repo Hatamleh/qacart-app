@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Plus, GripVertical, Trash2, ChevronDown, ChevronUp, Video, FileText, Save } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { Course, Lesson } from '@/types/course'
+import { Course, Lesson } from '@/types'
 
 interface AdminLessonManagerProps {
   course: Course
@@ -33,7 +33,7 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
       title: 'درس جديد',
       durationInMinutes: 10,
       isFree: false,
-      videoUrl: '',
+      vimeoId: '',
       articleContent: ''
     }
     
@@ -187,7 +187,7 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
                       {lesson.title}
                     </h3>
                     <div className="flex items-center gap-1">
-                      {lesson.videoUrl && (
+                      {lesson.vimeoId && (
                         <Video className="w-4 h-4 text-primary" />
                       )}
                       {lesson.articleContent && (
@@ -254,16 +254,16 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
                     </div>
                   </div>
 
-                  {/* Video URL */}
+                  {/* Vimeo ID */}
                   <div>
                     <label className="block text-sm font-medium text-muted-foreground mb-2">
-                      رابط الفيديو (اختياري)
+                      معرف فيديو Vimeo (اختياري)
                     </label>
                     <input
-                      type="url"
-                      value={lesson.videoUrl || ''}
-                      onChange={(e) => updateLesson(lesson.id, 'videoUrl', e.target.value)}
-                      placeholder="https://example.com/video.mp4"
+                      type="text"
+                      value={lesson.vimeoId || ''}
+                      onChange={(e) => updateLesson(lesson.id, 'vimeoId', e.target.value)}
+                      placeholder="290256877"
                       className="w-full px-3 py-2 rounded-lg border border-border bg-background/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/25"
                     />
                   </div>

@@ -4,6 +4,6 @@ export interface Lesson {
   title: string
   durationInMinutes: number
   isFree: boolean
-  videoUrl?: string
+  vimeoId?: string
   articleContent?: string
 }

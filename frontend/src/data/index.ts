@@ -2,6 +2,7 @@ export { coursesData } from './courses.data'
 export { planData } from './plan.data'
 export { usersData, currentUserData } from './users.data'
 export { faqData } from './faq.data'
+export { userProgressData } from './user-progress.data'
 
 // Export types for convenience
 export type { Course } from '@/types/course.type'
