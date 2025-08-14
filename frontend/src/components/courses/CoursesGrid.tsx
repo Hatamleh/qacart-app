@@ -1,56 +1,8 @@
-import { Clock, Users } from 'lucide-react'
-import Link from 'next/link'
-import { Badge } from '../ui/Badge'
-import { Button } from '../ui/Button'
-import { Course, formatDuration } from '@/types/course.type'
+import type { Course } from '@/types'
+import { CourseCard } from './CourseCard'
 
 interface CoursesGridProps {
     courses: Course[]
-}
-
-interface CourseCardProps {
-    course: Course
-}
-
-const CourseCard = ({ course }: CourseCardProps) => {
-    // Determine badge variant based on course type
-    const getBadgeVariant = (type: string) => {
-        return type === 'automation' ? 'primary' : 'success'
-    }
-
-    // Format type for display
-    const getTypeLabel = (type: string) => {
-        return type === 'automation' ? 'أتمتة' : 'يدوي'
-    }
-
-    return (
-        <div className="glass rounded-lg p-6 hover:border-primary/50 transition-colors">
-            <div className="mb-4">
-                <Badge variant={getBadgeVariant(course.type)} className="text-xs mb-3">
-                    {getTypeLabel(course.type)}
-                </Badge>
-                <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
-                <p className="text-muted-foreground text-sm">
-                    {course.shortDescription}
-                </p>
-            </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    <span>{formatDuration(course.durationInMinutes)}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <Users className="w-4 h-4" />
-                    <span>{course.studentsCount} طالب</span>
-                </div>
-            </div>
-            <Link href={`/courses/${course.id}`}>
-                <Button variant="outline" className="w-full">
-                    عرض التفاصيل
-                </Button>
-            </Link>
-        </div>
-    )
 }
 
 export const CoursesGrid = ({ courses }: CoursesGridProps) => {

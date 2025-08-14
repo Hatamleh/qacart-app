@@ -1,10 +1,10 @@
-import { Metadata } from 'next'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
-import { CoursesHero } from '@/components/courses/CoursesHero'
-import { CoursesGrid } from '@/components/courses/CoursesGrid'
-import { getAllCourses } from '@/data'
-import { Course } from "@/types/course"
+import {Metadata} from 'next'
+import {Navbar} from '@/components/layout/Navbar'
+import {Footer} from '@/components/layout/Footer'
+import {CoursesHero} from '@/components/courses/CoursesHero'
+import {CoursesGrid} from '@/components/courses/CoursesGrid'
+// In future this will be replaced with a dynamic data source
+import {coursesData} from '@/data'
 
 export const metadata: Metadata = {
   title: 'الدورات - QAcart',
@@ -20,9 +20,7 @@ export const metadata: Metadata = {
 
 export default function CoursesPage() {
   // Get courses from local JSON data
-  const courses: Course[] = getAllCourses()
-
-  return (
+    return (
     <div className="min-h-screen" dir="rtl">
       {/* Navigation */}
       <Navbar />
@@ -31,7 +29,7 @@ export default function CoursesPage() {
       <CoursesHero />
 
       {/* Courses Grid Section */}
-      <CoursesGrid courses={courses} />
+      <CoursesGrid courses={coursesData} />
 
       {/* Footer */}
       <Footer />
