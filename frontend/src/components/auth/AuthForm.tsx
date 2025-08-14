@@ -1,19 +1,7 @@
-'use client'
-
 import { Mail, Apple } from 'lucide-react'
 import { Button } from '../ui/Button'
 
 export const AuthForm = () => {
-  const handleEmailAuth = (e: React.FormEvent) => {
-    e.preventDefault()
-    // TODO: Implement magic link authentication
-    alert('سيتم إضافة تسجيل الدخول بالرابط السحري قريباً!')
-  }
-
-  const handleSocialAuth = (provider: 'google' | 'apple') => {
-    // TODO: Implement social authentication
-    alert(`تسجيل الدخول باستخدام ${provider === 'google' ? 'Google' : 'Apple'} سيتم إضافته قريباً!`)
-  }
 
   return (
     <div className="max-w-md mx-auto">
@@ -42,7 +30,7 @@ export const AuthForm = () => {
           </div>
 
           {/* Email Magic Link Form */}
-          <form onSubmit={handleEmailAuth} className="mb-8">
+          <form className="mb-8">
             <div className="mb-6">
               <label htmlFor="email" className="block text-sm font-semibold text-muted-foreground/80 uppercase tracking-wider mb-4">
                 البريد الإلكتروني
@@ -60,7 +48,6 @@ export const AuthForm = () => {
             </div>
 
             <Button
-              type="submit"
               variant="primary"
               size="lg"
               className="w-full py-4 text-lg font-semibold rounded-2xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] transition-all duration-300"
@@ -78,21 +65,15 @@ export const AuthForm = () => {
 
           {/* Social Login Options */}
           <div className="space-y-4 mb-8">
-            <button
-              onClick={() => handleSocialAuth('google')}
-              className="group w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl border border-primary/10 bg-background/30 hover:bg-primary/[0.02] hover:border-primary/20 transition-all duration-300 hover:scale-[1.01]"
-            >
+            <div className="group w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl border border-primary/10 bg-background/30 hover:bg-primary/[0.02] hover:border-primary/20 transition-all duration-300 hover:scale-[1.01]">
               <Mail className="w-5 h-5 text-primary/70 group-hover:text-primary transition-colors" />
               <span className="text-muted-foreground/70 font-medium group-hover:text-foreground transition-colors">المتابعة باستخدام Google</span>
-            </button>
+            </div>
 
-            <button
-              onClick={() => handleSocialAuth('apple')}
-              className="group w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl border border-primary/10 bg-background/30 hover:bg-primary/[0.02] hover:border-primary/20 transition-all duration-300 hover:scale-[1.01]"
-            >
+            <div className="group w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl border border-primary/10 bg-background/30 hover:bg-primary/[0.02] hover:border-primary/20 transition-all duration-300 hover:scale-[1.01]">
               <Apple className="w-5 h-5 text-primary/70 group-hover:text-primary transition-colors" />
               <span className="text-muted-foreground/70 font-medium group-hover:text-foreground transition-colors">المتابعة باستخدام Apple</span>
-            </button>
+            </div>
           </div>
 
           {/* Terms */}
