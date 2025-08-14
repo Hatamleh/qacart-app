@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { AdminCourseEditor } from '@/components/admin/AdminCourseEditor'
@@ -37,9 +38,9 @@ export default async function AdminCourseEditPage({ params }: AdminCourseEditPag
           {/* Breadcrumb */}
           <div className="mb-6">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <a href="/sudo/courses" className="hover:text-primary transition-colors">
+              <Link href="/sudo/courses" className="hover:text-primary transition-colors">
                 إدارة الدورات
-              </a>
+              </Link>
               <span>/</span>
               <span className="text-foreground">تعديل الدورة</span>
             </div>

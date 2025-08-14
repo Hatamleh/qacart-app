@@ -6,6 +6,15 @@ export interface User {
   preferences: UserPreferences
 }
 
+export interface AdminUser {
+  id: string
+  name: string
+  email: string
+  subscription: Subscription
+  createdAt: string
+  lastLogin: string
+}
+
 export interface Subscription {
   status: 'premium' | 'free' | 'expired'
   plan?: 'monthly' | 'quarterly' | 'yearly'

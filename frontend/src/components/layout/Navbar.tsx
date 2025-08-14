@@ -95,6 +95,15 @@ export const Navbar = () => {
                                 إدارة الدورات
                             </Link>
                             
+                            {/* Admin Manage Users */}
+                            <Link
+                                href="/sudo/users"
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 font-medium text-sm"
+                            >
+                                <Settings className="w-4 h-4" />
+                                إدارة المستخدمين
+                            </Link>
+                            
                             {/* Premium Plan - Standout */}
                             <Link
                                 href="/premium"

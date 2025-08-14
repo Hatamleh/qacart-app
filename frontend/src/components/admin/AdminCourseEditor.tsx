@@ -15,7 +15,7 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
   const [isSaving, setIsSaving] = useState(false)
 
   // Handle course basic info changes
-  const handleCourseChange = (field: keyof Course, value:any) => {
+  const handleCourseChange = (field: keyof Course, value: any) => {
     setCourse(prev => ({
       ...prev,
       [field]: value

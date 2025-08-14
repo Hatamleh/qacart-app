@@ -4,6 +4,7 @@ import { UserData } from '@/types/profile'
 import coursesData from './courses.json'
 import plansData from './plans.json'
 import userData from './user.json'
+import usersData from './users.json'
 import faqData from './faq.json'
 
 /**
@@ -86,4 +87,28 @@ export const getFAQQuestions = () => {
 
 export const getCurrentUser = () => {
   return userData.user
+}
+
+// =============================================================================
+// Users Management Functions (Admin)
+// =============================================================================
+
+export const getAllUsers = () => {
+  return usersData
+}
+
+export const getUserById = (userId: string) => {
+  return usersData.find(user => user.id === userId) || usersData[0]
+}
+
+export const getUsersBySubscriptionStatus = (status: string) => {
+  return usersData.filter(user => user.subscription.status === status)
+}
+
+export const getPremiumUsers = () => {
+  return usersData.filter(user => user.subscription.status === 'premium')
+}
+
+export const getFreeUsers = () => {
+  return usersData.filter(user => user.subscription.status === 'free')
 }

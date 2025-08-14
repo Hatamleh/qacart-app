@@ -79,7 +79,7 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
   }
 
   // Save lesson (just for UI feedback for now)
-  const saveLesson = (lessonId: number) => {
+  const saveLesson = () => {
     // TODO: Implement actual save functionality
     alert(`تم حفظ الدرس بنجاح!`)
   }
@@ -299,7 +299,7 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
                       variant="primary"
                       size="sm"
                       icon={Save}
-                      onClick={() => saveLesson(lesson.id)}
+                      onClick={() => saveLesson()}
                       className="px-4 py-2"
                     >
                       حفظ الدرس
