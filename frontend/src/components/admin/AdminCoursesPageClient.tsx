@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AdminCoursesTable } from './AdminCoursesTable'
@@ -10,7 +11,8 @@ interface AdminCoursesPageClientProps {
   courses: Course[]
 }
 
-export const AdminCoursesPageClient = ({ courses }: AdminCoursesPageClientProps) => {
+export const AdminCoursesPageClient = ({ courses: initialCourses }: AdminCoursesPageClientProps) => {
+  const [courses, setCourses] = useState<Course[]>(initialCourses)
 
   return (
     <>
@@ -25,7 +27,7 @@ export const AdminCoursesPageClient = ({ courses }: AdminCoursesPageClientProps)
               إنشاء وتعديل وإدارة الدورات والدروس
             </p>
           </div>
-
+          
           {/* Create New Course Button */}
           <div className="flex gap-3">
             <Link href="/sudo/courses/new">

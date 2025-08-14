@@ -1,8 +1,3 @@
-/**
- * Core Business Types - Lesson
- * QAcart Platform - Frontend First Approach
- */
-
 export interface Lesson {
   id: string
   lessonOrder: number
