@@ -15,6 +15,18 @@
     --border: #374151;         /* Border color */
     --radius: 0.5rem;          /* Border radius */
 
+    /* State Colors */
+    --destructive: #ef4444;    /* Red for delete/danger actions */
+    --destructive-foreground: #fecaca; /* Light red text */
+    --success: #10b981;        /* Green for success/free status */
+    --success-foreground: #d1fae5; /* Light green text */
+    --warning: #f59e0b;        /* Orange for warnings/premium badges */
+    --warning-foreground: #fef3c7; /* Light orange text */
+    
+    /* Additional UI Colors */
+    --accent: #152038;         /* Dark accent background */
+    --accent-foreground: #e2e8f0; /* Light accent text */
+
     /* Typography */
     --font-cairo: 'Cairo', 'Tajawal', 'Noto Sans Arabic', sans-serif;
 }
@@ -31,6 +43,18 @@
     --color-muted: var(--muted);
     --color-muted-foreground: var(--muted-foreground);
     --color-border: var(--border);
+
+    /* State Colors */
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-warning: var(--warning);
+    --color-warning-foreground: var(--warning-foreground);
+    
+    /* Additional UI Colors */
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
 
     /* Typography - Cairo font */
     --font-sans: var(--font-cairo);

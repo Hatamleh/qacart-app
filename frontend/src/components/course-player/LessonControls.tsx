@@ -33,7 +33,7 @@ export const LessonControls = ({
   const isLessonCompleted = userProgress ? userProgress.completedLessons.includes(currentLesson.id) : false
 
   return (
-    <div className={`p-6 mx-8 rounded-lg border border-primary/10 ${afterArticle ? 'mb-24' : ''}`} style={{ backgroundColor: '#152038' }}>
+    <div className={`p-6 mx-8 rounded-lg border border-primary/10 bg-accent ${afterArticle ? 'mb-24' : ''}`}>
       <div className="flex items-center justify-between max-w-2xl mx-auto">
         {/* Previous Button */}
         <div className="flex-1 flex justify-start">

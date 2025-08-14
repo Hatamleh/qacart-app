@@ -38,7 +38,7 @@ export const AccessGate = ({ lesson, userHasPaidAccess = false }: AccessGateProp
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
               <Lock className="w-10 h-10 text-primary" />
             </div>
-            <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center">
+            <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-warning flex items-center justify-center">
               <Crown className="w-3 h-3 text-white" />
             </div>
           </div>
