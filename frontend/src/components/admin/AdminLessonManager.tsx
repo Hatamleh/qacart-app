@@ -68,7 +68,7 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
                   </div>
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <span>{lesson.durationInMinutes} دقيقة</span>
-                    <span className={lesson.isFree ? 'text-success' : 'text-premium'}>
+                    <span className={lesson.isFree ? 'text-premium' : 'text-muted-foreground'}>
                       {lesson.isFree ? 'مجاني' : 'مدفوع'}
                     </span>
                   </div>
@@ -87,7 +87,7 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
                     variant="ghost"
                     size="sm"
                     icon={Trash2}
-                    className="text-destructive hover:text-destructive-foreground hover:bg-destructive/10"
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
                   />
                 </div>
               </div>

@@ -16,7 +16,7 @@ export const LessonCard = ({ lesson, lessonIndex, courseId }: LessonCardProps) =
     return (
         <Link href={linkHref}>
             <div 
-                className={`glass rounded-xl p-6 transition-all duration-300 group cursor-pointer ${
+                className={`glass rounded-xl p-6 mb-6 transition-all duration-300 group cursor-pointer ${
                     lesson.isFree 
                         ? 'hover:border-primary/50 hover:bg-primary/5 hover:shadow-lg' 
                         : 'hover:border-premium/50 hover:bg-premium/5 hover:shadow-lg'

@@ -46,7 +46,7 @@ export const CourseLessons = ({ lessons, courseId }: CourseLessonsProps) => {
                     </div>
 
                     {/* Lessons List */}
-                    <div className="space-y-4">
+                    <div className="space-y-12">
                         {sortedLessons.map((lesson, index) => (
                             <LessonCard 
                                 key={lesson.id} 

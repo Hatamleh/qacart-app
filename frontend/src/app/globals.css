@@ -3,60 +3,38 @@
 
 /* ===== CSS VARIABLES FOR THEMING ===== */
 :root {
-    /* Core Colors - Only the colors actually used in components */
-    --background: #0f172a;     /* Dark blue background */
-    --foreground: #f9fafb;     /* Light text */
-    --primary: #60a5fa;        /* QAcart brand blue */
-    --primary-foreground: #ffffff; /* White text on primary */
-    --premium: #f59e0b;        /* Premium amber color */
-    --premium-foreground: #fef3c7; /* Light premium text */
-    --muted: #1f2937;          /* Muted backgrounds */
-    --muted-foreground: #94a3b8; /* Muted text */
-    --border: #374151;         /* Border color */
+    /* Base Colors */
+    --background: #0f172a;     /* Main background */
+    --foreground: #f9fafb;     /* Main text */
+    --muted: #1f2937;          /* Secondary backgrounds */
+    --muted-foreground: #94a3b8; /* Secondary text */
+    --border: #374151;         /* All borders */
+
+    /* Brand & Action Colors */
+    --primary: #60a5fa;        /* Brand blue & primary actions */
+    --premium: #f59e0b;        /* Premium features & success states */
+    --destructive: #ef4444;    /* Delete & danger actions */
+
+    /* Extras */
     --radius: 0.5rem;          /* Border radius */
-
-    /* State Colors */
-    --destructive: #ef4444;    /* Red for delete/danger actions */
-    --destructive-foreground: #fecaca; /* Light red text */
-    --success: #10b981;        /* Green for success/free status */
-    --success-foreground: #d1fae5; /* Light green text */
-    --warning: #f59e0b;        /* Orange for warnings/premium badges */
-    --warning-foreground: #fef3c7; /* Light orange text */
-    
-    /* Additional UI Colors */
-    --accent: #152038;         /* Dark accent background */
-    --accent-foreground: #e2e8f0; /* Light accent text */
-
-    /* Typography */
     --font-cairo: 'Cairo', 'Tajawal', 'Noto Sans Arabic', sans-serif;
 }
 
 /* ===== TAILWIND THEME CONFIGURATION ===== */
 @theme inline {
-    /* Core Colors */
+    /* Base Colors */
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    --color-primary: var(--primary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-premium: var(--premium);
-    --color-premium-foreground: var(--premium-foreground);
     --color-muted: var(--muted);
     --color-muted-foreground: var(--muted-foreground);
     --color-border: var(--border);
 
-    /* State Colors */
+    /* Brand & Action Colors */
+    --color-primary: var(--primary);
+    --color-premium: var(--premium);
     --color-destructive: var(--destructive);
-    --color-destructive-foreground: var(--destructive-foreground);
-    --color-success: var(--success);
-    --color-success-foreground: var(--success-foreground);
-    --color-warning: var(--warning);
-    --color-warning-foreground: var(--warning-foreground);
-    
-    /* Additional UI Colors */
-    --color-accent: var(--accent);
-    --color-accent-foreground: var(--accent-foreground);
 
-    /* Typography - Cairo font */
+    /* Typography */
     --font-sans: var(--font-cairo);
 
     /* Border radius */

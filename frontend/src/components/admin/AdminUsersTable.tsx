@@ -143,7 +143,7 @@ export const AdminUsersTable = ({ users }: AdminUsersTableProps) => {
                       variant="ghost"
                       size="sm"
                       icon={Trash2}
-                      className="text-xs px-3 py-2 text-destructive hover:text-destructive-foreground hover:bg-destructive/10"
+                      className="text-xs px-3 py-2 text-destructive hover:text-destructive hover:bg-destructive/10"
                     >
                       حذف
                     </Button>
