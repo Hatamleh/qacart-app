@@ -15,7 +15,7 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
   const [isSaving, setIsSaving] = useState(false)
 
   // Handle course basic info changes
-  const handleCourseChange = (field: keyof Course, value: any) => {
+  const handleCourseChange = (field: keyof Course, value:any) => {
     setCourse(prev => ({
       ...prev,
       [field]: value
@@ -29,7 +29,7 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
       // TODO: Implement actual API call
       await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
       alert('تم حفظ التغييرات بنجاح!')
-    } catch (error) {
+    } catch  {
       alert('حدث خطأ في حفظ التغييرات')
     } finally {
       setIsSaving(false)
@@ -38,7 +38,7 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
 
   return (
     <div className="space-y-8">
-      
+
       {/* Action Bar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -51,7 +51,7 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
             العودة
           </Button>
         </div>
-        
+
         <Button
           variant="primary"
           size="md"
@@ -68,9 +68,9 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
         <h2 className="text-xl font-semibold text-foreground mb-6">
           معلومات الدورة الأساسية
         </h2>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
+
           {/* Course Title */}
           <div>
             <label className="block text-sm font-semibold text-muted-foreground mb-2">
@@ -171,7 +171,7 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
       </div>
 
       {/* Lessons Management */}
-      <AdminLessonManager 
+      <AdminLessonManager
         course={course}
         onCourseUpdate={setCourse}
       />

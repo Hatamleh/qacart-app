@@ -1,7 +1,6 @@
 import { Metadata } from 'next'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { AdminCoursesTable } from '@/components/admin/AdminCoursesTable'
 import { AdminCoursesPageClient } from '@/components/admin/AdminCoursesPageClient'
 import { getAllCourses } from '@/data'
 
