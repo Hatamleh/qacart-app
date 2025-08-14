@@ -1,25 +1,14 @@
 import { Crown, Mail, LogOut, Calendar, User as UserIcon } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Badge } from '../ui/Badge'
-import { User } from '@/types/profile'
+import { User } from '@/types'
 
 interface UserInfoProps {
   user: User
 }
 
 export const UserInfo = ({ user }: UserInfoProps) => {
-  const getSubscriptionBadgeVariant = (status: string) => {
-    switch (status) {
-      case 'premium':
-        return 'primary'
-      case 'free':
-        return 'secondary'
-      case 'expired':
-        return 'danger'
-      default:
-        return 'default'
-    }
-  }
+
 
   const getSubscriptionStatusText = (status: string) => {
     switch (status) {
@@ -27,8 +16,6 @@ export const UserInfo = ({ user }: UserInfoProps) => {
         return 'عضوية بريميوم'
       case 'free':
         return 'عضوية مجانية'
-      case 'expired':
-        return 'عضوية منتهية الصلاحية'
       default:
         return 'غير محدد'
     }
@@ -78,7 +65,7 @@ export const UserInfo = ({ user }: UserInfoProps) => {
               <p className="text-sm text-muted-foreground">حالة الاشتراك</p>
               <div className="flex items-center gap-3">
                 <p className="font-semibold">{getSubscriptionStatusText(user.subscription.status)}</p>
-                <Badge variant={getSubscriptionBadgeVariant(user.subscription.status)}>
+                <Badge variant="primary">
                   {user.subscription.status === 'premium' ? 'بريميوم' : 'مجاني'}
                 </Badge>
               </div>

@@ -1,5 +1,5 @@
 import { HelpCircle, ChevronDown } from 'lucide-react'
-import { FAQQuestion } from '@/types/profile'
+import { FAQQuestion } from '@/types'
 
 interface FAQSectionProps {
   questions: FAQQuestion[]

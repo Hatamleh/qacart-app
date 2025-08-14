@@ -7,7 +7,7 @@ import { ManageAccountSection } from '@/components/profile/ManageAccountSection'
 import { FAQSection } from '@/components/profile/FAQSection'
 import { ContactSection } from '@/components/profile/ContactSection'
 import { DangerZoneSection } from '@/components/profile/DangerZoneSection'
-import { getUserData, getFAQQuestions } from '@/data'
+import { currentUserData, faqData } from '@/data'
 
 export const metadata: Metadata = {
   title: 'الملف الشخصي | QAcart',
@@ -21,38 +21,36 @@ export const metadata: Metadata = {
 }
 
 export default function ProfilePage() {
-  const userData = getUserData()
-  const faqQuestions = getFAQQuestions()
 
   return (
     <div className="min-h-screen" dir="rtl">
       <Navbar />
-      
+
       {/* Main Content */}
       <main className="py-32 lg:py-40">
         <div className="container mx-auto px-6 max-w-4xl">
-          
-          {/* Welcome Section */}
+
+          {/* Welcome, Section */}
           <ProfileWelcome />
-          
+
           {/* User Info */}
-          <UserInfo user={userData.user} />
-          
+          <UserInfo user={currentUserData} />
+
           {/* Manage Account */}
           <ManageAccountSection />
-          
+
           {/* FAQ */}
-          <FAQSection questions={faqQuestions} />
-          
+          <FAQSection questions={faqData} />
+
           {/* Contact */}
           <ContactSection />
-          
+
           {/* Danger Zone */}
           <DangerZoneSection />
-          
+
         </div>
       </main>
-      
+
       <Footer />
     </div>
   )
