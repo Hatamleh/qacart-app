@@ -1,131 +1,12 @@
-'use client'
-
-import { useState } from 'react'
-import { Plus, GripVertical, Trash2, ChevronDown, ChevronUp, Video, FileText, Save } from 'lucide-react'
+import { Plus, GripVertical, Trash2, ChevronDown, Video, FileText, Save } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { Course, Lesson } from '@/types'
+import { Course } from '@/types'
 
 interface AdminLessonManagerProps {
   course: Course
-  onCourseUpdate: (course: Course) => void
 }
 
-export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManagerProps) => {
-  const [expandedLessons, setExpandedLessons] = useState<Set<number>>(new Set())
-  const [draggedLesson, setDraggedLesson] = useState<number | null>(null)
-
-  // Toggle lesson expansion
-  const toggleLessonExpansion = (lessonId: number) => {
-    const newExpanded = new Set(expandedLessons)
-    if (newExpanded.has(lessonId)) {
-      newExpanded.delete(lessonId)
-    } else {
-      newExpanded.add(lessonId)
-    }
-    setExpandedLessons(newExpanded)
-  }
-
-  // Add new lesson
-  const addNewLesson = () => {
-    const newLesson: Lesson = {
-      id: Date.now(), // Simple ID generation for demo
-      lessonOrder: course.lessons.length + 1,
-      title: 'درس جديد',
-      durationInMinutes: 10,
-      isFree: false,
-      vimeoId: '',
-      articleContent: ''
-    }
-    
-    const updatedCourse = {
-      ...course,
-      lessons: [...course.lessons, newLesson]
-    }
-    onCourseUpdate(updatedCourse)
-    
-    // Auto-expand the new lesson
-    setExpandedLessons(prev => new Set([...prev, newLesson.id]))
-  }
-
-  // Delete lesson
-  const deleteLesson = (lessonId: number) => {
-    if (confirm('هل أنت متأكد من حذف هذا الدرس؟')) {
-      const updatedLessons = course.lessons
-        .filter(lesson => lesson.id !== lessonId)
-        .map((lesson, index) => ({ ...lesson, lessonOrder: index + 1 }))
-      
-      onCourseUpdate({
-        ...course,
-        lessons: updatedLessons
-      })
-      
-      setExpandedLessons(prev => {
-        const newSet = new Set(prev)
-        newSet.delete(lessonId)
-        return newSet
-      })
-    }
-  }
-
-  // Update lesson
-  const updateLesson = (lessonId: number, field: keyof Lesson, value: any) => {
-    const updatedLessons = course.lessons.map(lesson =>
-      lesson.id === lessonId ? { ...lesson, [field]: value } : lesson
-    )
-    onCourseUpdate({
-      ...course,
-      lessons: updatedLessons
-    })
-  }
-
-  // Save lesson (just for UI feedback for now)
-  const saveLesson = () => {
-    // TODO: Implement actual save functionality
-    alert(`تم حفظ الدرس بنجاح!`)
-  }
-
-  // Drag and Drop handlers
-  const handleDragStart = (e: React.DragEvent, lessonId: number) => {
-    setDraggedLesson(lessonId)
-    e.dataTransfer.effectAllowed = 'move'
-  }
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.dataTransfer.dropEffect = 'move'
-  }
-
-  const handleDrop = (e: React.DragEvent, targetLessonId: number) => {
-    e.preventDefault()
-    if (!draggedLesson || draggedLesson === targetLessonId) return
-
-    const draggedIndex = course.lessons.findIndex(l => l.id === draggedLesson)
-    const targetIndex = course.lessons.findIndex(l => l.id === targetLessonId)
-
-    if (draggedIndex === -1 || targetIndex === -1) return
-
-    // Reorder lessons
-    const newLessons = [...course.lessons]
-    const [removed] = newLessons.splice(draggedIndex, 1)
-    newLessons.splice(targetIndex, 0, removed)
-
-    // Update lesson orders
-    const updatedLessons = newLessons.map((lesson, index) => ({
-      ...lesson,
-      lessonOrder: index + 1
-    }))
-
-    onCourseUpdate({
-      ...course,
-      lessons: updatedLessons
-    })
-    
-    setDraggedLesson(null)
-  }
-
-  const handleDragEnd = () => {
-    setDraggedLesson(null)
-  }
+export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
 
   return (
     <div className="glass rounded-xl p-6 border border-border">
@@ -140,7 +21,6 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
           variant="outline"
           size="sm"
           icon={Plus}
-          onClick={addNewLesson}
         >
           إضافة درس جديد
         </Button>
@@ -149,22 +29,13 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
       {/* Lessons List */}
       <div className="space-y-3">
         {course.lessons.map((lesson) => {
-          const isExpanded = expandedLessons.has(lesson.id)
-          const isDragging = draggedLesson === lesson.id
+          // Show first lesson expanded for demo
+          const isExpanded = lesson.lessonOrder === 1
           
           return (
             <div
               key={lesson.id}
-              draggable
-              onDragStart={(e) => handleDragStart(e, lesson.id)}
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, lesson.id)}
-              onDragEnd={handleDragEnd}
-              className={`
-                bg-background/50 rounded-xl border border-border transition-all duration-200
-                ${isDragging ? 'opacity-50 scale-95' : 'hover:border-primary/30'}
-                ${isExpanded ? 'border-primary/50' : ''}
-              `}
+              className="bg-background/50 rounded-xl border border-border transition-all duration-200 hover:border-primary/30"
             >
               
               {/* Lesson Header */}
@@ -208,8 +79,7 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
                   <Button
                     variant="ghost"
                     size="sm"
-                    icon={isExpanded ? ChevronUp : ChevronDown}
-                    onClick={() => toggleLessonExpansion(lesson.id)}
+                    icon={ChevronDown}
                     className="text-muted-foreground hover:text-foreground"
                   />
                   
@@ -217,7 +87,6 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
                     variant="ghost"
                     size="sm"
                     icon={Trash2}
-                    onClick={() => deleteLesson(lesson.id)}
                     className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
                   />
                 </div>
@@ -235,8 +104,7 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
                       </label>
                       <input
                         type="text"
-                        value={lesson.title}
-                        onChange={(e) => updateLesson(lesson.id, 'title', e.target.value)}
+                        defaultValue={lesson.title}
                         className="w-full px-3 py-2 rounded-lg border border-border bg-background/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/25"
                       />
                     </div>
@@ -247,8 +115,7 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
                       </label>
                       <input
                         type="number"
-                        value={lesson.durationInMinutes}
-                        onChange={(e) => updateLesson(lesson.id, 'durationInMinutes', parseInt(e.target.value) || 0)}
+                        defaultValue={lesson.durationInMinutes}
                         className="w-full px-3 py-2 rounded-lg border border-border bg-background/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/25"
                       />
                     </div>
@@ -261,8 +128,7 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
                     </label>
                     <input
                       type="text"
-                      value={lesson.vimeoId || ''}
-                      onChange={(e) => updateLesson(lesson.id, 'vimeoId', e.target.value)}
+                      defaultValue={lesson.vimeoId || ''}
                       placeholder="290256877"
                       className="w-full px-3 py-2 rounded-lg border border-border bg-background/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/25"
                     />
@@ -274,8 +140,7 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
                       محتوى المقال (Markdown)
                     </label>
                     <textarea
-                      value={lesson.articleContent || ''}
-                      onChange={(e) => updateLesson(lesson.id, 'articleContent', e.target.value)}
+                      defaultValue={lesson.articleContent || ''}
                       rows={8}
                       placeholder="اكتب محتوى الدرس بتنسيق Markdown..."
                       className="w-full px-3 py-2 rounded-lg border border-border bg-background/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 resize-none font-mono"
@@ -287,8 +152,7 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
-                        checked={lesson.isFree}
-                        onChange={(e) => updateLesson(lesson.id, 'isFree', e.target.checked)}
+                        defaultChecked={lesson.isFree}
                         className="w-4 h-4 text-primary rounded border-border focus:ring-primary/25"
                       />
                       <span className="text-sm text-muted-foreground">درس مجاني</span>
@@ -299,7 +163,6 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
                       variant="primary"
                       size="sm"
                       icon={Save}
-                      onClick={() => saveLesson()}
                       className="px-4 py-2"
                     >
                       حفظ الدرس
@@ -328,7 +191,6 @@ export const AdminLessonManager = ({ course, onCourseUpdate }: AdminLessonManage
             variant="primary"
             size="md"
             icon={Plus}
-            onClick={addNewLesson}
           >
             إضافة درس جديد
           </Button>

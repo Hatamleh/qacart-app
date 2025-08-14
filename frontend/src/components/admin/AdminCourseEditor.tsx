@@ -1,40 +1,15 @@
-'use client'
-
-import { useState } from 'react'
 import { Save, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AdminLessonManager } from './AdminLessonManager'
-import { Course } from '@/types/course'
+import { Course } from '@/types'
 
 interface AdminCourseEditorProps {
   course: Course
 }
 
-export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorProps) => {
-  const [course, setCourse] = useState<Course>(initialCourse)
-  const [isSaving, setIsSaving] = useState(false)
+export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
 
-  // Handle course basic info changes
-  const handleCourseChange = (field: keyof Course, value: any) => {
-    setCourse(prev => ({
-      ...prev,
-      [field]: value
-    }))
-  }
 
-  // Handle save course
-  const handleSaveCourse = async () => {
-    setIsSaving(true)
-    try {
-      // TODO: Implement actual API call
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-      alert('تم حفظ التغييرات بنجاح!')
-    } catch  {
-      alert('حدث خطأ في حفظ التغييرات')
-    } finally {
-      setIsSaving(false)
-    }
-  }
 
   return (
     <div className="space-y-8">
@@ -46,7 +21,6 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
             variant="outline"
             size="sm"
             icon={ArrowRight}
-            onClick={() => window.history.back()}
           >
             العودة
           </Button>
@@ -56,8 +30,6 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
           variant="primary"
           size="md"
           icon={Save}
-          onClick={handleSaveCourse}
-          loading={isSaving}
         >
           حفظ التغييرات
         </Button>
@@ -78,8 +50,7 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
             </label>
             <input
               type="text"
-              value={course.title}
-              onChange={(e) => handleCourseChange('title', e.target.value)}
+              defaultValue={course.title}
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
             />
           </div>
@@ -90,14 +61,13 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
               نوع الدورة
             </label>
             <select
-              value={course.type}
-              onChange={(e) => handleCourseChange('type', e.target.value)}
+              defaultValue={course.type}
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
             >
-              <option value="manual">يدوي</option>
-              <option value="automation">أتمتة</option>
-              <option value="api">API</option>
-              <option value="performance">أداء</option>
+              <option value="يدوي">يدوي</option>
+              <option value="أتمتة">أتمتة</option>
+              <option value="API">API</option>
+              <option value="أداء">أداء</option>
             </select>
           </div>
 
@@ -107,8 +77,7 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
               وصف مختصر
             </label>
             <textarea
-              value={course.shortDescription}
-              onChange={(e) => handleCourseChange('shortDescription', e.target.value)}
+              defaultValue={course.shortDescription}
               rows={3}
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 resize-none"
             />
@@ -121,8 +90,7 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
             </label>
             <input
               type="text"
-              value={course.promoVideoUrl}
-              onChange={(e) => handleCourseChange('promoVideoUrl', e.target.value)}
+              defaultValue={course.promoVideoUrl}
               placeholder="معرف الفيديو في Vimeo"
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
             />
@@ -135,24 +103,24 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
             </label>
             <input
               type="url"
-              value={course.videoThumbnail}
-              onChange={(e) => handleCourseChange('videoThumbnail', e.target.value)}
+              defaultValue={course.videoThumbnail}
               placeholder="https://example.com/image.jpg"
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
             />
           </div>
 
-          {/* Instructor Name */}
+          {/* Instructor Name - Hardcoded */}
           <div>
             <label className="block text-sm font-semibold text-muted-foreground mb-2">
               اسم المدرب
             </label>
             <input
               type="text"
-              value={course.instructor.name}
-              onChange={(e) => handleCourseChange('instructor', { ...course.instructor, name: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
+              value="حاتم حتامله"
+              readOnly
+              className="w-full px-4 py-3 rounded-xl border border-border bg-muted/30 text-foreground focus:outline-none"
             />
+            <p className="text-xs text-muted-foreground mt-1">المدرب الوحيد في المنصة</p>
           </div>
 
           {/* Students Count */}
@@ -162,8 +130,7 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
             </label>
             <input
               type="number"
-              value={course.studentsCount}
-              onChange={(e) => handleCourseChange('studentsCount', parseInt(e.target.value) || 0)}
+              defaultValue={course.studentsCount}
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
             />
           </div>
@@ -173,7 +140,6 @@ export const AdminCourseEditor = ({ course: initialCourse }: AdminCourseEditorPr
       {/* Lessons Management */}
       <AdminLessonManager
         course={course}
-        onCourseUpdate={setCourse}
       />
     </div>
   )

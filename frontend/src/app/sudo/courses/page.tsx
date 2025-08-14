@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { AdminCoursesPageClient } from '@/components/admin/AdminCoursesPageClient'
-import { getAllCourses } from '@/data'
+import { coursesData } from '@/data'
 
 export const metadata: Metadata = {
   title: 'إدارة الدورات - QAcart Admin',
@@ -11,8 +11,6 @@ export const metadata: Metadata = {
 }
 
 export default function AdminCoursesPage() {
-  // Get all courses for admin management
-  const courses = getAllCourses()
 
   return (
     <div className="min-h-screen" dir="rtl">
@@ -23,7 +21,7 @@ export default function AdminCoursesPage() {
       <main className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
           {/* Client-side component with modal functionality */}
-          <AdminCoursesPageClient courses={courses} />
+          <AdminCoursesPageClient courses={coursesData} />
         </div>
       </main>
 

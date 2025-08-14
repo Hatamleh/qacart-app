@@ -2,7 +2,7 @@
 
 import { Home, BookOpen, PlayCircle } from 'lucide-react'
 import Link from 'next/link'
-import { Course, Lesson } from '@/types/course'
+import { Course, Lesson } from '@/types'
 
 interface CoursePlayerHeaderProps {
   course: Course

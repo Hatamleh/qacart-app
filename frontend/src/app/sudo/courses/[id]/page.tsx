@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { AdminCourseEditor } from '@/components/admin/AdminCourseEditor'
-import { getCourseById } from '@/data'
+import { coursesData } from '@/data'
 
 interface AdminCourseEditPageProps {
   params: Promise<{
@@ -13,7 +13,7 @@ interface AdminCourseEditPageProps {
 
 export async function generateMetadata({ params }: AdminCourseEditPageProps): Promise<Metadata> {
   const { id } = await params
-  const course = getCourseById(id)
+  const course = coursesData.find(c => c.id === id)
   
   return {
     title: `تعديل ${course.title} - QAcart Admin`,
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: AdminCourseEditPageProps): Pr
 
 export default async function AdminCourseEditPage({ params }: AdminCourseEditPageProps) {
   const { id } = await params
-  const course = getCourseById(id)
+  const course = coursesData.find(c => c.id === id)
 
   return (
     <div className="min-h-screen" dir="rtl">

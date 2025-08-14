@@ -1,18 +1,14 @@
-'use client'
-
 import { Trash2, Clock, Crown, Gift, Calendar, User } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { AdminUser } from '@/types/profile'
+import { User as UserType } from '@/types'
 
 interface AdminUsersTableProps {
-  users: AdminUser[]
-  onDeleteUser: (userId: string, userName: string) => void
-  onAssignPremium: (userId: string, userName: string) => void
+  users: UserType[]
 }
 
-export const AdminUsersTable = ({ users, onDeleteUser, onAssignPremium }: AdminUsersTableProps) => {
+export const AdminUsersTable = ({ users }: AdminUsersTableProps) => {
   // Get subscription status display info
-  const getSubscriptionDisplay = (user: AdminUser) => {
+  const getSubscriptionDisplay = (user: UserType) => {
     const { subscription } = user
     
     switch (subscription.status) {
@@ -27,12 +23,6 @@ export const AdminUsersTable = ({ users, onDeleteUser, onAssignPremium }: AdminU
           text: 'مجاني',
           className: 'text-muted-foreground bg-muted/30 border-border',
           icon: User
-        }
-      case 'expired':
-        return {
-          text: 'منتهي',
-          className: 'text-red-400 bg-red-500/10 border-red-500/20',
-          icon: Clock
         }
       default:
         return {
@@ -86,10 +76,10 @@ export const AdminUsersTable = ({ users, onDeleteUser, onAssignPremium }: AdminU
                     {/* User Details */}
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-foreground text-sm mb-1 truncate">
-                        {user.name}
+                        {user.email}
                       </h3>
                       <p className="text-xs text-muted-foreground truncate">
-                        {user.email}
+                        {user.id}
                       </p>
                     </div>
                   </div>
@@ -134,7 +124,6 @@ export const AdminUsersTable = ({ users, onDeleteUser, onAssignPremium }: AdminU
                         variant="outline"
                         size="sm"
                         icon={Gift}
-                        onClick={() => onAssignPremium(user.id, user.name)}
                         className="text-xs px-3 py-2 text-premium hover:text-premium border-premium/30 hover:bg-premium/10"
                       >
                         منح بريميوم
@@ -154,7 +143,6 @@ export const AdminUsersTable = ({ users, onDeleteUser, onAssignPremium }: AdminU
                       variant="ghost"
                       size="sm"
                       icon={Trash2}
-                      onClick={() => onDeleteUser(user.id, user.name)}
                       className="text-xs px-3 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10"
                     >
                       حذف

@@ -1,22 +1,13 @@
-'use client'
-
 import Link from 'next/link'
 import { Edit, Trash2, Clock, Users, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { Course, formatDuration } from '@/types/course'
+import { Course } from '@/types'
 
 interface AdminCoursesTableProps {
   courses: Course[]
 }
 
 export const AdminCoursesTable = ({ courses }: AdminCoursesTableProps) => {
-  // Handle delete course (for now just an alert)
-  const handleDeleteCourse = (courseId: number, courseTitle: string) => {
-    if (confirm(`هل أنت متأكد من حذف الدورة "${courseTitle}"؟`)) {
-      // TODO: Implement actual delete functionality
-      alert(`تم حذف الدورة: ${courseTitle}`)
-    }
-  }
 
   return (
     <div className="space-y-6">
@@ -76,7 +67,7 @@ export const AdminCoursesTable = ({ courses }: AdminCoursesTableProps) => {
               <div className="col-span-2 text-center">
                 <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
                   <Clock className="w-4 h-4" />
-                  <span>{formatDuration(course.durationInMinutes)}</span>
+                  <span>{course.durationInMinutes} دقيقة</span>
                 </div>
               </div>
 
@@ -116,7 +107,6 @@ export const AdminCoursesTable = ({ courses }: AdminCoursesTableProps) => {
                     variant="ghost"
                     size="sm"
                     icon={Trash2}
-                    onClick={() => handleDeleteCourse(course.id, course.title)}
                     className="text-xs px-3 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10"
                   >
                     حذف

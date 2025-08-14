@@ -1,18 +1,14 @@
-'use client'
-
-import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AdminCoursesTable } from './AdminCoursesTable'
-import { Course } from '@/types/course'
+import { Course } from '@/types'
 import Link from 'next/link'
 
 interface AdminCoursesPageClientProps {
   courses: Course[]
 }
 
-export const AdminCoursesPageClient = ({ courses: initialCourses }: AdminCoursesPageClientProps) => {
-  const [courses, setCourses] = useState<Course[]>(initialCourses)
+export const AdminCoursesPageClient = ({ courses }: AdminCoursesPageClientProps) => {
 
   return (
     <>

@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { AdminUsersPageClient } from '@/components/admin/AdminUsersPageClient'
-import { getAllUsers } from '@/data'
+import { usersData } from '@/data'
 
 export const metadata: Metadata = {
   title: 'إدارة المستخدمين - QAcart Admin',
@@ -11,8 +11,6 @@ export const metadata: Metadata = {
 }
 
 export default function AdminUsersPage() {
-  // Get all users for admin management
-  const users = getAllUsers()
 
   return (
     <div className="min-h-screen" dir="rtl">
@@ -23,7 +21,7 @@ export default function AdminUsersPage() {
       <main className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
           {/* Client-side component with user management functionality */}
-          <AdminUsersPageClient users={users as any} />
+          <AdminUsersPageClient users={usersData} />
         </div>
       </main>
 

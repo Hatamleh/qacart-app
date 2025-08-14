@@ -1,58 +1,21 @@
-'use client'
-
-import { useState } from 'react'
 import { Users, Crown, UserCheck, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AdminUsersTable } from './AdminUsersTable'
-import { AdminUser } from '@/types/profile'
+import { User } from '@/types'
 
 interface AdminUsersPageClientProps {
-  users: AdminUser[]
+  users: User[]
 }
 
-export const AdminUsersPageClient = ({ users: initialUsers }: AdminUsersPageClientProps) => {
-  const [users, setUsers] = useState<AdminUser[]>(initialUsers)
-  const [filter, setFilter] = useState<'all' | 'premium' | 'free' | 'expired'>('all')
+export const AdminUsersPageClient = ({ users }: AdminUsersPageClientProps) => {
 
-  // Filter users based on selected filter
-  const filteredUsers = users.filter(user => {
-    if (filter === 'all') return true
-    return user.subscription.status === filter
-  })
-
-  // Handle delete user
-  const handleDeleteUser = (userId: string, userName: string) => {
-    if (confirm(`هل أنت متأكد من حذف المستخدم "${userName}"؟`)) {
-      setUsers(prev => prev.filter(user => user.id !== userId))
-      alert(`تم حذف المستخدم: ${userName}`)
-    }
-  }
-
-  // Handle assign premium
-  const handleAssignPremium = (userId: string, userName: string) => {
-    if (confirm(`هل تريد منح اشتراك بريميوم للمستخدم "${userName}"؟`)) {
-      setUsers(prev => prev.map(user => 
-        user.id === userId 
-          ? {
-              ...user,
-              subscription: {
-                ...user.subscription,
-                status: 'premium' as const,
-                plan: 'yearly',
-                nextBillingDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                isActive: true
-              }
-            }
-          : user
-      ))
-      alert(`تم منح اشتراك بريميوم للمستخدم: ${userName}`)
-    }
-  }
+  // Filter users based on selected filter (all for design-first)
+  const filteredUsers = users
 
   // Get filter counts
   const premiumCount = users.filter(u => u.subscription.status === 'premium').length
   const freeCount = users.filter(u => u.subscription.status === 'free').length
-  const expiredCount = users.filter(u => u.subscription.status === 'expired').length
+  const expiredCount = 0 // No expired status in simplified model
 
   return (
     <>
@@ -128,30 +91,26 @@ export const AdminUsersPageClient = ({ users: initialUsers }: AdminUsersPageClie
         <div className="flex items-center gap-2 mb-6">
           <span className="text-sm font-medium text-muted-foreground ml-2">تصفية:</span>
           <Button
-            variant={filter === 'all' ? 'primary' : 'outline'}
+            variant="primary"
             size="sm"
-            onClick={() => setFilter('all')}
           >
             الكل ({users.length})
           </Button>
           <Button
-            variant={filter === 'premium' ? 'primary' : 'outline'}
+            variant="outline"
             size="sm"
-            onClick={() => setFilter('premium')}
           >
             بريميوم ({premiumCount})
           </Button>
           <Button
-            variant={filter === 'free' ? 'primary' : 'outline'}
+            variant="outline"
             size="sm"
-            onClick={() => setFilter('free')}
           >
             مجاني ({freeCount})
           </Button>
           <Button
-            variant={filter === 'expired' ? 'primary' : 'outline'}
+            variant="outline"
             size="sm"
-            onClick={() => setFilter('expired')}
           >
             منتهي ({expiredCount})
           </Button>
@@ -159,10 +118,8 @@ export const AdminUsersPageClient = ({ users: initialUsers }: AdminUsersPageClie
       </div>
 
       {/* Users Table */}
-      <AdminUsersTable 
+      <AdminUsersTable
         users={filteredUsers}
-        onDeleteUser={handleDeleteUser}
-        onAssignPremium={handleAssignPremium}
       />
     </>
   )

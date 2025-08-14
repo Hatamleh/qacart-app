@@ -1,5 +1,4 @@
-'use client'
-
+import { Metadata } from 'next'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { NewCourseForm } from '@/components/admin/NewCourseForm'
@@ -7,18 +6,13 @@ import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 
-export default function NewCoursePage() {
-  // Handle successful course creation
-  const handleCourseCreate = (courseData: any) => {
-    console.log('Course Data:', courseData)
-    alert(`تم إنشاء الدورة "${courseData.title}" بنجاح!`)
-    window.location.href = '/sudo/courses'
-  }
+export const metadata: Metadata = {
+  title: 'إنشاء دورة جديدة - QAcart Admin',
+  description: 'إنشاء دورة تدريبية جديدة',
+  robots: 'noindex, nofollow',
+}
 
-  // Handle form cancellation
-  const handleCancel = () => {
-    window.location.href = '/sudo/courses'
-  }
+export default function NewCoursePage() {
 
   return (
     <div className="min-h-screen" dir="rtl">
@@ -71,10 +65,7 @@ export default function NewCoursePage() {
 
           {/* Course Creation Form */}
           <div className="glass rounded-2xl p-8 border border-border shadow-lg">
-            <NewCourseForm
-              onSubmit={handleCourseCreate}
-              onCancel={handleCancel}
-            />
+            <NewCourseForm />
           </div>
         </div>
       </main>

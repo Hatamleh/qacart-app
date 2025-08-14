@@ -1,10 +1,4 @@
-
-export interface UserProgress {
-  userId: string
-  courseId: string
-  completedLessons: string[] // Array of lesson IDs
-  lastAccessed?: string
-}
+import {UserProgress} from "@/types";
 
 export const userProgressData: UserProgress[] = [
   {
@@ -15,7 +9,7 @@ export const userProgressData: UserProgress[] = [
   },
   {
     userId: "user_12345abc",
-    courseId: "course_manual_testing", 
+    courseId: "course_manual_testing",
     completedLessons: ["lesson_201", "lesson_202", "lesson_203"], // First 3 lessons completed
     lastAccessed: "2024-12-09"
   },

@@ -1,66 +1,20 @@
-'use client'
-
-import { useState } from 'react'
 import { Save, BookOpen, Target } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { Course } from '@/types/course'
 
-interface NewCourseFormProps {
-  onSubmit: (courseData: Partial<Course>) => void
-  onCancel: () => void
-  isLoading?: boolean
-}
-
-export const NewCourseForm = ({ onSubmit, onCancel, isLoading = false }: NewCourseFormProps) => {
-  const [formData, setFormData] = useState({
+export const NewCourseForm = () => {
+  // Static form data for design-first approach
+  const formData = {
     title: '',
     shortDescription: '',
-    type: 'manual',
+    type: 'يدوي',
     promoVideoUrl: '',
     videoThumbnail: '',
     instructorName: 'حاتم حتامله',
     studentsCount: 0,
     learningGoals: ['', '', '', '', '', ''] // Exactly 6 learning goals
-  })
-
-  // Handle form field changes
-  const handleChange = (field: string, value: string | number) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  // Handle learning goals changes
-  const handleLearningGoalChange = (index: number, value: string) => {
-    const newLearningGoals = [...formData.learningGoals]
-    newLearningGoals[index] = value
-    setFormData(prev => ({ ...prev, learningGoals: newLearningGoals }))
-  }
-
-  // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    // Prepare course data
-    const courseData: Partial<Course> = {
-      title: formData.title,
-      shortDescription: formData.shortDescription,
-      type: formData.type,
-      promoVideoUrl: formData.promoVideoUrl,
-      videoThumbnail: formData.videoThumbnail || 'https://picsum.photos/800/450?random=' + Date.now(),
-      instructor: {
-        name: formData.instructorName,
-        image: 'https://picsum.photos/200/200?random=instructor'
-      },
-      studentsCount: formData.studentsCount,
-      lastUpdated: new Date().toLocaleDateString('ar-SA'),
-      lessons: [],
-      durationInMinutes: 0,
-      tags: [],
-      learningGoals: formData.learningGoals
-    }
-
-    onSubmit(courseData)
-  }
-
+  
   return (
     <div className="space-y-8">
       
@@ -78,7 +32,7 @@ export const NewCourseForm = ({ onSubmit, onCancel, isLoading = false }: NewCour
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form className="space-y-8">
         
         {/* Basic Information Section */}
         <div className="glass rounded-xl p-6 border border-border space-y-6">
@@ -95,8 +49,7 @@ export const NewCourseForm = ({ onSubmit, onCancel, isLoading = false }: NewCour
               </label>
               <input
                 type="text"
-                value={formData.title}
-                onChange={(e) => handleChange('title', e.target.value)}
+                defaultValue=""
                 placeholder="مثال: أساسيات اختبار البرمجيات"
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 transition-all duration-200 shadow-sm"
               />
@@ -107,14 +60,13 @@ export const NewCourseForm = ({ onSubmit, onCancel, isLoading = false }: NewCour
                 نوع الدورة
               </label>
               <select
-                value={formData.type}
-                onChange={(e) => handleChange('type', e.target.value)}
+                defaultValue="يدوي"
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
               >
-                <option value="manual">اختبار يدوي</option>
-                <option value="automation">اختبار الأتمتة</option>
-                <option value="api">اختبار API</option>
-                <option value="performance">اختبار الأداء</option>
+                <option value="يدوي">اختبار يدوي</option>
+                <option value="أتمتة">اختبار الأتمتة</option>
+                <option value="API">اختبار API</option>
+                <option value="أداء">اختبار الأداء</option>
               </select>
             </div>
           </div>
@@ -125,8 +77,7 @@ export const NewCourseForm = ({ onSubmit, onCancel, isLoading = false }: NewCour
               وصف مختصر *
             </label>
             <textarea
-              value={formData.shortDescription}
-              onChange={(e) => handleChange('shortDescription', e.target.value)}
+              defaultValue=""
               rows={4}
               placeholder="وصف مختصر للدورة وما سيتعلمه الطالب..."
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 transition-all duration-200 resize-none shadow-sm"
@@ -158,8 +109,7 @@ export const NewCourseForm = ({ onSubmit, onCancel, isLoading = false }: NewCour
                 </label>
                 <input
                   type="text"
-                  value={goal}
-                  onChange={(e) => handleLearningGoalChange(index, e.target.value)}
+                  defaultValue=""
                   placeholder={`مثال: ${index === 0 ? 'فهم أساسيات اختبار البرمجيات' : index === 1 ? 'تعلم كتابة حالات الاختبار' : 'إتقان أدوات الاختبار الحديثة'}`}
                   className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
                 />
@@ -183,8 +133,7 @@ export const NewCourseForm = ({ onSubmit, onCancel, isLoading = false }: NewCour
               </label>
               <input
                 type="text"
-                value={formData.instructorName}
-                onChange={(e) => handleChange('instructorName', e.target.value)}
+                defaultValue="حاتم حتامله"
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 transition-all duration-200 shadow-sm"
               />
             </div>
@@ -197,8 +146,7 @@ export const NewCourseForm = ({ onSubmit, onCancel, isLoading = false }: NewCour
               <input
                 type="number"
                 min="0"
-                value={formData.studentsCount}
-                onChange={(e) => handleChange('studentsCount', parseInt(e.target.value) || 0)}
+                defaultValue={0}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
               />
             </div>
@@ -210,8 +158,7 @@ export const NewCourseForm = ({ onSubmit, onCancel, isLoading = false }: NewCour
               </label>
               <input
                 type="text"
-                value={formData.promoVideoUrl}
-                onChange={(e) => handleChange('promoVideoUrl', e.target.value)}
+                defaultValue=""
                 placeholder="مثال: 1085509305"
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
               />
@@ -224,8 +171,7 @@ export const NewCourseForm = ({ onSubmit, onCancel, isLoading = false }: NewCour
               </label>
               <input
                 type="url"
-                value={formData.videoThumbnail}
-                onChange={(e) => handleChange('videoThumbnail', e.target.value)}
+                defaultValue=""
                 placeholder="https://example.com/image.jpg"
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
               />
@@ -245,22 +191,17 @@ export const NewCourseForm = ({ onSubmit, onCancel, isLoading = false }: NewCour
             </p>
             <div className="flex items-center gap-3">
               <Button
-                type="button"
                 variant="ghost"
                 size="md"
-                onClick={onCancel}
-                disabled={isLoading}
                 className="min-w-[100px]"
               >
                 إلغاء
               </Button>
               
               <Button
-                type="submit"
                 variant="primary"
                 size="md"
                 icon={Save}
-                loading={isLoading}
                 className="min-w-[140px] shadow-lg hover:shadow-xl"
               >
                 إنشاء الدورة
