@@ -1,15 +1,8 @@
-'use client'
-
 import { Rocket, BookOpen } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Button } from '../ui/Button'
 
 export const LetsGo = () => {
-    const router = useRouter()
-    
-    const goToCourses = () => {
-        router.push('/courses')
-    }
     return (
         <section id="lets-go-section" className="py-20 lg:py-32 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5">
             <div className="container mx-auto px-6">
@@ -37,15 +30,16 @@ export const LetsGo = () => {
 
                     {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <Button
-                            variant="primary"
-                            size="lg"
-                            icon={BookOpen}
-                            iconPosition="right"
-                            onClick={goToCourses}
-                        >
-                            تصفح الدورات
-                        </Button>
+                        <Link href="/courses">
+                            <Button
+                                variant="primary"
+                                size="lg"
+                                icon={BookOpen}
+                                iconPosition="right"
+                            >
+                                تصفح الدورات
+                            </Button>
+                        </Link>
                     </div>
 
                 </div>

@@ -1,20 +1,14 @@
-'use client'
-
 import { BookOpen, Award } from 'lucide-react'
+import Link from 'next/link'
 import { GridBackground } from '../ui/GridBackground'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
+import { coursesData } from '@/data'
 
 export const Hero = () => {
-    const scrollToNextSection = () => {
-        const nextSection = document.getElementById('hard-truth-section')
-        if (nextSection) {
-            nextSection.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            })
-        }
-    }
+    // In future this will be fetched from the backend
+    const totalStudents = coursesData.reduce((total, course) => total + course.studentsCount, 0)
+    const totalCourses = coursesData.length
     return (
         <GridBackground className="overflow-hidden min-h-screen flex items-center justify-center">
             <div className="container mx-auto px-6 py-32 lg:py-40">
@@ -39,15 +33,16 @@ export const Hero = () => {
 
                     {/* CTA Button */}
                     <div className="mb-16">
-                        <Button
-                            variant="primary"
-                            size="lg"
-                            icon={BookOpen}
-                            iconPosition="right"
-                            onClick={scrollToNextSection}
-                        >
-                            ابدأ من هنا
-                        </Button>
+                        <Link href="/courses">
+                            <Button
+                                variant="primary"
+                                size="lg"
+                                icon={BookOpen}
+                                iconPosition="right"
+                            >
+                                ابدأ من هنا
+                            </Button>
+                        </Link>
                     </div>
 
                     {/* Social Proof */}
@@ -56,11 +51,11 @@ export const Hero = () => {
                             انضم إلى آلاف المطورين الذين يثقون في QAcart
                         </p>
                         <div className="flex justify-center items-center gap-8 opacity-60 flex-wrap">
-                            <div className="text-2xl font-bold text-primary">1500+</div>
+                            <div className="text-2xl font-bold text-primary">{totalStudents}+</div>
                             <div className="text-sm text-muted-foreground">طالب محترف</div>
                             <div className="w-px h-6 bg-border hidden md:block"></div>
-                            <div className="text-2xl font-bold text-primary">15+</div>
-                            <div className="text-sm text-muted-foreground">دولة عربية</div>
+                            <div className="text-2xl font-bold text-primary">{totalCourses}</div>
+                            <div className="text-sm text-muted-foreground">دورة متخصصة</div>
                             <div className="w-px h-6 bg-border hidden md:block"></div>
                             <div className="text-2xl font-bold text-primary">95%</div>
                             <div className="text-sm text-muted-foreground">معدل النجاح</div>

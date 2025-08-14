@@ -1,18 +1,8 @@
-'use client'
-
 import { X, CheckCircle } from 'lucide-react'
+import Link from 'next/link'
 import { Button } from '../ui/Button'
 
 export const HardTruth = () => {
-    const scrollToNextSection = () => {
-        const nextSection = document.getElementById('lets-go-section')
-        if (nextSection) {
-            nextSection.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            })
-        }
-    }
     return (
         <section id="hard-truth-section" className="py-20 lg:py-32 bg-gradient-to-b from-background to-secondary/20">
             <div className="container mx-auto px-6">
@@ -95,15 +85,16 @@ export const HardTruth = () => {
                         <p className="text-lg text-muted-foreground mb-6">
                             هل أنت مستعد للتعلم بالطريقة الصحيحة؟
                         </p>
-                        <Button
-                            variant="primary"
-                            size="lg"
-                            icon={CheckCircle}
-                            iconPosition="right"
-                            onClick={scrollToNextSection}
-                        >
-                            نعم، أريد أن أتعلم بشكل صحيح
-                        </Button>
+                        <Link href="/courses">
+                            <Button
+                                variant="primary"
+                                size="lg"
+                                icon={CheckCircle}
+                                iconPosition="right"
+                            >
+                                نعم، أريد أن أتعلم بشكل صحيح
+                            </Button>
+                        </Link>
                     </div>
 
                 </div>

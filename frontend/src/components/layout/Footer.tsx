@@ -37,15 +37,15 @@ export const Footer = () => {
 
                             {/* Policy Links with Icons */}
                             <div className="flex flex-wrap justify-center gap-6 text-sm">
-                                <Link href="/privacy" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                                <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
                                     <Shield className="w-4 h-4" />
                                     سياسة الخصوصية
                                 </Link>
-                                <Link href="/terms" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                                <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
                                     <FileText className="w-4 h-4" />
                                     الشروط والأحكام
                                 </Link>
-                                <Link href="/refund" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                                <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
                                     <RefreshCw className="w-4 h-4" />
                                     سياسة الاسترداد
                                 </Link>
@@ -55,7 +55,7 @@ export const Footer = () => {
                             <div className="text-sm text-muted-foreground">
                                 © 2026 QAcart. جميع الحقوق محفوظة
                             </div>
-                            
+
                             {/* Made with Love */}
                             <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                                 <span>صُنع بحب من QAcart</span>
