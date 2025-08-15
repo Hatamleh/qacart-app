@@ -3,8 +3,7 @@ import {Navbar} from '@/components/layout/Navbar'
 import {Footer} from '@/components/layout/Footer'
 import {CoursesHero} from '@/components/courses/CoursesHero'
 import {CoursesGrid} from '@/components/courses/CoursesGrid'
-// In future this will be replaced with a dynamic data source
-import {coursesData} from '@/data'
+import {CourseClient} from '@/clients'
 
 export const metadata: Metadata = {
   title: 'الدورات - QAcart',
@@ -18,9 +17,11 @@ export const metadata: Metadata = {
   },
 }
 
-export default function CoursesPage() {
-  // Get courses from local JSON data
-    return (
+export default async function CoursesPage() {
+  // Server-side data fetching using CourseClient
+  const courses = await CourseClient.getAllCourses()
+
+  return (
     <div className="min-h-screen" dir="rtl">
       {/* Navigation */}
       <Navbar />
@@ -29,7 +30,7 @@ export default function CoursesPage() {
       <CoursesHero />
 
       {/* Courses Grid Section */}
-      <CoursesGrid courses={coursesData} />
+      <CoursesGrid courses={courses} />
 
       {/* Footer */}
       <Footer />

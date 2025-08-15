@@ -1,0 +1,1 @@
+export { CourseClient } from './CourseClient'
