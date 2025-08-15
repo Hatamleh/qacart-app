@@ -6,15 +6,6 @@ import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
 
 export const CoursesHero = () => {
-    const scrollToCoursesGrid = () => {
-        const coursesSection = document.getElementById('courses-grid-section')
-        if (coursesSection) {
-            coursesSection.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            })
-        }
-    }
     return (
         <GridBackground className="overflow-hidden">
             <div className="container mx-auto px-6 pt-32 pb-20 lg:pt-44 lg:pb-32">
@@ -61,7 +52,6 @@ export const CoursesHero = () => {
                             size="lg"
                             icon={Play}
                             iconPosition="right"
-                            onClick={scrollToCoursesGrid}
                         >
                             تصفح الدورات
                         </Button>

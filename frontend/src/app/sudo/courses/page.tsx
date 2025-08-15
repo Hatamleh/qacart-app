@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { AdminCoursesPageClient } from '@/components/admin/AdminCoursesPageClient'
+import { AdminCoursesPageClient } from '@/components/sudo/AdminCoursesPageClient'
 import { coursesData } from '@/data'
 
 export const metadata: Metadata = {

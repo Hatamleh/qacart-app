@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { AdminUsersPageClient } from '@/components/admin/AdminUsersPageClient'
+import { AdminUsersPageClient } from '@/components/sudo/AdminUsersPageClient'
 import { usersData } from '@/data'
 
 export const metadata: Metadata = {

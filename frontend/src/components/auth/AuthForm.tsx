@@ -1,5 +1,6 @@
-import { Mail, Apple } from 'lucide-react'
-import { Button } from '../ui/Button'
+import { MagicLinkForm } from './MagicLinkForm'
+import { SocialLoginOptions } from './SocialLoginOptions'
+import { AuthTerms } from './AuthTerms'
 
 export const AuthForm = () => {
 
@@ -30,31 +31,7 @@ export const AuthForm = () => {
           </div>
 
           {/* Email Magic Link Form */}
-          <form className="mb-8">
-            <div className="mb-6">
-              <label htmlFor="email" className="block text-sm font-semibold text-muted-foreground/80 uppercase tracking-wider mb-4">
-                البريد الإلكتروني
-              </label>
-              <div className="relative group">
-                <Mail className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-primary/60 group-focus-within:text-primary transition-colors" />
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="أدخل بريدك الإلكتروني"
-                  className="w-full pr-12 pl-4 py-4 rounded-2xl border border-primary/10 bg-background/50 backdrop-blur-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 hover:border-primary/20 transition-all duration-300"
-                  required
-                />
-              </div>
-            </div>
-
-            <Button
-              variant="primary"
-              size="lg"
-              className="w-full py-4 text-lg font-semibold rounded-2xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] transition-all duration-300"
-            >
-              إرسال رابط تسجيل الدخول
-            </Button>
-          </form>
+          <MagicLinkForm />
 
           {/* Modern Divider */}
           <div className="flex items-center justify-center mb-8">
@@ -64,27 +41,10 @@ export const AuthForm = () => {
           </div>
 
           {/* Social Login Options */}
-          <div className="space-y-4 mb-8">
-            <div className="group w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl border border-primary/10 bg-background/30 hover:bg-primary/[0.02] hover:border-primary/20 transition-all duration-300 hover:scale-[1.01]">
-              <Mail className="w-5 h-5 text-primary/70 group-hover:text-primary transition-colors" />
-              <span className="text-muted-foreground/70 font-medium group-hover:text-foreground transition-colors">المتابعة باستخدام Google</span>
-            </div>
-
-            <div className="group w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl border border-primary/10 bg-background/30 hover:bg-primary/[0.02] hover:border-primary/20 transition-all duration-300 hover:scale-[1.01]">
-              <Apple className="w-5 h-5 text-primary/70 group-hover:text-primary transition-colors" />
-              <span className="text-muted-foreground/70 font-medium group-hover:text-foreground transition-colors">المتابعة باستخدام Apple</span>
-            </div>
-          </div>
+          <SocialLoginOptions />
 
           {/* Terms */}
-          <div className="text-center">
-            <p className="text-xs text-muted-foreground/60 leading-relaxed">
-              بالمتابعة، فإنك توافق على{' '}
-              <a href="/terms" className="text-primary/80 hover:text-primary transition-colors">شروط الخدمة</a>
-              {' '}و{' '}
-              <a href="/privacy" className="text-primary/80 hover:text-primary transition-colors">سياسة الخصوصية</a>
-            </p>
-          </div>
+          <AuthTerms />
 
         </div>
       </div>

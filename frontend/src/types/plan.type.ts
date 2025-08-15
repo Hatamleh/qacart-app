@@ -1,4 +1,3 @@
-
 export interface PricingOption {
   id: string
   type: string

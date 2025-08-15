@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { NewCourseForm } from '@/components/admin/NewCourseForm'
+import { NewCourseForm } from '@/components/sudo/NewCourseForm'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
