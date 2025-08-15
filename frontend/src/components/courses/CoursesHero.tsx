@@ -17,7 +17,7 @@ export const CoursesHero = () => {
     }
     return (
         <GridBackground className="overflow-hidden">
-            <div className="container mx-auto px-6 py-20 lg:py-32">
+            <div className="container mx-auto px-6 pt-32 pb-20 lg:pt-44 lg:pb-32">
                 <div className="text-center">
                     {/* Top Badge */}
                     <div className="mb-8">
@@ -28,12 +28,13 @@ export const CoursesHero = () => {
                     </div>
 
                     {/* Main Title */}
-                    <h1 className="text-4xl lg:text-6xl font-bold mb-8">
-                        تعلم اختبار البرمجيات مع <span className="gradient-text">خبراء المجال</span>
+                    <h1 className="text-4xl lg:text-6xl font-bold mb-8 leading-tight">
+                        تعلم اختبار البرمجيات<br />
+                        مع <span className="gradient-text">خبراء المجال</span>
                     </h1>
 
                     {/* Subtitle */}
-                    <p className="text-lg text-muted-foreground mb-12 max-w-3xl mx-auto">
+                    <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
                         اكتشف مجموعة شاملة من الدورات التدريبية المصممة لتطوير مهاراتك في اختبار البرمجيات من المبتدئ إلى المتقدم
                     </p>
 
