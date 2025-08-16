@@ -18,6 +18,7 @@ interface AuthContextType {
   
   // Auth actions
   signOut: () => Promise<void>
+  refreshUser: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -40,59 +41,87 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
       setFirebaseUser(firebaseAuthUser)
       
       if (firebaseAuthUser) {
-        // User is signed in - fetch our app user data
-        setIsLoading(true)
-        try {
-          // Get session cookie and our app user data via API
-          const response = await fetch('/api/auth/session', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              idToken: await firebaseAuthUser.getIdToken()
+        // User just signed in - create session and get user data
+        if (!user) { // Only if we don't already have user data
+          setIsLoading(true)
+          try {
+            const response = await fetch('/api/auth/session', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                idToken: await firebaseAuthUser.getIdToken()
+              })
             })
-          })
-          
-          if (response.ok) {
-            const userData = await response.json()
-            setUser(userData.user)
-          } else {
+            
+            if (response.ok) {
+              const userData = await response.json()
+              setUser(userData.user)
+            } else {
+              console.error('Failed to create session')
+              setUser(null)
+            }
+          } catch (error) {
+            console.error('Error creating session:', error)
             setUser(null)
+          } finally {
+            setIsLoading(false)
           }
-        } catch (error) {
-          console.error('Error fetching user data:', error)
-          setUser(null)
-        } finally {
-          setIsLoading(false)
         }
       } else {
-        // User is signed out
-        setUser(null)
-        setIsLoading(false)
+        // User signed out - clear everything
+        if (user) { // Only if we had user data
+          setUser(null)
+          // Note: logout API call happens in handleSignOut
+        }
       }
       
       setIsInitialized(true)
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [user])
 
   const handleSignOut = async () => {
     try {
-      // Sign out from Firebase
-      await signOut(auth)
-      
-      // Clear session cookie via API
+      // Clear session cookie via API first
       await fetch('/api/auth/logout', {
         method: 'POST',
       })
       
-      // Reset state
-      setFirebaseUser(null)
-      setUser(null)
+      // Sign out from Firebase (this triggers the auth state change)
+      await signOut(auth)
+      
+      // State will be cleared by the auth state change listener
     } catch (error) {
       console.error('Error signing out:', error)
+    }
+  }
+
+  const refreshUser = async () => {
+    if (!firebaseUser) return
+    
+    setIsLoading(true)
+    try {
+      const response = await fetch('/api/auth/session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idToken: await firebaseUser.getIdToken(true) // Force refresh
+        })
+      })
+      
+      if (response.ok) {
+        const userData = await response.json()
+        setUser(userData.user)
+      }
+    } catch (error) {
+      console.error('Error refreshing user:', error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -102,6 +131,7 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
     isLoading,
     isInitialized,
     signOut: handleSignOut,
+    refreshUser,
   }
 
   return (

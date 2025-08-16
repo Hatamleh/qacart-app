@@ -1,5 +1,5 @@
-import { admin } from '@/firebase/admin'
-import { cookies } from 'next/headers'
+import {admin} from '@/firebase/admin'
+import {cookies} from 'next/headers'
 
 /**
  * AuthClient - Handles authentication operations only
@@ -9,7 +9,7 @@ import { cookies } from 'next/headers'
 export class AuthClient {
 
   // ===== SESSION MANAGEMENT =====
-  
+
   /**
    * Create session cookie from Firebase ID token
    * Called by API route after client authentication
@@ -18,9 +18,7 @@ export class AuthClient {
     try {
       // Create session cookie with 5 day expiry
       const expiresIn = 60 * 60 * 24 * 5 * 1000 // 5 days
-      const sessionCookie = await admin.auth().createSessionCookie(idToken, { expiresIn })
-
-      return sessionCookie
+        return await admin.auth().createSessionCookie(idToken, {expiresIn})
     } catch (error) {
       console.error('Error creating session cookie:', error)
       throw new Error('Failed to create session')
@@ -61,11 +59,11 @@ export class AuthClient {
     try {
       const cookieStore = await cookies()
       const sessionCookie = cookieStore.get('session')?.value
-      
+
       if (!sessionCookie) {
         return null
       }
-      
+
       const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true)
       return decodedClaims.uid
     } catch (error) {

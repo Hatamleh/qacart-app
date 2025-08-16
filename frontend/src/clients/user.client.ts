@@ -178,12 +178,12 @@ export class UserClient {
    * Delete own account (User function) - used by profile page "حذف الحساب" button
    */
   static async deleteOwnAccount(): Promise<void> {
-    try {
-      const userId = await AuthClient.getAuthenticatedUserId()
-      if (!userId) {
-        throw new Error('User not authenticated')
-      }
+    const userId = await AuthClient.getAuthenticatedUserId()
+    if (!userId) {
+      throw new Error('User not authenticated')
+    }
 
+    try {
       // Same deletion process but for own account
       await this.deleteUserByAdmin(userId)
 
