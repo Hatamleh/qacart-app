@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Save, BookOpen, Target } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -9,7 +9,7 @@ import { CourseClient } from '@/clients/CourseClient'
 export const NewCourseForm = () => {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  
+
   // Form state
   const [formData, setFormData] = useState({
     title: '',
@@ -24,17 +24,15 @@ export const NewCourseForm = () => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     // Basic validation
     if (!formData.title.trim() || !formData.shortDescription.trim()) {
-      alert('يرجى ملء العنوان والوصف المختصر')
       return
     }
 
     // Check if all learning goals are filled
     const filledGoals = formData.learningGoals.filter(goal => goal.trim())
     if (filledGoals.length < 6) {
-      alert('يرجى ملء جميع أهداف التعلم الستة')
       return
     }
 
@@ -57,13 +55,12 @@ export const NewCourseForm = () => {
       })
 
       console.log('✅ Course created successfully:', result.id)
-      
+
       // Redirect to the course edit page to add lessons
       router.push(`/sudo/courses/${result.id}`)
-      
+
     } catch (error) {
       console.error('❌ Failed to create course:', error)
-      alert('حدث خطأ أثناء إنشاء الدورة. يرجى المحاولة مرة أخرى.')
     } finally {
       setIsSubmitting(false)
     }
@@ -82,10 +79,10 @@ export const NewCourseForm = () => {
     }))
   }
 
-  
+
   return (
     <div className="space-y-8">
-      
+
       {/* Form Header */}
       <div className="text-center pb-6 border-b border-border">
         <div className="w-20 h-20 mx-auto mb-4 glass rounded-2xl flex items-center justify-center border border-primary/20">
@@ -101,7 +98,7 @@ export const NewCourseForm = () => {
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-8">
-        
+
         {/* Basic Information Section */}
         <div className="glass rounded-xl p-6 border border-border space-y-6">
           <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -169,7 +166,7 @@ export const NewCourseForm = () => {
               جميع الأهداف مطلوبة
             </span>
           </div>
-          
+
           <p className="text-sm text-muted-foreground">
             اكتب ما سيتعلمه الطلاب في هذه الدورة (6 أهداف مطلوبة)
           </p>
@@ -259,7 +256,7 @@ export const NewCourseForm = () => {
               />
             </div>
           </div>
-          
+
           <p className="text-xs text-muted-foreground">
             💡 إذا تُركت صورة الدورة فارغة، سيتم إنشاء صورة افتراضية تلقائياً
           </p>
@@ -282,7 +279,7 @@ export const NewCourseForm = () => {
               >
                 إلغاء
               </Button>
-              
+
               <Button
                 type="submit"
                 variant="primary"

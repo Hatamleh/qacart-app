@@ -1,6 +1,11 @@
+'use client'
+
 import Link from 'next/link'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Edit, Trash2, Clock, Users, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { CourseClient } from '@/clients/CourseClient'
 import { Course } from '@/types'
 
 interface CoursesListProps {
@@ -8,6 +13,28 @@ interface CoursesListProps {
 }
 
 export const CoursesList = ({ courses }: CoursesListProps) => {
+  const router = useRouter()
+  const [deletingCourseId, setDeletingCourseId] = useState<string | null>(null)
+
+  // Handle course deletion
+  const handleDeleteCourse = async (courseId: string, courseTitle: string) => {
+    if (!confirm(`هل أنت متأكد من حذف دورة "${courseTitle}"؟`)) {
+      return
+    }
+
+    setDeletingCourseId(courseId)
+
+    try {
+      await CourseClient.deleteCourse(courseId)
+      // Refresh the page to see updated courses list
+      router.refresh()
+    } catch (error) {
+      console.error('❌ Failed to delete course:', error)
+    } finally {
+      setDeletingCourseId(null)
+    }
+  }
+
   return (
     <div className="space-y-3">
       {courses.map((course) => (
@@ -94,8 +121,10 @@ export const CoursesList = ({ courses }: CoursesListProps) => {
                   size="sm"
                   icon={Trash2}
                   className="text-xs px-3 py-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                  onClick={() => handleDeleteCourse(course.id, course.title)}
+                  disabled={deletingCourseId === course.id}
                 >
-                  حذف
+                  {deletingCourseId === course.id ? 'جاري الحذف...' : 'حذف'}
                 </Button>
               </div>
             </div>

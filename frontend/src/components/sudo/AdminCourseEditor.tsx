@@ -1,6 +1,11 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Save, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AdminLessonManager } from './AdminLessonManager'
+import { CourseClient } from '@/clients/CourseClient'
 import { Course } from '@/types'
 
 interface AdminCourseEditorProps {
@@ -8,30 +13,81 @@ interface AdminCourseEditorProps {
 }
 
 export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
+  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    title: course.title,
+    type: course.type,
+    shortDescription: course.shortDescription,
+    promoVideoUrl: course.promoVideoUrl,
+    videoThumbnail: course.videoThumbnail,
+    studentsCount: course.studentsCount
+  })
 
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    // Basic validation
+    if (!formData.title.trim() || !formData.shortDescription.trim()) {
+      return
+    }
 
+    setIsSubmitting(true)
+
+    try {
+      // Update course using CourseClient
+      await CourseClient.updateCourse(course.id, {
+        title: formData.title.trim(),
+        type: formData.type,
+        shortDescription: formData.shortDescription.trim(),
+        promoVideoUrl: formData.promoVideoUrl.trim(),
+        videoThumbnail: formData.videoThumbnail.trim(),
+        studentsCount: formData.studentsCount,
+        lastUpdated: new Date().toLocaleDateString('ar-SA')
+      })
+
+      
+    } catch (error) {
+      console.error('❌ Failed to update course:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  // Handle input changes
+  const updateField = (field: string, value: string | number) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
 
   return (
-    <div className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-8">
 
       {/* Action Bar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button
+            type="button"
             variant="outline"
             size="sm"
             icon={ArrowRight}
+            onClick={() => router.push('/sudo/courses')}
+            disabled={isSubmitting}
           >
             العودة
           </Button>
         </div>
 
         <Button
+          type="submit"
           variant="primary"
           size="md"
           icon={Save}
+          disabled={isSubmitting}
         >
-          حفظ التغييرات
+          {isSubmitting ? 'جاري الحفظ...' : 'حفظ التغييرات'}
         </Button>
       </div>
 
@@ -50,8 +106,10 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
             </label>
             <input
               type="text"
-              defaultValue={course.title}
+              value={formData.title}
+              onChange={(e) => updateField('title', e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
+              required
             />
           </div>
 
@@ -61,7 +119,8 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
               نوع الدورة
             </label>
             <select
-              defaultValue={course.type}
+              value={formData.type}
+              onChange={(e) => updateField('type', e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
             >
               <option value="يدوي">يدوي</option>
@@ -77,9 +136,11 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
               وصف مختصر
             </label>
             <textarea
-              defaultValue={course.shortDescription}
+              value={formData.shortDescription}
+              onChange={(e) => updateField('shortDescription', e.target.value)}
               rows={3}
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 resize-none"
+              required
             />
           </div>
 
@@ -90,7 +151,8 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
             </label>
             <input
               type="text"
-              defaultValue={course.promoVideoUrl}
+              value={formData.promoVideoUrl}
+              onChange={(e) => updateField('promoVideoUrl', e.target.value)}
               placeholder="معرف الفيديو في Vimeo"
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
             />
@@ -103,7 +165,8 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
             </label>
             <input
               type="url"
-              defaultValue={course.videoThumbnail}
+              value={formData.videoThumbnail}
+              onChange={(e) => updateField('videoThumbnail', e.target.value)}
               placeholder="https://example.com/image.jpg"
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
             />
@@ -130,7 +193,8 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
             </label>
             <input
               type="number"
-              defaultValue={course.studentsCount}
+              value={formData.studentsCount}
+              onChange={(e) => updateField('studentsCount', parseInt(e.target.value) || 0)}
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
             />
           </div>
@@ -141,6 +205,6 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
       <AdminLessonManager
         course={course}
       />
-    </div>
+    </form>
   )
 }
