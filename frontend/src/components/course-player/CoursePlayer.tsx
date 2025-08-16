@@ -1,3 +1,6 @@
+'use client'
+
+import { useRouter, useSearchParams } from 'next/navigation'
 import { LessonNavigation } from './LessonNavigation'
 import { LessonVideoArea } from './LessonVideoArea'
 import { LessonControls } from './LessonControls'
@@ -10,9 +13,47 @@ import type { Course, Lesson } from '@/types'
 interface CoursePlayerProps {
   course: Course
   currentLesson: Lesson
+  courseId: string
 }
 
-export const CoursePlayer = ({ course, currentLesson }: CoursePlayerProps) => {
+export const CoursePlayer = ({ 
+  course, 
+  currentLesson, 
+  courseId
+}: CoursePlayerProps) => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Navigation functions
+  const navigateToLesson = (lesson: Lesson) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('lesson', lesson.id)
+    router.push(`/courses/${courseId}/player?${params.toString()}`)
+  }
+
+  const navigateToPreviousLesson = () => {
+    const currentIndex = course.lessons.findIndex(l => l.id === currentLesson.id)
+    if (currentIndex > 0) {
+      const previousLesson = course.lessons[currentIndex - 1]
+      navigateToLesson(previousLesson)
+    }
+  }
+
+  const navigateToNextLesson = () => {
+    const currentIndex = course.lessons.findIndex(l => l.id === currentLesson.id)
+    if (currentIndex < course.lessons.length - 1) {
+      const nextLesson = course.lessons[currentIndex + 1]
+      navigateToLesson(nextLesson)
+    }
+  }
+
+  const handleMarkComplete = () => {
+    // TODO: Implement lesson completion logic
+    console.log('Mark lesson complete:', currentLesson.id)
+    
+    // Auto-advance to next lesson after marking complete
+    navigateToNextLesson()
+  }
   // Get previous and next lessons for navigation
   const currentIndex = course.lessons.findIndex(l => l.id === currentLesson.id)
   const previousLesson = currentIndex > 0 ? course.lessons[currentIndex - 1] : null
@@ -40,6 +81,7 @@ export const CoursePlayer = ({ course, currentLesson }: CoursePlayerProps) => {
           <LessonNavigation
             course={course}
             currentLesson={currentLesson}
+            onLessonSelect={navigateToLesson}
           />
         </div>
 
@@ -68,6 +110,9 @@ export const CoursePlayer = ({ course, currentLesson }: CoursePlayerProps) => {
               previousLesson={previousLesson}
               nextLesson={nextLesson}
               courseId={course.id}
+              onPrevious={navigateToPreviousLesson}
+              onNext={navigateToNextLesson}
+              onMarkComplete={handleMarkComplete}
               afterArticle={true}
             />
           </div>

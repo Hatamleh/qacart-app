@@ -54,6 +54,7 @@ export default async function CoursePlayerPage({ params, searchParams }: CourseP
           <CoursePlayer
             course={course}
             currentLesson={currentLesson}
+            courseId={courseId}
           />
         </div>
 
