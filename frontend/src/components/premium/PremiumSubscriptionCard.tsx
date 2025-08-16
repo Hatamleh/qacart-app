@@ -1,7 +1,10 @@
+'use client'
+
+import { useState } from 'react'
 import { RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '../ui/Button'
-import { Plan } from '@/types'
+import { Plan, PricingOption } from '@/types'
 import { PlanFeatures } from './PlanFeatures'
 import { PriceSection } from './PriceSection'
 import { PricingOptionsDisplay } from './PricingOptionsDisplay'
@@ -11,8 +14,16 @@ interface PremiumSubscriptionCardProps {
 }
 
 export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) => {
-  // Use the first pricing option by default for a design-first approach
-  const selectedPricing = plan.pricingOptions[0]
+  // State for selected pricing option
+  const [selectedPricingId, setSelectedPricingId] = useState<string>(plan.pricingOptions[0].id)
+  
+  // Get the currently selected pricing option
+  const selectedPricing = plan.pricingOptions.find(opt => opt.id === selectedPricingId) || plan.pricingOptions[0]
+
+  // Handle pricing option selection
+  const handlePricingChange = (pricingOption: PricingOption) => {
+    setSelectedPricingId(pricingOption.id)
+  }
 
   return (
     <div className="max-w-lg mx-auto">
@@ -37,7 +48,11 @@ export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) 
           <PriceSection selectedPricing={selectedPricing} />
 
           {/* Pricing Options Display */}
-          <PricingOptionsDisplay pricingOptions={plan.pricingOptions} />
+          <PricingOptionsDisplay 
+            pricingOptions={plan.pricingOptions}
+            selectedPricingId={selectedPricingId}
+            onPricingChange={handlePricingChange}
+          />
 
           {/* Features Grid */}
           <PlanFeatures features={plan.features} />

@@ -3,7 +3,7 @@ import {Navbar} from '@/components/layout/Navbar'
 import {Footer} from '@/components/layout/Footer'
 import {PremiumHero} from '@/components/premium/PremiumHero'
 import {PremiumSubscriptionCard} from '@/components/premium/PremiumSubscriptionCard'
-import {planData} from '@/data'
+import {PlanClient} from '@/clients'
 
 export const metadata: Metadata = {
   title: 'خطة بريميوم - QAcart',
@@ -17,8 +17,11 @@ export const metadata: Metadata = {
   },
 }
 
-export default function PremiumPage() {
-    return (
+export default async function PremiumPage() {
+  // Server-side data fetching using PlanClient
+  const plan = await PlanClient.getPlan()
+
+  return (
     <div className="min-h-screen" dir="rtl">
       {/* Navigation */}
       <Navbar />
@@ -30,7 +33,7 @@ export default function PremiumPage() {
       <section className="pb-20 bg-muted/10">
         <div className="container mx-auto px-6">
           <div className="max-w-lg mx-auto">
-            <PremiumSubscriptionCard plan={planData} />
+            <PremiumSubscriptionCard plan={plan} />
           </div>
         </div>
       </section>
