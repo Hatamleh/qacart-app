@@ -18,7 +18,6 @@ export class UserClient {
   static getCurrentUser = cache(async (): Promise<User | null> => {
     try {
       const userId = await AuthClient.getAuthenticatedUserId()
-
       if (!userId) {
         return null
       }
@@ -32,9 +31,9 @@ export class UserClient {
   })
 
   /**
-   * Get user by ID (used internally)
+   * Get user by ID (can be used internally or by session route)
    */
-  private static async getUserById(userId: string): Promise<User | null> {
+  static async getUserById(userId: string): Promise<User | null> {
     try {
       const userDoc = await admin.firestore()
         .collection('users')

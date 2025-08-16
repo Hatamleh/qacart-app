@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { AuthClient, UserClient } from '@/clients'
+import { admin } from '@/firebase/admin'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,11 +13,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Verify the ID token first to get user ID
+    const decodedToken = await admin.auth().verifyIdToken(idToken)
+    const userId = decodedToken.uid
+      console.log(userId)
+
     // Create session cookie using AuthClient
     const sessionCookie = await AuthClient.createSessionCookie(idToken)
 
-    // Get the user data using UserClient
-    const user = await UserClient.getCurrentUser()
+    // Get user data directly by ID (avoiding circular dependency)
+    const user = await UserClient.getUserById(userId)
 
     if (!user) {
       return NextResponse.json(
