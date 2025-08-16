@@ -1,6 +1,4 @@
 import {Metadata} from 'next'
-import {Navbar} from '@/components/layout/Navbar'
-import {Footer} from '@/components/layout/Footer'
 import {CoursesHero} from '@/components/courses/CoursesHero'
 import {CoursesGrid} from '@/components/courses/CoursesGrid'
 import {CourseClient} from '@/clients'
@@ -22,18 +20,12 @@ export default async function CoursesPage() {
   const courses = await CourseClient.getAllCourses()
 
   return (
-    <div className="min-h-screen" dir="rtl">
-      {/* Navigation */}
-      <Navbar />
-
+    <>
       {/* Courses Hero Section */}
       <CoursesHero />
 
       {/* Courses Grid Section */}
       <CoursesGrid courses={courses} />
-
-      {/* Footer */}
-      <Footer />
-    </div>
+    </>
   )
 }

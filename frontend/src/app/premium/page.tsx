@@ -1,6 +1,4 @@
 import {Metadata} from 'next'
-import {Navbar} from '@/components/layout/Navbar'
-import {Footer} from '@/components/layout/Footer'
 import {PremiumHero} from '@/components/premium/PremiumHero'
 import {PremiumSubscriptionCard} from '@/components/premium/PremiumSubscriptionCard'
 import {PlanClient} from '@/clients'
@@ -22,10 +20,7 @@ export default async function PremiumPage() {
   const plan = await PlanClient.getPlan()
 
   return (
-    <div className="min-h-screen" dir="rtl">
-      {/* Navigation */}
-      <Navbar />
-
+    <>
       {/* Hero Section */}
       <PremiumHero />
 
@@ -37,9 +32,6 @@ export default async function PremiumPage() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+    </>
   )
 }

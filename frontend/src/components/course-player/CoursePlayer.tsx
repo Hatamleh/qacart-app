@@ -7,7 +7,7 @@ import { LessonControls } from './LessonControls'
 import { LessonArticle } from './LessonArticle'
 import { CourseInfoSection } from './CourseInfoSection'
 import { ProgressNote } from './ProgressNote'
-import { Navbar } from '../layout/Navbar'
+
 import type { Course, Lesson } from '@/types'
 
 interface CoursePlayerProps {
@@ -63,10 +63,7 @@ export const CoursePlayer = ({
   const hasVideo = currentLesson.isFree || currentLesson.vimeoId
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Standard Navbar */}
-      <Navbar />
-
+    <div className="bg-background">
       {/* Main Layout */}
       <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full pt-32">
         {/* Course Info Section */}

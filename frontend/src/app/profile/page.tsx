@@ -1,6 +1,4 @@
 import { Metadata } from 'next'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import { ProfileWelcome } from '@/components/profile/ProfileWelcome'
 import { UserInfo } from '@/components/profile/UserInfo'
 import { ManageAccountSection } from '@/components/profile/ManageAccountSection'
@@ -23,9 +21,7 @@ export const metadata: Metadata = {
 export default function ProfilePage() {
 
   return (
-    <div className="min-h-screen" dir="rtl">
-      <Navbar />
-
+    <>
       {/* Main Content */}
       <main className="py-32 lg:py-40">
         <div className="container mx-auto px-6 max-w-4xl">
@@ -50,8 +46,6 @@ export default function ProfilePage() {
 
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </>
   )
 }

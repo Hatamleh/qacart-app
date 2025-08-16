@@ -2,9 +2,9 @@
 export interface User {
   id: string
   email: string
+  role: 'user' | 'sudo'
   subscription: Subscription
   createdAt: string
-  lastLogin?: string
 }
 
 export interface Subscription {

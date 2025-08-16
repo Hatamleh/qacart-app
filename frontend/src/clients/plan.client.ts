@@ -24,7 +24,6 @@ export class PlanClient {
    * Create subscription (Future implementation)
    */
   static async createSubscription(pricingOptionId: string, userEmail: string) {
-    // TODO: Implement with Firebase/Stripe integration
     await new Promise(resolve => setTimeout(resolve, 100))
     console.log('Creating subscription:', { pricingOptionId, userEmail })
     throw new Error('Subscription creation not implemented yet')
@@ -34,7 +33,6 @@ export class PlanClient {
    * Check user subscription status (Future implementation)
    */
   static async getUserSubscription(userId: string) {
-    // TODO: Implement with Firebase integration
     await new Promise(resolve => setTimeout(resolve, 100))
     console.log('Getting user subscription:', userId)
     return null // No active subscription for now

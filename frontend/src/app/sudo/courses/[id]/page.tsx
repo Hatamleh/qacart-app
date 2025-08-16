@@ -1,7 +1,5 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import { AdminCourseEditor } from '@/components/sudo/AdminCourseEditor'
 import { CourseClient } from '@/clients/course.client'
 import { notFound } from 'next/navigation'
@@ -40,11 +38,8 @@ export default async function AdminCourseEditPage({ params }: AdminCourseEditPag
     const course = await CourseClient.getCourseById(id)
 
     return (
-    <div className="min-h-screen" dir="rtl">
-      {/* Navigation */}
-      <Navbar />
-
-      {/* Admin Course Editor */}
+      <>
+        {/* Admin Course Editor */}
       <main className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
 
@@ -73,10 +68,7 @@ export default async function AdminCourseEditPage({ params }: AdminCourseEditPag
           <AdminCourseEditor course={course} />
         </div>
       </main>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+      </>
     )
   } catch {
     // Course isn't found - show 404

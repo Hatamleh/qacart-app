@@ -1,6 +1,4 @@
 import { Metadata } from 'next'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import { Hero } from '@/components/landing/Hero'
 import { HardTruth } from '@/components/landing/HardTruth'
 import { LetsGo } from '@/components/landing/LetsGo'
@@ -22,10 +20,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen" dir="rtl">
-      {/* Navigation */}
-      <Navbar />
-
+    <>
       {/* Hero Section */}
       <Hero />
 
@@ -34,9 +29,6 @@ export default function HomePage() {
 
       {/* Lets Go Section */}
       <LetsGo />
-
-      {/* Footer */}
-      <Footer />
-    </div>
+    </>
   )
 }

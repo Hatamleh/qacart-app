@@ -1,6 +1,4 @@
 import { Metadata } from 'next'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import { NewCourseForm } from '@/components/sudo/NewCourseForm'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -15,10 +13,7 @@ export const metadata: Metadata = {
 export default function NewCoursePage() {
 
   return (
-    <div className="min-h-screen" dir="rtl">
-      {/* Navigation */}
-      <Navbar />
-
+    <>
       {/* New Course Content */}
       <main className="pt-32 pb-20">
         <div className="max-w-4xl mx-auto px-4 lg:px-6">
@@ -69,9 +64,6 @@ export default function NewCoursePage() {
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+    </>
   )
 }

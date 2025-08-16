@@ -1,5 +1,4 @@
 import { Metadata } from 'next'
-import { Footer } from '@/components/layout/Footer'
 import { CoursePlayer } from '@/components/course-player/CoursePlayer'
 import { CourseClient } from '@/clients'
 import { notFound } from 'next/navigation'
@@ -49,18 +48,11 @@ export default async function CoursePlayerPage({ params, searchParams }: CourseP
     const currentLesson = course.lessons.find(l => l.id === currentLessonId) || course.lessons[0]
 
     return (
-      <div className="min-h-screen bg-background flex flex-col" dir="rtl">
-        <div className="flex-1">
-          <CoursePlayer
-            course={course}
-            currentLesson={currentLesson}
-            courseId={courseId}
-          />
-        </div>
-
-        {/* Footer */}
-        <Footer />
-      </div>
+      <CoursePlayer
+        course={course}
+        currentLesson={currentLesson}
+        courseId={courseId}
+      />
     )
   } catch {
     // Course not found - show 404

@@ -1,6 +1,4 @@
 import { Metadata } from 'next'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
 import { CourseHeader } from '@/components/course-detail/CourseHeader'
 import { CourseInfo } from '@/components/course-detail/CourseInfo'
 import { CourseLessons } from '@/components/course-detail/CourseLessons'
@@ -54,24 +52,18 @@ export default async function CourseDetailPage({ params }: CoursePageProps) {
     // Server-side data fetching using CourseClient
     const course = await CourseClient.getCourseById(courseId)
 
-    return (
-      <div className="min-h-screen" dir="rtl">
-        {/* Navigation */}
-        <Navbar />
+      return (
+        <>
+          {/* Course Header */}
+          <CourseHeader course={course} />
 
-        {/* Course Header */}
-        <CourseHeader course={course} />
+          {/* Course Information */}
+          <CourseInfo course={course} />
 
-        {/* Course Information */}
-        <CourseInfo course={course} />
-
-        {/* Course Lessons */}
-        <CourseLessons lessons={course.lessons} courseId={courseId} />
-
-        {/* Footer */}
-        <Footer />
-      </div>
-    )
+          {/* Course Lessons */}
+          <CourseLessons lessons={course.lessons} courseId={courseId} />
+        </>
+      )
   } catch {
     // Course not found - show 404
     notFound()

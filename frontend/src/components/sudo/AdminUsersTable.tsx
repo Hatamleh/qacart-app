@@ -1,4 +1,4 @@
-import { Trash2, Clock, Crown, Gift, Calendar, User } from 'lucide-react'
+import { Trash2, Crown, Gift, Calendar, User } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { User as UserType } from '@/types'
 
@@ -46,8 +46,7 @@ export const AdminUsersTable = ({ users }: AdminUsersTableProps) => {
           <div className="col-span-3">المستخدم</div>
           <div className="col-span-2 text-center">حالة الاشتراك</div>
           <div className="col-span-2 text-center">تاريخ التسجيل</div>
-          <div className="col-span-2 text-center">آخر دخول</div>
-          <div className="col-span-2 text-center">منح بريميوم</div>
+          <div className="col-span-4 text-center">منح بريميوم</div>
           <div className="col-span-1 text-center">حذف</div>
         </div>
       </div>
@@ -108,16 +107,8 @@ export const AdminUsersTable = ({ users }: AdminUsersTableProps) => {
                   </div>
                 </div>
 
-                {/* Last Login */}
-                <div className="col-span-2 text-center">
-                  <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <span>{formatDate(user.lastLogin)}</span>
-                  </div>
-                </div>
-
                 {/* Assign Premium Column */}
-                <div className="col-span-2">
+                <div className="col-span-4">
                   <div className="flex items-center justify-center">
                     {user.subscription.status !== 'premium' ? (
                       <Button
