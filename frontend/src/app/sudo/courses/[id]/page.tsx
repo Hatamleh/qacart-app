@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { AdminCourseEditor } from '@/components/sudo/AdminCourseEditor'
-import { coursesData } from '@/data'
+import { CourseClient } from '@/clients/CourseClient'
+import { notFound } from 'next/navigation'
 
 interface AdminCourseEditPageProps {
   params: Promise<{
@@ -13,20 +14,32 @@ interface AdminCourseEditPageProps {
 
 export async function generateMetadata({ params }: AdminCourseEditPageProps): Promise<Metadata> {
   const { id } = await params
-  const course = coursesData.find(c => c.id === id)
-  
-  return {
-    title: `تعديل ${course.title} - QAcart Admin`,
-    description: `إدارة وتعديل دورة ${course.title}`,
-    robots: 'noindex, nofollow', // Admin pages should not be indexed
+
+  try {
+    const course = await CourseClient.getCourseById(id)
+
+    return {
+      title: `تعديل ${course.title} - QAcart Admin`,
+      description: `إدارة وتعديل دورة ${course.title}`,
+      robots: 'noindex, nofollow', // Admin pages should not be indexed
+    }
+  } catch {
+    return {
+      title: 'الدورة غير موجودة - QAcart Admin',
+      description: 'الدورة المطلوبة غير متاحة حالياً',
+      robots: 'noindex, nofollow',
+    }
   }
 }
 
 export default async function AdminCourseEditPage({ params }: AdminCourseEditPageProps) {
   const { id } = await params
-  const course = coursesData.find(c => c.id === id)
 
-  return (
+  try {
+    // Server-side data fetching using CourseClient
+    const course = await CourseClient.getCourseById(id)
+
+    return (
     <div className="min-h-screen" dir="rtl">
       {/* Navigation */}
       <Navbar />
@@ -34,7 +47,7 @@ export default async function AdminCourseEditPage({ params }: AdminCourseEditPag
       {/* Admin Course Editor */}
       <main className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
-          
+
           {/* Breadcrumb */}
           <div className="mb-6">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -64,5 +77,9 @@ export default async function AdminCourseEditPage({ params }: AdminCourseEditPag
       {/* Footer */}
       <Footer />
     </div>
-  )
+    )
+  } catch {
+    // Course isn't found - show 404
+    notFound()
+  }
 }

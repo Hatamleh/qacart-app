@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { AdminCoursesPageClient } from '@/components/sudo/AdminCoursesPageClient'
-import { coursesData } from '@/data'
+import { CourseClient } from '@/clients/CourseClient'
 
 export const metadata: Metadata = {
   title: 'إدارة الدورات - QAcart Admin',
@@ -10,7 +10,9 @@ export const metadata: Metadata = {
   robots: 'noindex, nofollow', // Admin pages should not be indexed
 }
 
-export default function AdminCoursesPage() {
+export default async function AdminCoursesPage() {
+  // Server-side data fetching using CourseClient
+  const courses = await CourseClient.getAllCourses()
 
   return (
     <div className="min-h-screen" dir="rtl">
@@ -21,7 +23,7 @@ export default function AdminCoursesPage() {
       <main className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
           {/* Client-side component with modal functionality */}
-          <AdminCoursesPageClient courses={coursesData} />
+          <AdminCoursesPageClient courses={courses} />
         </div>
       </main>
 
