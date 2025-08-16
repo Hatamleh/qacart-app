@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Save, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AdminLessonManager } from './AdminLessonManager'
-import { CourseClient } from '@/clients/CourseClient'
+import { CourseClient } from '@/clients/course.client'
 import { Course } from '@/types'
 
 interface AdminCourseEditorProps {

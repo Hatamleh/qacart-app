@@ -1,1 +1,1 @@
-export { CourseClient } from './CourseClient'
+export { CourseClient } from './course.client'

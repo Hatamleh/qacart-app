@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { AdminCourseEditor } from '@/components/sudo/AdminCourseEditor'
-import { CourseClient } from '@/clients/CourseClient'
+import { CourseClient } from '@/clients/course.client'
 import { notFound } from 'next/navigation'
 
 interface AdminCourseEditPageProps {

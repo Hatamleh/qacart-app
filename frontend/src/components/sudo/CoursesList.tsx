@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Edit, Trash2, Clock, Users, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { CourseClient } from '@/clients/CourseClient'
+import { CourseClient } from '@/clients/course.client'
 import { Course } from '@/types'
 
 interface CoursesListProps {

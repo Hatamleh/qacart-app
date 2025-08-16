@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Save, BookOpen, Target } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { CourseClient } from '@/clients/CourseClient'
+import { CourseClient } from '@/clients/course.client'
 
 export const NewCourseForm = () => {
   const router = useRouter()

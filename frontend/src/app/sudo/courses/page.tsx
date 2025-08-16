@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { AdminCoursesPageClient } from '@/components/sudo/AdminCoursesPageClient'
-import { CourseClient } from '@/clients/CourseClient'
+import { CourseClient } from '@/clients/course.client'
 
 export const metadata: Metadata = {
   title: 'إدارة الدورات - QAcart Admin',
