@@ -1,5 +1,6 @@
 import { Course } from '@/types'
 import { coursesData } from '@/data'
+import { cache } from 'react'
 
 /**
  * CourseClient - Handles all course-related data access
@@ -8,17 +9,19 @@ import { coursesData } from '@/data'
 export class CourseClient {
   /**
    * Fetch all courses (currently from mock data, will be Firebase later)
+   * Cached automatically by React - no duplicate calls within same request
    */
-  static async getAllCourses(): Promise<Course[]> {
+  static getAllCourses = cache(async (): Promise<Course[]> => {
     // Simulate async operation for future Firebase integration
     await new Promise(resolve => setTimeout(resolve, 100))
     return coursesData
-  }
+  })
 
   /**
    * Fetch a single course by ID (currently from mock data, will be Firebase later)
+   * Cached automatically by React - no duplicate calls within same request
    */
-  static async getCourseById(courseId: string): Promise<Course> {
+  static getCourseById = cache(async (courseId: string): Promise<Course> => {
     // Simulate async operation for future Firebase integration
     await new Promise(resolve => setTimeout(resolve, 100))
     
@@ -28,7 +31,7 @@ export class CourseClient {
     }
     
     return course
-  }
+  })
 
   /**
    * Create new course (Future Firebase implementation)
