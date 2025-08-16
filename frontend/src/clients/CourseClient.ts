@@ -24,7 +24,7 @@ export class CourseClient {
   static getCourseById = cache(async (courseId: string): Promise<Course> => {
     // Simulate async operation for future Firebase integration
     await new Promise(resolve => setTimeout(resolve, 100))
-
+    
     const course = coursesData.find(c => c.id === courseId)
     if (!course) {
       throw new Error('Course not found')
@@ -54,10 +54,10 @@ export class CourseClient {
       lessons: courseData.lessons || []
     }
 
-    // Add to mock data array (in memory)
+    // Add to global array
     coursesData.push(newCourse)
 
-    console.log('✅ Course created:', newCourse.title, 'ID:', newId)
+
     return { id: newId }
   }
 
@@ -69,20 +69,19 @@ export class CourseClient {
     // Simulate async operation
     await new Promise(resolve => setTimeout(resolve, 100))
 
-    // Find course index in mock data
+    // Find and update course in global array
     const courseIndex = coursesData.findIndex(c => c.id === courseId)
     if (courseIndex === -1) {
       throw new Error('Course not found')
     }
 
-    // Update course in mock data (in memory)
     coursesData[courseIndex] = {
       ...coursesData[courseIndex],
       ...updates,
       id: courseId // Ensure ID doesn't change
     }
 
-    console.log('✅ Course updated:', courseId, updates)
+
   }
 
   /**
@@ -93,16 +92,15 @@ export class CourseClient {
     // Simulate async operation
     await new Promise(resolve => setTimeout(resolve, 100))
 
-    // Find course index in mock data
+    // Find and remove course from global array
     const courseIndex = coursesData.findIndex(c => c.id === courseId)
     if (courseIndex === -1) {
       throw new Error('Course not found')
     }
 
-    // Remove course from mock data (in memory)
-    const deletedCourse = coursesData.splice(courseIndex, 1)[0]
+    coursesData.splice(courseIndex, 1)
 
-    console.log('✅ Course deleted:', deletedCourse.title)
+
   }
 
   // ===== ADMIN LESSON OPERATIONS =====
@@ -114,7 +112,7 @@ export class CourseClient {
     // Simulate async operation
     await new Promise(resolve => setTimeout(resolve, 100))
 
-    // Find course in mock data
+    // Find course in global array
     const course = coursesData.find(c => c.id === courseId)
     if (!course) {
       throw new Error('Course not found')
@@ -123,17 +121,16 @@ export class CourseClient {
     // Generate unique lesson ID
     const newLessonId = `lesson_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
 
-    // Create a new lesson
+    // Create and add new lesson
     const newLesson: Lesson = {
       ...lessonData,
       id: newLessonId,
-      lessonOrder: course.lessons.length + 1 // Auto-increment order
+      lessonOrder: course.lessons.length + 1
     }
 
-    // Add a lesson to course (in memory)
     course.lessons.push(newLesson)
 
-    console.log('✅ Lesson created:', newLesson.title, 'in course:', course.title)
+
     return { id: newLessonId }
   }
 
@@ -144,7 +141,7 @@ export class CourseClient {
     // Simulate async operation
     await new Promise(resolve => setTimeout(resolve, 100))
 
-    // Find course
+    // Find course in global array
     const course = coursesData.find(c => c.id === courseId)
     if (!course) {
       throw new Error('Course not found')
@@ -156,14 +153,15 @@ export class CourseClient {
       throw new Error('Lesson not found')
     }
 
-    // Update lesson (in memory)
+    // Update lesson and save to localStorage
     course.lessons[lessonIndex] = {
       ...course.lessons[lessonIndex],
       ...updates,
       id: lessonId // Ensure ID doesn't change
     }
+    
 
-    console.log('✅ Lesson updated:', lessonId, updates)
+
   }
 
   /**
@@ -173,7 +171,7 @@ export class CourseClient {
     // Simulate async operation
     await new Promise(resolve => setTimeout(resolve, 100))
 
-    // Find course
+    // Find course in global array
     const course = coursesData.find(c => c.id === courseId)
     if (!course) {
       throw new Error('Course not found')
@@ -185,15 +183,16 @@ export class CourseClient {
       throw new Error('Lesson not found')
     }
 
-    // Remove lesson (in memory)
-    const deletedLesson = course.lessons.splice(lessonIndex, 1)[0]
+    // Remove lesson
+    course.lessons.splice(lessonIndex, 1)
 
     // Reorder remaining lessons
     course.lessons.forEach((lesson, index) => {
       lesson.lessonOrder = index + 1
     })
+    
 
-    console.log('✅ Lesson deleted:', deletedLesson.title)
+
   }
 
   /**
@@ -203,7 +202,7 @@ export class CourseClient {
     // Simulate async operation
     await new Promise(resolve => setTimeout(resolve, 100))
 
-    // Find course
+    // Find course in global array
     const course = coursesData.find(c => c.id === courseId)
     if (!course) {
       throw new Error('Course not found')
@@ -222,9 +221,10 @@ export class CourseClient {
       }
     })
 
-    // Update course lessons (in memory)
+    // Update course lessons and save to localStorage
     course.lessons = reorderedLessons
+    
 
-    console.log('✅ Lessons reordered for course:', course.title)
+
   }
 }

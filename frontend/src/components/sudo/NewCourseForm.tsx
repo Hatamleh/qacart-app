@@ -1,17 +1,85 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Save, BookOpen, Target } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { CourseClient } from '@/clients/CourseClient'
 
 export const NewCourseForm = () => {
-  // Static form data for design-first approach
-  const formData = {
+  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  // Form state
+  const [formData, setFormData] = useState({
     title: '',
     shortDescription: '',
     type: 'يدوي',
     promoVideoUrl: '',
     videoThumbnail: '',
-    instructorName: 'حاتم حتامله',
     studentsCount: 0,
     learningGoals: ['', '', '', '', '', ''] // Exactly 6 learning goals
+  })
+
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    // Basic validation
+    if (!formData.title.trim() || !formData.shortDescription.trim()) {
+      alert('يرجى ملء العنوان والوصف المختصر')
+      return
+    }
+
+    // Check if all learning goals are filled
+    const filledGoals = formData.learningGoals.filter(goal => goal.trim())
+    if (filledGoals.length < 6) {
+      alert('يرجى ملء جميع أهداف التعلم الستة')
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      // Create course using CourseClient
+      const result = await CourseClient.createCourse({
+        title: formData.title.trim(),
+        shortDescription: formData.shortDescription.trim(),
+        type: formData.type,
+        promoVideoUrl: formData.promoVideoUrl.trim() || '',
+        videoThumbnail: formData.videoThumbnail.trim() || `https://picsum.photos/800/450?random=${Date.now()}`,
+        studentsCount: formData.studentsCount,
+        lastUpdated: new Date().toLocaleDateString('ar-SA'),
+        durationInMinutes: 0, // Will be calculated when lessons are added
+        tags: [formData.type], // Use course type as initial tag
+        learningGoals: formData.learningGoals.map(goal => goal.trim()),
+        lessons: [] // Empty lessons array for new course
+      })
+
+      console.log('✅ Course created successfully:', result.id)
+      
+      // Redirect to the course edit page to add lessons
+      router.push(`/sudo/courses/${result.id}`)
+      
+    } catch (error) {
+      console.error('❌ Failed to create course:', error)
+      alert('حدث خطأ أثناء إنشاء الدورة. يرجى المحاولة مرة أخرى.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  // Handle input changes
+  const updateField = (field: string, value: string | number) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  // Handle learning goal changes
+  const updateLearningGoal = (index: number, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      learningGoals: prev.learningGoals.map((goal, i) => i === index ? value : goal)
+    }))
   }
 
   
@@ -32,7 +100,7 @@ export const NewCourseForm = () => {
       </div>
 
       {/* Form */}
-      <form className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-8">
         
         {/* Basic Information Section */}
         <div className="glass rounded-xl p-6 border border-border space-y-6">
@@ -49,9 +117,11 @@ export const NewCourseForm = () => {
               </label>
               <input
                 type="text"
-                defaultValue=""
+                value={formData.title}
+                onChange={(e) => updateField('title', e.target.value)}
                 placeholder="مثال: أساسيات اختبار البرمجيات"
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 transition-all duration-200 shadow-sm"
+                required
               />
             </div>
 
@@ -60,7 +130,8 @@ export const NewCourseForm = () => {
                 نوع الدورة
               </label>
               <select
-                defaultValue="يدوي"
+                value={formData.type}
+                onChange={(e) => updateField('type', e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
               >
                 <option value="يدوي">اختبار يدوي</option>
@@ -77,10 +148,12 @@ export const NewCourseForm = () => {
               وصف مختصر *
             </label>
             <textarea
-              defaultValue=""
+              value={formData.shortDescription}
+              onChange={(e) => updateField('shortDescription', e.target.value)}
               rows={4}
               placeholder="وصف مختصر للدورة وما سيتعلمه الطالب..."
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 transition-all duration-200 resize-none shadow-sm"
+              required
             />
           </div>
         </div>
@@ -109,9 +182,11 @@ export const NewCourseForm = () => {
                 </label>
                 <input
                   type="text"
-                  defaultValue=""
+                  value={goal}
+                  onChange={(e) => updateLearningGoal(index, e.target.value)}
                   placeholder={`مثال: ${index === 0 ? 'فهم أساسيات اختبار البرمجيات' : index === 1 ? 'تعلم كتابة حالات الاختبار' : 'إتقان أدوات الاختبار الحديثة'}`}
                   className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
+                  required
                 />
               </div>
             ))}
@@ -126,16 +201,20 @@ export const NewCourseForm = () => {
           </h4>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Instructor Name */}
+            {/* Instructor Name - Hardcoded */}
             <div>
               <label className="block text-sm font-semibold text-muted-foreground mb-3">
-                اسم المدرب *
+                اسم المدرب
               </label>
               <input
                 type="text"
-                defaultValue="حاتم حتامله"
-                className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 transition-all duration-200 shadow-sm"
+                value="حاتم حتامله"
+                disabled
+                className="w-full px-4 py-3 rounded-xl border border-border bg-muted/30 text-muted-foreground cursor-not-allowed shadow-sm"
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                💡 المدرب ثابت لجميع الدورات
+              </p>
             </div>
 
             {/* Students Count */}
@@ -146,7 +225,8 @@ export const NewCourseForm = () => {
               <input
                 type="number"
                 min="0"
-                defaultValue={0}
+                value={formData.studentsCount}
+                onChange={(e) => updateField('studentsCount', parseInt(e.target.value) || 0)}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
               />
             </div>
@@ -158,7 +238,8 @@ export const NewCourseForm = () => {
               </label>
               <input
                 type="text"
-                defaultValue=""
+                value={formData.promoVideoUrl}
+                onChange={(e) => updateField('promoVideoUrl', e.target.value)}
                 placeholder="مثال: 1085509305"
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
               />
@@ -171,7 +252,8 @@ export const NewCourseForm = () => {
               </label>
               <input
                 type="url"
-                defaultValue=""
+                value={formData.videoThumbnail}
+                onChange={(e) => updateField('videoThumbnail', e.target.value)}
                 placeholder="https://example.com/image.jpg"
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
               />
@@ -191,20 +273,25 @@ export const NewCourseForm = () => {
             </p>
             <div className="flex items-center gap-3">
               <Button
+                type="button"
                 variant="ghost"
                 size="md"
                 className="min-w-[100px]"
+                onClick={() => router.push('/sudo/courses')}
+                disabled={isSubmitting}
               >
                 إلغاء
               </Button>
               
               <Button
+                type="submit"
                 variant="primary"
                 size="md"
                 icon={Save}
                 className="min-w-[140px] shadow-lg hover:shadow-xl"
+                disabled={isSubmitting}
               >
-                إنشاء الدورة
+                {isSubmitting ? 'جاري الإنشاء...' : 'إنشاء الدورة'}
               </Button>
             </div>
           </div>
