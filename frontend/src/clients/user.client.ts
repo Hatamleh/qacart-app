@@ -79,7 +79,7 @@ export class UserClient {
   /**
    * Create user profile in Firestore after authentication
    */
-  static async createUserProfile(firebaseUser: FirebaseUser, authProvider: 'magic-link' | 'google' | 'apple'): Promise<User> {
+  static async createUserProfile(firebaseUser: FirebaseUser, authProvider: 'magic-link' | 'google'): Promise<User> {
     try {
       const newUser: User = {
         id: firebaseUser.uid,

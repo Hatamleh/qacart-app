@@ -3,7 +3,7 @@ import {cookies} from 'next/headers'
 
 /**
  * AuthClient - Handles authentication operations only
- * Supports Magic Link, Google, and Apple authentication
+ * Supports Magic Link and Google authentication
  * For user data operations, use UserClient
  */
 export class AuthClient {
