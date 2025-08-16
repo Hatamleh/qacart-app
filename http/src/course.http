@@ -1,5 +1,0 @@
-### Fetch All Courses
-GET {{url}}/api/courses
-
-### Fetch Course By ID
-GET {{url}}/api/courses/course_setup_dev_env
