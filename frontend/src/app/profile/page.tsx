@@ -29,6 +29,9 @@ export default async function ProfilePage() {
     redirect('/auth')
   }
 
+  // Check if user has active premium subscription
+  const isPremium = user.subscription.status === 'premium' && user.subscription.isActive
+
   return (
     <>
       {/* Main Content */}
@@ -41,8 +44,8 @@ export default async function ProfilePage() {
           {/* User Info - Pass real user data */}
           <UserInfo user={user} />
 
-          {/* Manage Account */}
-          <ManageAccountSection />
+          {/* Manage Account - Only show for premium users */}
+          {isPremium && <ManageAccountSection />}
 
           {/* FAQ */}
           <FAQSection questions={faqData} />

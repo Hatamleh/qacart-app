@@ -80,6 +80,17 @@ export class UserClient {
    */
   static async createUserProfile(firebaseUser: FirebaseUser, authProvider: 'magic-link' | 'google'): Promise<User> {
     try {
+      // Check if user already exists (race condition protection)
+      const existingUser = await admin.firestore()
+        .collection('users')
+        .doc(firebaseUser.uid)
+        .get()
+
+      if (existingUser.exists) {
+        console.log(`✅ User profile already exists:`, firebaseUser.email)
+        return existingUser.data() as User
+      }
+
       const newUser: User = {
         id: firebaseUser.uid,
         email: firebaseUser.email || '',

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import { auth } from '@/firebase/client'
 import { Loader2, CheckCircle, XCircle } from 'lucide-react'
@@ -15,12 +15,23 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
   const [status, setStatus] = useState<'verifying' | 'success' | 'error' | 'email-input'>('verifying')
   const [error, setError] = useState('')
   const [email, setEmail] = useState('')
+  const hasExecutedRef = useRef(false)
 
   useEffect(() => {
+    console.log('🚀 MagicLinkVerifier useEffect RUNNING - Timestamp:', Date.now())
+
+    // Prevent multiple executions across re-renders
+    if (hasExecutedRef.current) {
+      console.log('🔄 Already executed, skipping...')
+      return
+    }
+
+    hasExecutedRef.current = true
+
     const verifyMagicLink = async () => {
       try {
         console.log('🔍 Starting magic link verification...')
-        
+
         // Check if this is a valid magic link
         if (!isSignInWithEmailLink(auth, window.location.href)) {
           console.log('❌ Invalid magic link')
@@ -32,8 +43,8 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
         console.log('✅ Valid magic link detected')
 
         // Get the email from localStorage
-        let email = localStorage.getItem('emailForSignIn')
-        
+        const email = localStorage.getItem('emailForSignIn')
+
         // If email is not found, show email input
         if (!email) {
           console.log('📧 Email not found in localStorage, showing input')
@@ -43,7 +54,7 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
 
         console.log('📧 Using email from localStorage:', email)
         await performSignIn(email)
-        
+
       } catch (error) {
         console.error('❌ Error in magic link verification:', error)
         setStatus('error')
@@ -53,25 +64,26 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
     }
 
     verifyMagicLink()
-  }, [onVerificationComplete])
+  }, []) // Remove dependency to prevent re-runs
 
   const performSignIn = async (emailToUse: string) => {
     try {
-      console.log('🔐 Attempting sign in with email:', emailToUse)
-      
+      console.log('🔐 [TIMESTAMP:', Date.now(), '] Attempting sign in with email:', emailToUse)
+      console.log('🔗 Current URL:', window.location.href)
+
       // Sign in with the email link
       const result = await signInWithEmailLink(auth, emailToUse, window.location.href)
       console.log('✅ Sign in successful:', result.user.email)
-      
+
       // Clean up the stored email
       localStorage.removeItem('emailForSignIn')
-      
+
       setStatus('success')
       onVerificationComplete(true)
-      
+
     } catch (error) {
       console.error('❌ Error during sign in:', error)
-      
+
       let errorMessage = 'حدث خطأ أثناء تسجيل الدخول'
       const firebaseError = error as { code?: string }
       if (firebaseError.code === 'auth/invalid-email') {
@@ -79,7 +91,7 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
       } else if (firebaseError.code === 'auth/invalid-action-code') {
         errorMessage = 'انتهت صلاحية الرابط أو تم استخدامه من قبل'
       }
-      
+
       setError(errorMessage)
       setStatus('error')
       onVerificationComplete(false)
@@ -92,7 +104,7 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
       setError('يرجى إدخال البريد الإلكتروني')
       return
     }
-    
+
     setStatus('verifying')
     setError('')
     await performSignIn(email.trim())
@@ -102,10 +114,10 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
     <div className="max-w-md mx-auto">
       {/* Modern Glass Card */}
       <div className="relative bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-xl border border-primary/10 rounded-3xl overflow-hidden shadow-[0_20px_70px_-10px_rgba(59,130,246,0.15)] hover:shadow-[0_25px_80px_-5px_rgba(59,130,246,0.2)] transition-all duration-500">
-        
+
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] via-transparent to-primary/[0.04] pointer-events-none" />
-        
+
         {/* Card Content */}
         <div className="relative p-8 lg:p-10 text-center">
 
@@ -136,7 +148,7 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
                 </p>
               </>
             )}
-            
+
             {status === 'email-input' && (
               <>
                 <h2 className="text-2xl font-bold text-foreground mb-3">
@@ -145,7 +157,7 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   يرجى إدخال بريدك الإلكتروني للمتابعة
                 </p>
-                
+
                 <form onSubmit={handleEmailSubmit} className="space-y-4">
                   <input
                     type="email"
@@ -155,13 +167,13 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
                     className="w-full px-4 py-3 rounded-xl border border-primary/10 bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
                     required
                   />
-                  
+
                   {error && (
                     <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-xl">
                       <p className="text-destructive text-sm">{error}</p>
                     </div>
                   )}
-                  
+
                   <Button
                     type="submit"
                     variant="primary"
@@ -174,7 +186,7 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
                 </form>
               </>
             )}
-            
+
             {status === 'success' && (
               <>
                 <h2 className="text-2xl font-bold text-foreground mb-3">
@@ -185,7 +197,7 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
                 </p>
               </>
             )}
-            
+
             {status === 'error' && (
               <>
                 <h2 className="text-2xl font-bold text-foreground mb-3">

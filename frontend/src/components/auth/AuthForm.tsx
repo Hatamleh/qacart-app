@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { isSignInWithEmailLink } from 'firebase/auth'
-import { auth } from '@/firebase/client'
 import { useAuth } from '@/contexts/AuthContext'
 import { MagicLinkForm } from './MagicLinkForm'
 import { SocialLoginOptions } from './SocialLoginOptions'
@@ -14,6 +12,8 @@ import { MagicLinkVerifier } from './MagicLinkVerifier'
 type AuthState = 'form' | 'email-sent' | 'verifying-link'
 
 export const AuthForm = () => {
+  console.log('🔄 AuthForm RENDERING - Timestamp:', Date.now())
+  
   const [authState, setAuthState] = useState<AuthState>('form')
   const [emailSent, setEmailSent] = useState('')
   const { user, isInitialized } = useAuth()
@@ -28,7 +28,12 @@ export const AuthForm = () => {
 
   // Check if this is a magic link verification
   useEffect(() => {
-    if (isSignInWithEmailLink(auth, window.location.href)) {
+    // Check if URL has magic link parameters (without calling Firebase)
+    const url = new URL(window.location.href)
+    const hasOobCode = url.searchParams.has('oobCode')
+    const hasMode = url.searchParams.get('mode') === 'signIn'
+    
+    if (hasOobCode && hasMode) {
       setAuthState('verifying-link')
     }
   }, [])
