@@ -52,10 +52,10 @@ export const NewCourseForm = () => {
         lessons: [] // Empty lessons array for new course
       })
 
-      console.log('✅ Course created successfully:', result.id)
+      console.log('✅ Course created successfully:', result.course.id)
 
       // Redirect to the course edit page to add lessons
-      router.push(`/sudo/courses/${result.id}`)
+      router.push(`/sudo/courses/${result.course.id}`)
 
     } catch (error) {
       console.error('❌ Failed to create course:', error)

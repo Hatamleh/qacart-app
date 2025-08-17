@@ -1,23 +1,25 @@
-import { Metadata } from 'next'
-import { AuthForm } from '@/components/auth/AuthForm'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'تسجيل الدخول | QAcart',
-  description: 'سجل دخولك أو أنشئ حساباً جديداً للوصول إلى دورات QAcart',
-  openGraph: {
-    title: 'تسجيل الدخول | QAcart',
-    description: 'سجل دخولك أو أنشئ حساباً جديداً للوصول إلى دورات QAcart',
-    type: 'website',
-    locale: 'ar_SA',
-  },
-}
+import Head from 'next/head'
+import { AuthForm } from '@/components/auth/AuthForm'
 
 export default function AuthPage() {
   return (
-    <div className="flex-1 flex items-center justify-center px-6 py-32 lg:py-40">
-      <div className="w-full max-w-md">
-        <AuthForm />
+    <>
+      <Head>
+        <title>تسجيل الدخول | QAcart</title>
+        <meta name="description" content="سجل دخولك أو أنشئ حساباً جديداً للوصول إلى دورات QAcart" />
+        <meta property="og:title" content="تسجيل الدخول | QAcart" />
+        <meta property="og:description" content="سجل دخولك أو أنشئ حساباً جديداً للوصول إلى دورات QAcart" />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="ar_SA" />
+      </Head>
+
+      <div className="flex-1 flex items-center justify-center px-6 py-32 lg:py-40">
+        <div className="w-full max-w-md">
+          <AuthForm />
+        </div>
       </div>
-    </div>
+    </>
   )
 }

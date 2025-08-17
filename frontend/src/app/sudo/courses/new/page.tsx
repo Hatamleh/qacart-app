@@ -1,19 +1,25 @@
-import { Metadata } from 'next'
+'use client'
+
+import Head from 'next/head'
 import { NewCourseForm } from '@/components/sudo/NewCourseForm'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
-  title: 'إنشاء دورة جديدة - QAcart Admin',
-  description: 'إنشاء دورة تدريبية جديدة',
-  robots: 'noindex, nofollow',
-}
-
 export default function NewCoursePage() {
 
   return (
     <>
+      <Head>
+        <title>إنشاء دورة جديدة - QAcart Admin</title>
+        <meta name="description" content="إنشاء دورة تدريبية جديدة" />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta property="og:title" content="إنشاء دورة جديدة - QAcart Admin" />
+        <meta property="og:description" content="إنشاء دورة تدريبية جديدة" />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="ar_SA" />
+      </Head>
+      
       {/* New Course Content */}
       <main className="pt-32 pb-20">
         <div className="max-w-4xl mx-auto px-4 lg:px-6">

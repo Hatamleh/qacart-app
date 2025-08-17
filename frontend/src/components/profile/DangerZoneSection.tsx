@@ -4,8 +4,10 @@ import { useState } from 'react'
 import { AlertTriangle, Trash2 } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { ConfirmationDialog } from './ConfirmationDialog'
+import { useAuth } from '@/contexts/AuthContext'
 
 export const DangerZoneSection = () => {
+  const { deleteAccount } = useAuth()
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -17,23 +19,9 @@ export const DangerZoneSection = () => {
     setIsDeleting(true)
     
     try {
-      // Call delete account API
-      const response = await fetch('/api/auth/delete-account', {
-        method: 'DELETE',
-      })
-
-      if (response.ok) {
-        // Account deleted successfully - logout and redirect
-        console.log('✅ Account deleted successfully')
-        
-        // Session cookie is cleared by the delete API
-        // Force page reload to ensure clean state
-        window.location.href = '/'
-        
-      } else {
-        console.error('❌ Failed to delete account')
-        alert('فشل في حذف الحساب. يرجى المحاولة مرة أخرى.')
-      }
+      // Use AuthContext deleteAccount method
+      await deleteAccount()
+      console.log('✅ Account deleted successfully')
     } catch (error) {
       console.error('❌ Error deleting account:', error)
       alert('حدث خطأ أثناء حذف الحساب. يرجى المحاولة مرة أخرى.')

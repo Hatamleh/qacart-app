@@ -1,42 +1,24 @@
-import {Plan} from '@/types'
-import {cache} from 'react'
-import {admin} from '@/firebase/admin'
-
 /**
- * PlanClient - Handles all plan and subscription-related data access
- * Fetches from Firebase Firestore
+ * Plan Client - Plan operations
+ * Handles client-side requests to plan API routes
  */
+
+import { Plan } from '@/types'
+
 export class PlanClient {
   /**
-   * Fetch plan data from Firestore
-   * Cached automatically by React - no duplicate calls within same request
+   * Get available plan information (public)
    */
-    static getPlan = cache(async (): Promise<Plan> => {
-    const plansSnapshot = await admin.firestore().collection('plans').get()
+  static async getPlan(): Promise<{ plan: Plan }> {
+    const response = await fetch('/api/plans', {
+      method: 'GET',
+    })
 
-    if (plansSnapshot.empty) {
-      throw new Error('No plan documents found in Firestore')
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Failed to fetch plan')
     }
 
-    // Find premium-plan or use first document as fallback
-    const planDoc = plansSnapshot.docs.find(doc => doc.id === 'premium-plan') || plansSnapshot.docs[0]
-
-    return {
-      id: planDoc.id,
-      ...planDoc.data() as Omit<Plan, 'id'>
-    }
-  })
-
-  // ===== FUTURE SUBSCRIPTION OPERATIONS =====
-  // These will be implemented when we add Firebase
-
-  /**
-   * Create subscription (Future implementation)
-   */
-  static async createSubscription(pricingOptionId: string, userEmail: string) {
-    await new Promise(resolve => setTimeout(resolve, 100))
-    console.log('Creating subscription:', { pricingOptionId, userEmail })
-    throw new Error('Subscription creation not implemented yet')
+    return response.json()
   }
-
 }

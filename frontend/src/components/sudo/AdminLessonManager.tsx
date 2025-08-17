@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Plus, GripVertical, Trash2, ChevronDown, Video, FileText, Save } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { CourseClient } from '@/clients/course.client'
+import { LessonClient } from '@/clients'
 import { Course } from '@/types'
 
 interface AdminLessonManagerProps {
@@ -25,7 +25,7 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
     setIsCreating(true)
 
     try {
-      const result = await CourseClient.createLesson(course.id, {
+      const result = await LessonClient.createLesson(course.id, {
         title: 'درس جديد',
         durationInMinutes: 10,
         isFree: false,
@@ -35,7 +35,7 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
       })
 
       // Expand the new lesson
-      setExpandedLessonId(result.id)
+      setExpandedLessonId(result.lesson.id)
       
     } catch (error) {
       console.error('❌ Failed to create lesson:', error)
@@ -53,7 +53,7 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
     setDeletingLessonId(lessonId)
 
     try {
-      await CourseClient.deleteLesson(course.id, lessonId)
+      await LessonClient.deleteLesson(course.id, lessonId)
       
       // Close expansion if we deleted the expanded lesson
       if (expandedLessonId === lessonId) {
@@ -79,7 +79,7 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
       const articleInput = document.getElementById(`lesson-article-${lessonId}`) as HTMLTextAreaElement
       const freeCheckbox = document.getElementById(`lesson-free-${lessonId}`) as HTMLInputElement
 
-      await CourseClient.updateLesson(course.id, lessonId, {
+      await LessonClient.updateLesson(course.id, lessonId, {
         title: titleInput.value.trim(),
         durationInMinutes: parseInt(durationInput.value) || 0,
         vimeoId: vimeoInput.value.trim(),
@@ -138,7 +138,7 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
       ]
 
       // Call reorder API with new lesson order
-      await CourseClient.reorderLessons(course.id, newOrder.map(l => l.id))
+      await LessonClient.reorderLessons(course.id, newOrder.map(l => l.id))
 
     } catch (error) {
       console.error('❌ Failed to reorder lessons:', error)

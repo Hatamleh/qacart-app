@@ -1,30 +1,31 @@
 import { NextResponse } from 'next/server'
-import { UserClient } from '@/clients'
+import { UserRepository } from '@/repositories'
 
+/**
+ * DELETE /api/auth/delete-account
+ * Delete current user account and clear session
+ */
 export async function DELETE() {
   try {
-    // Delete the user account and all associated data
-    await UserClient.deleteOwnAccount()
+    // Delete the user account (handles auth verification internally)
+    await UserRepository.deleteOwnAccount()
 
-    // Create success response
-    const response = NextResponse.json({
-      success: true,
-      message: 'Account deleted successfully'
+    // Clear session cookie
+    const response = NextResponse.json({ 
+      message: 'Account deleted successfully' 
     })
-
-    // Clear the session cookie
+    
     response.cookies.set('session', '', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 0, // Expire immediately
-      path: '/'
+      path: '/',
+      expires: new Date(0), // Expire immediately
     })
 
     return response
-
   } catch (error) {
-    console.error('Account deletion error:', error)
+    console.error('Error deleting account:', error)
     return NextResponse.json(
       { error: 'Failed to delete account' },
       { status: 500 }

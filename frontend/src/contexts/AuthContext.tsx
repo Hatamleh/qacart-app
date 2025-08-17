@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User as FirebaseAuthUser, onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from '@/firebase/client'
 import { User } from '@/types'
+import { AuthClient } from '@/clients'
 
 interface AuthContextType {
   // Firebase Auth User (client-side)
@@ -19,6 +20,7 @@ interface AuthContextType {
   // Auth actions
   signOut: () => Promise<void>
   refreshUser: () => Promise<void>
+  deleteAccount: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -40,53 +42,32 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       if (firebaseAuthUser) {
         // User just signed in - create session and get user data
-        if (!user) { // Only if we don't already have user data
-          setIsLoading(true)
-          try {
-            const response = await fetch('/api/auth/session', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                idToken: await firebaseAuthUser.getIdToken()
-              })
-            })
-            
-            if (response.ok) {
-              const userData = await response.json()
-              setUser(userData.user)
-            } else {
-              console.error('Failed to create session')
-              setUser(null)
-            }
-          } catch (error) {
-            console.error('Error creating session:', error)
-            setUser(null)
-          } finally {
-            setIsLoading(false)
-          }
+        setIsLoading(true)
+        try {
+          const idToken = await firebaseAuthUser.getIdToken()
+          const { user } = await AuthClient.createSession(idToken)
+          setUser(user)
+        } catch (error) {
+          console.error('Error creating session:', error)
+          setUser(null)
+        } finally {
+          setIsLoading(false)
         }
       } else {
         // User signed out - clear everything
-        if (user) { // Only if we had user data
-          setUser(null)
-          // Note: logout API call happens in handleSignOut
-        }
+        setUser(null)
       }
       
       setIsInitialized(true)
     })
 
     return () => unsubscribe()
-  }, [user])
+  }, [])
 
   const handleSignOut = async () => {
     try {
       // Clear session cookie via API first
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-      })
+      await AuthClient.logout()
       
       // Sign out from Firebase (this triggers the auth state change)
       await signOut(auth)
@@ -102,22 +83,32 @@ export function AuthProvider({ children }: AuthProviderProps) {
     
     setIsLoading(true)
     try {
-      const response = await fetch('/api/auth/session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          idToken: await firebaseUser.getIdToken(true) // Force refresh
-        })
-      })
-      
-      if (response.ok) {
-        const userData = await response.json()
-        setUser(userData.user)
-      }
+      const idToken = await firebaseUser.getIdToken(true) // Force refresh
+      const { user } = await AuthClient.createSession(idToken)
+      setUser(user)
     } catch (error) {
       console.error('Error refreshing user:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleDeleteAccount = async () => {
+    try {
+      setIsLoading(true)
+      
+      // Use AuthClient to delete account
+      await AuthClient.deleteAccount()
+      
+      // Account deleted successfully - clear state and redirect
+      setUser(null)
+      setFirebaseUser(null)
+      
+      // Force page reload to ensure clean state
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Error deleting account:', error)
+      throw error
     } finally {
       setIsLoading(false)
     }
@@ -130,6 +121,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     isInitialized,
     signOut: handleSignOut,
     refreshUser,
+    deleteAccount: handleDeleteAccount,
   }
 
   return (

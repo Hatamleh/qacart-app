@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { AuthClient, UserClient } from '@/clients'
+import { AuthRepository, UserRepository } from '@/repositories'
 import { admin } from '@/firebase/admin'
 
+/**
+ * POST /api/auth/session
+ * Create session from Firebase ID token
+ */
 export async function POST(request: NextRequest) {
   try {
     const { idToken } = await request.json()
@@ -13,16 +17,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verify the ID token first to get user ID
+    // Verify token and get user ID
     const decodedToken = await admin.auth().verifyIdToken(idToken)
     const userId = decodedToken.uid
-      console.log(userId)
 
-    // Create session cookie using AuthClient
-    const sessionCookie = await AuthClient.createSessionCookie(idToken)
+    // Create session cookie
+    const sessionCookie = await AuthRepository.createSessionCookie(idToken)
 
-    // Get user data directly by ID (avoiding circular dependency)
-    const user = await UserClient.getUserById(userId)
+    // Get user data
+    const user = await UserRepository.getUserById(userId)
 
     if (!user) {
       return NextResponse.json(
@@ -31,10 +34,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create response with user data
-    const response = NextResponse.json({
-      success: true,
-      user: user
+    // Create response with session cookie
+    const response = NextResponse.json({ 
+      user,
+      message: 'Session created successfully' 
     })
 
     // Set session cookie
@@ -56,3 +59,4 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+

@@ -1,76 +1,62 @@
-import {admin} from '@/firebase/admin'
-import {cookies} from 'next/headers'
-
 /**
- * AuthClient - Handles authentication operations only
- * Supports Magic Link and Google authentication
- * For user data operations, use UserClient
+ * Auth Client - Authentication operations
+ * Handles client-side requests to auth API routes
  */
+
+import { User } from '@/types'
+
 export class AuthClient {
-
-  // ===== SESSION MANAGEMENT =====
-
   /**
-   * Create session cookie from Firebase ID token
-   * Called by API route after client authentication
+   * Create session from Firebase ID token and return user data
    */
-  static async createSessionCookie(idToken: string): Promise<string> {
-    try {
-      // Create session cookie with 5 day expiry
-      const expiresIn = 60 * 60 * 24 * 5 * 1000 // 5 days
-        return await admin.auth().createSessionCookie(idToken, {expiresIn})
-    } catch (error) {
-      console.error('Error creating session cookie:', error)
-      throw new Error('Failed to create session')
+  static async createSession(idToken: string): Promise<{ user: User; message: string }> {
+    const response = await fetch('/api/auth/session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ idToken }),
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Failed to create session')
     }
+
+    return response.json()
   }
 
   /**
-   * Verify session cookie and return user ID
+   * Logout user and clear session
    */
-  static async verifySession(sessionCookie: string): Promise<string | null> {
-    try {
-      const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true)
-      return decodedClaims.uid
-    } catch (error) {
-      console.error('Error verifying session:', error)
-      return null
+  static async logout(): Promise<{ message: string }> {
+    const response = await fetch('/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Failed to logout')
     }
+
+    return response.json()
   }
 
   /**
-   * Revoke user session (server-side)
+   * Delete current user account
    */
-  static async revokeSession(sessionCookie: string): Promise<void> {
-    try {
-      const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie)
-      await admin.auth().revokeRefreshTokens(decodedClaims.uid)
-    } catch (error) {
-      console.error('Error revoking session:', error)
+  static async deleteAccount(): Promise<{ message: string }> {
+    const response = await fetch('/api/auth/delete-account', {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Failed to delete account')
     }
+
+    return response.json()
   }
-
-  // ===== AUTHENTICATION HELPERS =====
-
-  /**
-   * Get authenticated user ID from session cookie
-   */
-  static async getAuthenticatedUserId(): Promise<string | null> {
-    try {
-      const cookieStore = await cookies()
-      const sessionCookie = cookieStore.get('session')?.value
-
-      if (!sessionCookie) {
-        return null
-      }
-
-      const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true)
-      return decodedClaims.uid
-    } catch (error) {
-      console.error('Error getting authenticated user ID:', error)
-      return null
-    }
-  }
-
-
 }

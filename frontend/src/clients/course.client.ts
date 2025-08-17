@@ -1,230 +1,103 @@
-import { Course, Lesson } from '@/types'
-import { coursesData } from '@/data'
-import { cache } from 'react'
-
 /**
- * CourseClient - Handles all course-related data access
- * Currently reads from mock data, will connect to Firebase later
+ * Course Client - Course operations
+ * Handles client-side requests to course API routes (both public and admin)
  */
+
+import { Course } from '@/types'
+
 export class CourseClient {
   /**
-   * Fetch all courses (currently from mock data, will be Firebase later)
-   * Cached automatically by React - no duplicate calls within same request
+   * Get all courses
+   * Uses public endpoint - works for both users and admins
    */
-  static getAllCourses = cache(async (): Promise<Course[]> => {
-    // Simulate async operation for future Firebase integration
-    await new Promise(resolve => setTimeout(resolve, 100))
-    return coursesData
-  })
+  static async getAllCourses(): Promise<{ courses: Course[] }> {
+    const response = await fetch('/api/courses', {
+      method: 'GET',
+    })
 
-  /**
-   * Fetch a single course by ID (currently from mock data, will be Firebase later)
-   * Cached automatically by React - no duplicate calls within same request
-   */
-  static getCourseById = cache(async (courseId: string): Promise<Course> => {
-    // Simulate async operation for future Firebase integration
-    await new Promise(resolve => setTimeout(resolve, 100))
-    
-    const course = coursesData.find(c => c.id === courseId)
-    if (!course) {
-      throw new Error('Course not found')
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Failed to fetch courses')
     }
 
-    return course
-  })
-
-  // ===== ADMIN COURSE OPERATIONS =====
+    return response.json()
+  }
 
   /**
-   * Create a new course (Admin only)
-   * Modifies coursesData array in memory for development
+   * Get course by ID
+   * Uses public endpoint - works for both users and admins
    */
-  static async createCourse(courseData: Omit<Course, 'id'>): Promise<{ id: string }> {
-    // Simulate async operation
-    await new Promise(resolve => setTimeout(resolve, 100))
+  static async getCourseById(courseId: string): Promise<{ course: Course }> {
+    const response = await fetch(`/api/courses/${courseId}`, {
+      method: 'GET',
+    })
 
-    // Generate unique ID
-    const newId = `course_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
-
-    // Create a new course with generated ID
-    const newCourse: Course = {
-      id: newId,
-      ...courseData,
-      // Ensure lessons array exists
-      lessons: courseData.lessons || []
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Course not found')
     }
 
-    // Add to global array
-    coursesData.push(newCourse)
+    return response.json()
+  }
 
+  // ===== ADMIN-ONLY COURSE MANAGEMENT =====
 
-    return { id: newId }
+  /**
+   * Create new course (Admin only)
+   */
+  static async createCourse(courseData: Partial<Course>): Promise<{ course: Course; message: string }> {
+    const response = await fetch('/api/sudo/courses', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(courseData),
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Failed to create course')
+    }
+
+    return response.json()
   }
 
   /**
    * Update course (Admin only)
-   * Updates coursesData array in memory for development
    */
-  static async updateCourse(courseId: string, updates: Partial<Course>): Promise<void> {
-    // Simulate async operation
-    await new Promise(resolve => setTimeout(resolve, 100))
+  static async updateCourse(courseId: string, updateData: Partial<Course>): Promise<{ course: Course; message: string }> {
+    const response = await fetch(`/api/sudo/courses/${courseId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(updateData),
+    })
 
-    // Find and update course in global array
-    const courseIndex = coursesData.findIndex(c => c.id === courseId)
-    if (courseIndex === -1) {
-      throw new Error('Course not found')
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Failed to update course')
     }
 
-    coursesData[courseIndex] = {
-      ...coursesData[courseIndex],
-      ...updates,
-      id: courseId // Ensure ID doesn't change
-    }
-
-
+    return response.json()
   }
 
   /**
    * Delete course (Admin only)
-   * Removes from coursesData array in memory for development
    */
-  static async deleteCourse(courseId: string): Promise<void> {
-    // Simulate async operation
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    // Find and remove course from global array
-    const courseIndex = coursesData.findIndex(c => c.id === courseId)
-    if (courseIndex === -1) {
-      throw new Error('Course not found')
-    }
-
-    coursesData.splice(courseIndex, 1)
-
-
-  }
-
-  // ===== ADMIN LESSON OPERATIONS =====
-
-  /**
-   * Create a new lesson in a course (Admin only)
-   */
-  static async createLesson(courseId: string, lessonData: Omit<Lesson, 'id'>): Promise<{ id: string }> {
-    // Simulate async operation
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    // Find course in global array
-    const course = coursesData.find(c => c.id === courseId)
-    if (!course) {
-      throw new Error('Course not found')
-    }
-
-    // Generate unique lesson ID
-    const newLessonId = `lesson_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
-
-    // Create and add new lesson
-    const newLesson: Lesson = {
-      ...lessonData,
-      id: newLessonId,
-      lessonOrder: course.lessons.length + 1
-    }
-
-    course.lessons.push(newLesson)
-
-
-    return { id: newLessonId }
-  }
-
-  /**
-   * Update lesson in a course (Admin only)
-   */
-  static async updateLesson(courseId: string, lessonId: string, updates: Partial<Lesson>): Promise<void> {
-    // Simulate async operation
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    // Find course in global array
-    const course = coursesData.find(c => c.id === courseId)
-    if (!course) {
-      throw new Error('Course not found')
-    }
-
-    // Find lesson in course
-    const lessonIndex = course.lessons.findIndex(l => l.id === lessonId)
-    if (lessonIndex === -1) {
-      throw new Error('Lesson not found')
-    }
-
-    // Update lesson and save to localStorage
-    course.lessons[lessonIndex] = {
-      ...course.lessons[lessonIndex],
-      ...updates,
-      id: lessonId // Ensure ID doesn't change
-    }
-    
-
-
-  }
-
-  /**
-   * Delete a lesson from a course (Admin only)
-   */
-  static async deleteLesson(courseId: string, lessonId: string): Promise<void> {
-    // Simulate async operation
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    // Find course in global array
-    const course = coursesData.find(c => c.id === courseId)
-    if (!course) {
-      throw new Error('Course not found')
-    }
-
-    // Find lesson index
-    const lessonIndex = course.lessons.findIndex(l => l.id === lessonId)
-    if (lessonIndex === -1) {
-      throw new Error('Lesson not found')
-    }
-
-    // Remove lesson
-    course.lessons.splice(lessonIndex, 1)
-
-    // Reorder remaining lessons
-    course.lessons.forEach((lesson, index) => {
-      lesson.lessonOrder = index + 1
-    })
-    
-
-
-  }
-
-  /**
-   * Reorder lessons in a course (Admin only)
-   */
-  static async reorderLessons(courseId: string, lessonIds: string[]): Promise<void> {
-    // Simulate async operation
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    // Find course in global array
-    const course = coursesData.find(c => c.id === courseId)
-    if (!course) {
-      throw new Error('Course not found')
-    }
-
-    // Create new lessons array in the specified order
-    const reorderedLessons: Lesson[] = []
-
-    lessonIds.forEach((lessonId, index) => {
-      const lesson = course.lessons.find(l => l.id === lessonId)
-      if (lesson) {
-        reorderedLessons.push({
-          ...lesson,
-          lessonOrder: index + 1
-        })
-      }
+  static async deleteCourse(courseId: string): Promise<{ message: string }> {
+    const response = await fetch(`/api/sudo/courses/${courseId}`, {
+      method: 'DELETE',
+      credentials: 'include',
     })
 
-    // Update course lessons and save to localStorage
-    course.lessons = reorderedLessons
-    
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Failed to delete course')
+    }
 
-
+    return response.json()
   }
 }

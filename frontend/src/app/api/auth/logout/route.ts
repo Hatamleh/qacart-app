@@ -1,26 +1,28 @@
-import { NextResponse } from 'next/server'
-import { AuthClient } from '@/clients'
-import { cookies } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server'
+import { AuthRepository } from '@/repositories'
 
-export async function POST() {
+/**
+ * POST /api/auth/logout
+ * Clear session and revoke Firebase tokens
+ */
+export async function POST(request: NextRequest) {
   try {
-    const cookieStore = await cookies()
-    const sessionCookie = cookieStore.get('session')?.value
+    const sessionCookie = request.cookies.get('session')?.value
 
     // If there's a session cookie, revoke it from Firebase
     if (sessionCookie) {
       try {
-        await AuthClient.revokeSession(sessionCookie)
+        await AuthRepository.revokeSession(sessionCookie)
+        console.log('✅ Session revoked from Firebase')
       } catch (error) {
         // Log but don't fail - cookie might be invalid
         console.error('Error revoking session:', error)
       }
     }
 
-    // Create response
-    const response = NextResponse.json({
-      success: true,
-      message: 'Logged out successfully'
+    // Create response to clear cookie
+    const response = NextResponse.json({ 
+      message: 'Logged out successfully' 
     })
 
     // Clear session cookie
