@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Edit, Trash2, Clock, Users, Calendar } from 'lucide-react'
+import { Edit, Trash2, Clock, Users, Calendar, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { CourseClient } from '@/clients/course.client'
 import { Course } from '@/types'
@@ -47,13 +47,9 @@ export const CoursesList = ({ courses }: CoursesListProps) => {
             {/* Course Info */}
             <div className="col-span-4">
               <div className="flex items-start gap-4">
-                {/* Course Thumbnail */}
-                <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted/50 flex-shrink-0">
-                  <img
-                    src={course.videoThumbnail}
-                    alt={course.title}
-                    className="w-full h-full object-cover"
-                  />
+                {/* Course Icon */}
+                <div className="w-16 h-16 rounded-lg bg-primary/10 flex-shrink-0 flex items-center justify-center">
+                  <BookOpen className="w-8 h-8 text-primary" />
                 </div>
                 
                 {/* Course Details */}

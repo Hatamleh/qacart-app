@@ -39,12 +39,4 @@ export class PlanClient {
     throw new Error('Subscription creation not implemented yet')
   }
 
-  /**
-   * Check user subscription status (Future implementation)
-   */
-  static async getUserSubscription(userId: string) {
-    await new Promise(resolve => setTimeout(resolve, 100))
-    console.log('Getting user subscription:', userId)
-    return null // No active subscription for now
-  }
 }

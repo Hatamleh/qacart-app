@@ -22,7 +22,6 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
     type: course.type,
     shortDescription: course.shortDescription,
     promoVideoUrl: course.promoVideoUrl,
-    videoThumbnail: course.videoThumbnail,
     studentsCount: course.studentsCount
   })
 
@@ -44,7 +43,6 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
         type: formData.type,
         shortDescription: formData.shortDescription.trim(),
         promoVideoUrl: formData.promoVideoUrl.trim(),
-        videoThumbnail: formData.videoThumbnail.trim(),
         studentsCount: formData.studentsCount,
         lastUpdated: new Date().toLocaleDateString('ar-SA')
       })
@@ -154,20 +152,6 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
               value={formData.promoVideoUrl}
               onChange={(e) => updateField('promoVideoUrl', e.target.value)}
               placeholder="معرف الفيديو في Vimeo"
-              className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
-            />
-          </div>
-
-          {/* Video Thumbnail */}
-          <div>
-            <label className="block text-sm font-semibold text-muted-foreground mb-2">
-              رابط صورة الدورة
-            </label>
-            <input
-              type="url"
-              value={formData.videoThumbnail}
-              onChange={(e) => updateField('videoThumbnail', e.target.value)}
-              placeholder="https://example.com/image.jpg"
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
             />
           </div>

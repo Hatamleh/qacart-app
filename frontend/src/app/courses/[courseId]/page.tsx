@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: CoursePageProps): Promise<Met
         locale: 'ar_SA',
         images: [
           {
-            url: course.videoThumbnail,
+            url: 'https://qacart.com/course-placeholder.jpg',
             width: 800,
             height: 450,
             alt: course.title,

@@ -6,7 +6,6 @@ export interface Course {
   title: string
   shortDescription: string
   promoVideoUrl: string
-  videoThumbnail: string
   lastUpdated: string
   lessons: Lesson[]
   type: string

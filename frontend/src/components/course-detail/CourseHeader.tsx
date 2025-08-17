@@ -64,7 +64,6 @@ export const CourseHeader = ({ course }: CourseHeaderProps) => {
                     <VimeoPlayer 
                         vimeoId={course.promoVideoUrl}
                         title={`معاينة دورة ${course.title}`}
-                        thumbnail={course.videoThumbnail}
                         className="w-full"
                     />
                 </div>

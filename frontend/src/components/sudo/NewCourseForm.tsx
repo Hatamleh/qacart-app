@@ -16,7 +16,6 @@ export const NewCourseForm = () => {
     shortDescription: '',
     type: 'يدوي',
     promoVideoUrl: '',
-    videoThumbnail: '',
     studentsCount: 0,
     learningGoals: ['', '', '', '', '', ''] // Exactly 6 learning goals
   })
@@ -45,7 +44,6 @@ export const NewCourseForm = () => {
         shortDescription: formData.shortDescription.trim(),
         type: formData.type,
         promoVideoUrl: formData.promoVideoUrl.trim() || '',
-        videoThumbnail: formData.videoThumbnail.trim() || `https://picsum.photos/800/450?random=${Date.now()}`,
         studentsCount: formData.studentsCount,
         lastUpdated: new Date().toLocaleDateString('ar-SA'),
         durationInMinutes: 0, // Will be calculated when lessons are added
@@ -242,24 +240,7 @@ export const NewCourseForm = () => {
               />
             </div>
 
-            {/* Video Thumbnail URL */}
-            <div>
-              <label className="block text-sm font-semibold text-muted-foreground mb-3">
-                رابط صورة الدورة (اختياري)
-              </label>
-              <input
-                type="url"
-                value={formData.videoThumbnail}
-                onChange={(e) => updateField('videoThumbnail', e.target.value)}
-                placeholder="https://example.com/image.jpg"
-                className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
-              />
-            </div>
           </div>
-
-          <p className="text-xs text-muted-foreground">
-            💡 إذا تُركت صورة الدورة فارغة، سيتم إنشاء صورة افتراضية تلقائياً
-          </p>
         </div>
 
         {/* Action Buttons */}
