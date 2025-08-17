@@ -5,7 +5,9 @@ import { ManageAccountSection } from '@/components/profile/ManageAccountSection'
 import { FAQSection } from '@/components/profile/FAQSection'
 import { ContactSection } from '@/components/profile/ContactSection'
 import { DangerZoneSection } from '@/components/profile/DangerZoneSection'
-import { currentUserData, faqData } from '@/data'
+import { UserClient } from '@/clients'
+import { faqData } from '@/data'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'الملف الشخصي | QAcart',
@@ -18,7 +20,14 @@ export const metadata: Metadata = {
   },
 }
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+  // Get real user data from session
+  const user = await UserClient.getCurrentUser()
+
+  // Redirect to auth if not logged in
+  if (!user) {
+    redirect('/auth')
+  }
 
   return (
     <>
@@ -29,8 +38,8 @@ export default function ProfilePage() {
           {/* Welcome, Section */}
           <ProfileWelcome />
 
-          {/* User Info */}
-          <UserInfo user={currentUserData} />
+          {/* User Info - Pass real user data */}
+          <UserInfo user={user} />
 
           {/* Manage Account */}
           <ManageAccountSection />
