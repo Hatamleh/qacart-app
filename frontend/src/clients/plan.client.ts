@@ -1,20 +1,30 @@
-import { Plan } from '@/types'
-import { planData } from '@/data'
-import { cache } from 'react'
+import {Plan} from '@/types'
+import {cache} from 'react'
+import {admin} from '@/firebase/admin'
 
 /**
  * PlanClient - Handles all plan and subscription-related data access
- * Currently reads from mock data, will connect to Firebase later
+ * Fetches from Firebase Firestore
  */
 export class PlanClient {
   /**
-   * Fetch plan data (currently from mock data, will be Firebase later)
+   * Fetch plan data from Firestore
    * Cached automatically by React - no duplicate calls within same request
    */
-  static getPlan = cache(async (): Promise<Plan> => {
-    // Simulate async operation for future Firebase integration
-    await new Promise(resolve => setTimeout(resolve, 50))
-    return planData
+    static getPlan = cache(async (): Promise<Plan> => {
+    const plansSnapshot = await admin.firestore().collection('plans').get()
+
+    if (plansSnapshot.empty) {
+      throw new Error('No plan documents found in Firestore')
+    }
+
+    // Find premium-plan or use first document as fallback
+    const planDoc = plansSnapshot.docs.find(doc => doc.id === 'premium-plan') || plansSnapshot.docs[0]
+
+    return {
+      id: planDoc.id,
+      ...planDoc.data() as Omit<Plan, 'id'>
+    }
   })
 
   // ===== FUTURE SUBSCRIPTION OPERATIONS =====
