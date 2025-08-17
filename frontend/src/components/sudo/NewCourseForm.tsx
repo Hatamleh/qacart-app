@@ -15,7 +15,7 @@ export const NewCourseForm = () => {
     title: '',
     shortDescription: '',
     type: 'يدوي',
-    promoVideoUrl: '',
+    vimeoId: '',
     studentsCount: 0,
     learningGoals: ['', '', '', '', '', ''] // Exactly 6 learning goals
   })
@@ -43,7 +43,7 @@ export const NewCourseForm = () => {
         title: formData.title.trim(),
         shortDescription: formData.shortDescription.trim(),
         type: formData.type,
-        promoVideoUrl: formData.promoVideoUrl.trim() || '',
+        vimeoId: formData.vimeoId.trim() || '',
         studentsCount: formData.studentsCount,
         lastUpdated: new Date().toLocaleDateString('ar-SA'),
         durationInMinutes: 0, // Will be calculated when lessons are added
@@ -233,8 +233,8 @@ export const NewCourseForm = () => {
               </label>
               <input
                 type="text"
-                value={formData.promoVideoUrl}
-                onChange={(e) => updateField('promoVideoUrl', e.target.value)}
+                value={formData.vimeoId}
+                onChange={(e) => updateField('vimeoId', e.target.value)}
                 placeholder="مثال: 1085509305"
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
               />

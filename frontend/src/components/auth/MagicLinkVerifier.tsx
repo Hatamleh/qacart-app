@@ -64,7 +64,8 @@ export const MagicLinkVerifier = ({ onVerificationComplete, onRetry }: MagicLink
     }
 
     verifyMagicLink()
-  }, []) // Remove dependency to prevent re-runs
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Intentionally empty - we only want this to run once on mount
 
   const performSignIn = async (emailToUse: string) => {
     try {

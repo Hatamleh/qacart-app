@@ -21,7 +21,7 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
     title: course.title,
     type: course.type,
     shortDescription: course.shortDescription,
-    promoVideoUrl: course.promoVideoUrl,
+    vimeoId: course.vimeoId,
     studentsCount: course.studentsCount
   })
 
@@ -42,7 +42,7 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
         title: formData.title.trim(),
         type: formData.type,
         shortDescription: formData.shortDescription.trim(),
-        promoVideoUrl: formData.promoVideoUrl.trim(),
+        vimeoId: formData.vimeoId.trim(),
         studentsCount: formData.studentsCount,
         lastUpdated: new Date().toLocaleDateString('ar-SA')
       })
@@ -149,8 +149,8 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
             </label>
             <input
               type="text"
-              value={formData.promoVideoUrl}
-              onChange={(e) => updateField('promoVideoUrl', e.target.value)}
+              value={formData.vimeoId}
+              onChange={(e) => updateField('vimeoId', e.target.value)}
               placeholder="معرف الفيديو في Vimeo"
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
             />

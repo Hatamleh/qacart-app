@@ -5,7 +5,7 @@ export interface Course {
   id: string
   title: string
   shortDescription: string
-  promoVideoUrl: string
+  vimeoId: string
   lastUpdated: string
   lessons: Lesson[]
   type: string

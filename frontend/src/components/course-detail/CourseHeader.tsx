@@ -62,7 +62,7 @@ export const CourseHeader = ({ course }: CourseHeaderProps) => {
                 {/* Big Video */}
                 <div className="mb-8">
                     <VimeoPlayer 
-                        vimeoId={course.promoVideoUrl}
+                        vimeoId={course.vimeoId}
                         title={`معاينة دورة ${course.title}`}
                         className="w-full"
                     />
