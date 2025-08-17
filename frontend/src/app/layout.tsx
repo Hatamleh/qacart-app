@@ -34,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className={cairo.variable}>
+    <html lang="ar" dir="rtl" className={cairo.variable} data-scroll-behavior="smooth">
       <body className={`${cairo.className} antialiased`}>
         <AuthProvider>
           <div className="min-h-screen flex flex-col">
