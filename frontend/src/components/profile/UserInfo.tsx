@@ -1,4 +1,4 @@
-import { Mail, LogOut, User as UserIcon, Crown, ArrowRight } from 'lucide-react'
+import { Mail, User as UserIcon, Crown, ArrowRight } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Badge } from '../ui/Badge'
 import { User } from '@/types'
@@ -105,18 +105,6 @@ export const UserInfo = ({ user }: UserInfoProps) => {
             </div>
           </div>
         )}
-
-        {/* Sign Out Button */}
-        <div className="pt-4 border-t border-border">
-          <Button
-            variant="outline"
-            icon={LogOut}
-            iconPosition="right"
-            className="w-full"
-          >
-            تسجيل الخروج
-          </Button>
-        </div>
       </div>
     </div>
   )

@@ -1,5 +1,4 @@
-import { Mail, ExternalLink } from 'lucide-react'
-import { Button } from '../ui/Button'
+import { Mail } from 'lucide-react'
 
 export const ContactSection = () => {
 
@@ -15,19 +14,11 @@ export const ContactSection = () => {
           نحن هنا لمساعدتك! لا تتردد في التواصل معنا
         </p>
         
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="flex items-center justify-center">
           <div className="flex items-center gap-3 p-4 bg-background/50 rounded-xl">
             <Mail className="w-5 h-5 text-primary" />
             <span className="font-semibold">hello@qacart.com</span>
           </div>
-          
-          <Button
-            variant="primary"
-            icon={ExternalLink}
-            iconPosition="right"
-          >
-            إرسال بريد إلكتروني
-          </Button>
         </div>
       </div>
     </div>
