@@ -12,6 +12,7 @@ interface UseUsersResult {
   loading: boolean
   error: string | null
   getAllUsers: () => Promise<void>
+  deleteUser: (userId: string) => Promise<void>
   clearError: () => void
 }
 
@@ -37,6 +38,18 @@ export function useUsers(): UseUsersResult {
     }
   }, [])
 
+  const deleteUser = useCallback(async (userId: string) => {
+    try {
+      setError(null)
+      await UserClient.deleteUser(userId)
+      // Refresh users list after deletion
+      await getAllUsers()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete user')
+      throw err
+    }
+  }, [getAllUsers])
+
   useEffect(() => {
     getAllUsers()
   }, [getAllUsers])
@@ -46,6 +59,7 @@ export function useUsers(): UseUsersResult {
     loading,
     error,
     getAllUsers,
+    deleteUser,
     clearError,
   }
 }

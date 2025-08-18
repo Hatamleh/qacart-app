@@ -1,21 +1,35 @@
-import { Users, Crown, UserCheck, Filter } from 'lucide-react'
+import { useState } from 'react'
+import { Users, Crown, UserCheck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AdminUsersTable } from './AdminUsersTable'
 import { User } from '@/types'
 
 interface AdminUsersPageClientProps {
   users: User[]
+  onDeleteUser?: (userId: string) => Promise<void>
 }
 
-export const AdminUsersPageClient = ({ users }: AdminUsersPageClientProps) => {
+type FilterType = 'all' | 'premium' | 'free'
 
-  // Filter users based on selected filter (all for design-first)
-  const filteredUsers = users
+export const AdminUsersPageClient = ({ users, onDeleteUser }: AdminUsersPageClientProps) => {
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>('all')
+
+  // Filter users based on selected filter
+  const filteredUsers = users.filter(user => {
+    switch (selectedFilter) {
+      case 'premium':
+        return user.subscription.status === 'premium'
+      case 'free':
+        return user.subscription.status === 'free'
+      case 'all':
+      default:
+        return true
+    }
+  })
 
   // Get filter counts
   const premiumCount = users.filter(u => u.subscription.status === 'premium').length
   const freeCount = users.filter(u => u.subscription.status === 'free').length
-  const expiredCount = 0 // No expired status in simplified model
 
   return (
     <>
@@ -33,7 +47,7 @@ export const AdminUsersPageClient = ({ users }: AdminUsersPageClientProps) => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Total Users */}
           <div className="glass rounded-xl p-4 border border-border">
             <div className="flex items-center gap-3">
@@ -72,47 +86,31 @@ export const AdminUsersPageClient = ({ users }: AdminUsersPageClientProps) => {
               </div>
             </div>
           </div>
-
-          {/* Expired Users */}
-          <div className="glass rounded-xl p-4 border border-border">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-destructive/20 flex items-center justify-center">
-                <Filter className="w-5 h-5 text-destructive" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">اشتراكات منتهية</p>
-                <p className="text-xl font-bold text-foreground">{expiredCount}</p>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Filter Buttons */}
         <div className="flex items-center gap-2 mb-6">
           <span className="text-sm font-medium text-muted-foreground ml-2">تصفية:</span>
           <Button
-            variant="primary"
+            variant={selectedFilter === 'all' ? 'primary' : 'outline'}
             size="sm"
+            onClick={() => setSelectedFilter('all')}
           >
             الكل ({users.length})
           </Button>
           <Button
-            variant="outline"
+            variant={selectedFilter === 'premium' ? 'primary' : 'outline'}
             size="sm"
+            onClick={() => setSelectedFilter('premium')}
           >
             بريميوم ({premiumCount})
           </Button>
           <Button
-            variant="outline"
+            variant={selectedFilter === 'free' ? 'primary' : 'outline'}
             size="sm"
+            onClick={() => setSelectedFilter('free')}
           >
             مجاني ({freeCount})
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-          >
-            منتهي ({expiredCount})
           </Button>
         </div>
       </div>
@@ -120,6 +118,7 @@ export const AdminUsersPageClient = ({ users }: AdminUsersPageClientProps) => {
       {/* Users Table */}
       <AdminUsersTable
         users={filteredUsers}
+        onDeleteUser={onDeleteUser}
       />
     </>
   )

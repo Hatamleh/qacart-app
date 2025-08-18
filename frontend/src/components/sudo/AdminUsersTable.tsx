@@ -1,12 +1,39 @@
+import { useState } from 'react'
 import { Trash2, Crown, Gift, Calendar, User } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { ConfirmationDialog } from '@/components/profile/ConfirmationDialog'
 import { User as UserType } from '@/types'
 
 interface AdminUsersTableProps {
   users: UserType[]
+  onDeleteUser?: (userId: string) => Promise<void>
 }
 
-export const AdminUsersTable = ({ users }: AdminUsersTableProps) => {
+export const AdminUsersTable = ({ users, onDeleteUser }: AdminUsersTableProps) => {
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null)
+  const [userToDelete, setUserToDelete] = useState<UserType | null>(null)
+
+  // Handle user deletion confirmation
+  const handleDeleteConfirm = async () => {
+    if (!onDeleteUser || !userToDelete) return
+
+    setDeletingUserId(userToDelete.id)
+    try {
+      await onDeleteUser(userToDelete.id)
+    } catch (error) {
+      console.error('Failed to delete user:', error)
+      // Error is handled by the hook
+    } finally {
+      setDeletingUserId(null)
+      setUserToDelete(null)
+    }
+  }
+
+  // Show delete confirmation dialog
+  const handleDeleteUser = (user: UserType) => {
+    setUserToDelete(user)
+  }
+
   // Get subscription status display info
   const getSubscriptionDisplay = (user: UserType) => {
     const { subscription } = user
@@ -134,9 +161,11 @@ export const AdminUsersTable = ({ users }: AdminUsersTableProps) => {
                       variant="ghost"
                       size="sm"
                       icon={Trash2}
-                      className="text-xs px-3 py-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                      disabled={deletingUserId === user.id || !onDeleteUser}
+                      onClick={() => handleDeleteUser(user)}
+                      className="text-xs px-3 py-2 text-destructive hover:text-destructive hover:bg-destructive/10 disabled:opacity-50"
                     >
-                      حذف
+                      {deletingUserId === user.id ? 'جارٍ الحذف...' : 'حذف'}
                     </Button>
                   </div>
                 </div>
@@ -160,6 +189,19 @@ export const AdminUsersTable = ({ users }: AdminUsersTableProps) => {
           </p>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={!!userToDelete}
+        onClose={() => setUserToDelete(null)}
+        onConfirm={handleDeleteConfirm}
+        title="حذف المستخدم"
+        message={`هل أنت متأكد من حذف المستخدم "${userToDelete?.email}"؟ هذا الإجراء لا يمكن التراجع عنه وسيتم حذف جميع بيانات المستخدم نهائياً.`}
+        confirmText="حذف نهائياً"
+        cancelText="إلغاء"
+        isLoading={deletingUserId === userToDelete?.id}
+        variant="danger"
+      />
     </div>
   )
 }
