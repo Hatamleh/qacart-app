@@ -3,16 +3,48 @@
  * Handles client-side requests to user API routes (admin only)
  */
 
-import { User } from '@/types'
+import { User, GetUsersParams, GetUsersResponse } from '@/types'
 
 export class UserClient {
   // ===== ADMIN USER METHODS =====
   
   /**
-   * Get all users (Admin only)
+   * Get users with enhanced filtering, pagination, and search (Admin only)
+   * 
+   * @param params - Query parameters for filtering, pagination, and search
+   * @returns Promise with users array and pagination metadata
+   * 
+   * Examples:
+   * - getAllUsers() // Get first 20 users
+   * - getAllUsers({ filter: 'gifted' }) // Get gifted users only
+   * - getAllUsers({ search: 'user@email.com' }) // Search by email
+   * - getAllUsers({ offset: 20 }) // Load more (next 20)
+   * - getAllUsers({ filter: 'premium', search: 'john', limit: 10 }) // Combined
    */
-  static async getAllUsers(): Promise<{ users: User[] }> {
-    const response = await fetch('/api/sudo/users', {
+  static async getAllUsers(params: GetUsersParams = {}): Promise<GetUsersResponse> {
+    // Build query string from parameters
+    const searchParams = new URLSearchParams()
+    
+    if (params.filter && params.filter !== 'all') {
+      searchParams.append('filter', params.filter)
+    }
+    
+    if (params.limit && params.limit !== 20) {
+      searchParams.append('limit', params.limit.toString())
+    }
+    
+    if (params.offset && params.offset > 0) {
+      searchParams.append('offset', params.offset.toString())
+    }
+    
+    if (params.search && params.search.trim()) {
+      searchParams.append('search', params.search.trim())
+    }
+
+    // Build URL with query parameters
+    const url = `/api/sudo/users${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
+    
+    const response = await fetch(url, {
       method: 'GET',
       credentials: 'include',
     })

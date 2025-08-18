@@ -5,7 +5,8 @@ import { AdminUsersPageClient } from '@/components/sudo/AdminUsersPageClient'
 import { useUsers } from '@/hooks'
 
 export default function AdminUsersPage() {
-  const { users, loading, error, deleteUser, togglePremiumGift } = useUsers()
+  const usersHook = useUsers()
+  const { loading, error } = usersHook
 
   if (loading) {
     return (
@@ -50,7 +51,7 @@ export default function AdminUsersPage() {
       <main className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
           {/* Client-side component with user management functionality */}
-          <AdminUsersPageClient users={users} onDeleteUser={deleteUser} onTogglePremiumGift={togglePremiumGift} />
+          <AdminUsersPageClient usersHook={usersHook} />
         </div>
       </main>
     </>

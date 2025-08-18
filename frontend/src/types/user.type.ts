@@ -26,4 +26,20 @@ export interface FirebaseUser {
   email: string | null
 }
 
+// Enhanced user query parameters for admin APIs
+export interface GetUsersParams {
+  filter?: 'all' | 'premium' | 'free' | 'gifted'
+  limit?: number
+  offset?: number
+  search?: string
+}
+
+// Enhanced user query response for admin APIs
+export interface GetUsersResponse {
+  users: User[]
+  total: number
+  hasMore: boolean
+  currentFilter: string
+  currentSearch: string
+}
 

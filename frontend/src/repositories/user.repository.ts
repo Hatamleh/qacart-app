@@ -1,8 +1,10 @@
-import { User, FirebaseUser, GiftDetails } from '@/types'
+import { User, FirebaseUser, GiftDetails, GetUsersParams, GetUsersResponse } from '@/types'
 import { admin } from '@/firebase/admin'
-import { FieldValue } from 'firebase-admin/firestore'
 import { AuthRepository } from './auth.repository'
 import { cache } from 'react'
+import {firestore} from "firebase-admin";
+import FieldValue = firestore.FieldValue;
+
 
 /**
  * UserRepository - Data access layer for user data management
@@ -59,19 +61,147 @@ export class UserRepository {
   }
 
   /**
-   * Get all users (Admin only)
+   * Get all users with enhanced filtering, pagination, and search (Admin function)
+   * Used for admin "إدارة المستخدمين" page with server-side processing
    */
-  static async getAllUsers(): Promise<User[]> {
+  static async getAllUsers(params: GetUsersParams = {}): Promise<GetUsersResponse> {
     try {
-      const usersSnapshot = await admin.firestore()
-        .collection('users')
-        .orderBy('createdAt', 'desc')
-        .get()
+      const {
+        filter = 'all',
+        limit = 20,
+        offset = 0,
+        search = ''
+      } = params
 
-      return usersSnapshot.docs.map(doc => doc.data() as User)
+      // Start building the query
+      const query = admin.firestore().collection('users')
+
+      // Apply search filter first (most restrictive)
+      if (search.trim()) {
+        const searchTerm = search.trim().toLowerCase()
+        console.log('🔍 Search term:', searchTerm)
+
+        // For search, we need to get all users and filter client-side
+        // because Firestore doesn't support OR queries efficiently and
+        // document ID search requires different handling
+        const allUsersSnapshot = await query.get()
+        console.log('📊 Total users in DB:', allUsersSnapshot.docs.length)
+
+        const allUsers = allUsersSnapshot.docs.map(doc => {
+          const userData = doc.data() as User
+          // Ensure the document ID is available for search
+          return {
+            ...userData,
+            id: userData.id || doc.id // Use field id or document id as fallback
+          }
+        })
+
+        console.log('👤 Sample user for search debug:', allUsers[0] ? {
+          id: allUsers[0].id,
+          email: allUsers[0].email
+        } : 'No users found')
+
+        // Client-side search by email or ID
+        let users = allUsers.filter(user => {
+          const emailMatch = user.email.toLowerCase().includes(searchTerm)
+          const idMatch = user.id.toLowerCase().includes(searchTerm)
+          const matches = emailMatch || idMatch
+          if (matches) {
+            console.log('✅ Search match found:', { email: user.email, id: user.id })
+          }
+          return matches
+        })
+
+        console.log('🎯 Search results count:', users.length)
+
+        // Apply status filter to search results
+        users = this.applyStatusFilter(users, filter)
+
+        // Apply pagination
+        const total = users.length
+        const paginatedUsers = users.slice(offset, offset + limit)
+        const hasMore = offset + limit < total
+
+        return {
+          users: paginatedUsers,
+          total,
+          hasMore,
+          currentFilter: filter,
+          currentSearch: search
+        }
+      }
+
+      // No search - use client-side filtering to avoid index requirements
+      console.log('🔽 Applying filter:', filter)
+
+      // Get all users first (simpler than managing Firestore indexes)
+      const allUsersSnapshot = await query.get()
+      console.log('📊 Total users for filtering:', allUsersSnapshot.docs.length)
+
+      const allUsers = allUsersSnapshot.docs.map(doc => {
+        const userData = doc.data() as User
+        return {
+          ...userData,
+          id: userData.id || doc.id // Ensure ID is available
+        }
+      })
+
+      // Apply status filter client-side
+      const users = this.applyStatusFilter(allUsers, filter)
+      console.log('📊 After filter applied:', users.length)
+
+      if (users.length > 0) {
+        console.log('👤 Sample filtered user:', {
+          id: users[0].id,
+          email: users[0].email,
+          subscriptionStatus: users[0].subscription?.status,
+          hasGiftDetails: !!users[0].subscription?.giftDetails
+        })
+      }
+
+      // Apply pagination client-side
+      const total = users.length
+      const paginatedUsers = users.slice(offset, offset + limit)
+      const hasMore = offset + limit < total
+
+      return {
+        users: paginatedUsers,
+        total,
+        hasMore,
+        currentFilter: filter,
+        currentSearch: search
+      }
+
     } catch (error) {
-      console.error('Error getting all users:', error)
-      return []
+      console.error('Error getting users with params:', error)
+      return {
+        users: [],
+        total: 0,
+        hasMore: false,
+        currentFilter: params.filter || 'all',
+        currentSearch: params.search || ''
+      }
+    }
+  }
+
+
+  /**
+   * Apply status filter to user array (used after search)
+   */
+  private static applyStatusFilter(users: User[], filter: string): User[] {
+    switch (filter) {
+      case 'premium':
+        return users.filter(user => user.subscription.status === 'premium')
+      case 'free':
+        return users.filter(user => user.subscription.status === 'free')
+      case 'gifted':
+        return users.filter(user =>
+          user.subscription.status === 'premium' &&
+          user.subscription.giftDetails != null
+        )
+      case 'all':
+      default:
+        return users
     }
   }
 
@@ -216,7 +346,7 @@ export class UserRepository {
       }
 
       console.log(`✅ ${action === 'granted' ? 'Granted' : 'Revoked'} premium gift for user: ${userId}`)
-      
+
       return { action, user: updatedUser }
 
     } catch (error) {
