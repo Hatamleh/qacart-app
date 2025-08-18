@@ -7,11 +7,13 @@ import { User as UserType } from '@/types'
 interface AdminUsersTableProps {
   users: UserType[]
   onDeleteUser?: (userId: string) => Promise<void>
+  onTogglePremiumGift?: (userId: string) => Promise<{ action: 'granted' | 'revoked'; user: UserType }>
 }
 
-export const AdminUsersTable = ({ users, onDeleteUser }: AdminUsersTableProps) => {
+export const AdminUsersTable = ({ users, onDeleteUser, onTogglePremiumGift }: AdminUsersTableProps) => {
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null)
   const [userToDelete, setUserToDelete] = useState<UserType | null>(null)
+  const [togglingUserId, setTogglingUserId] = useState<string | null>(null)
 
   // Handle user deletion confirmation
   const handleDeleteConfirm = async () => {
@@ -32,6 +34,21 @@ export const AdminUsersTable = ({ users, onDeleteUser }: AdminUsersTableProps) =
   // Show delete confirmation dialog
   const handleDeleteUser = (user: UserType) => {
     setUserToDelete(user)
+  }
+
+  // Handle toggle premium gift
+  const handleTogglePremiumGift = async (userId: string) => {
+    if (!onTogglePremiumGift) return
+
+    setTogglingUserId(userId)
+    try {
+      await onTogglePremiumGift(userId)
+    } catch (error) {
+      console.error('Failed to toggle premium gift:', error)
+      // Error is handled by the hook
+    } finally {
+      setTogglingUserId(null)
+    }
   }
 
   // Get subscription status display info
@@ -137,20 +154,48 @@ export const AdminUsersTable = ({ users, onDeleteUser }: AdminUsersTableProps) =
                 {/* Assign Premium Column */}
                 <div className="col-span-4">
                   <div className="flex items-center justify-center">
-                    {user.subscription.status !== 'premium' ? (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        icon={Gift}
-                        className="text-xs px-3 py-2 text-premium hover:text-premium border-premium/30 hover:bg-premium/10"
-                      >
-                        منح بريميوم
-                      </Button>
-                    ) : (
-                      <span className="text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg">
-                        مشترك بالفعل
-                      </span>
-                    )}
+                    {(() => {
+                      const isGifted = user.subscription.giftDetails != null
+                      const isPremium = user.subscription.status === 'premium'
+                      const isToggling = togglingUserId === user.id
+
+                      if (isPremium && !isGifted) {
+                        // Regular premium user - no action needed
+                        return (
+                          <span className="text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg">
+                            مشترك بالفعل
+                          </span>
+                        )
+                      } else if (isGifted) {
+                        // Gifted premium user - show revoke button
+                        return (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            icon={Gift}
+                            onClick={() => handleTogglePremiumGift(user.id)}
+                            disabled={isToggling}
+                            className="text-xs px-3 py-2 text-orange-600 hover:text-orange-600 border-orange-300 hover:bg-orange-50"
+                          >
+                            {isToggling ? 'جاري...' : 'إلغاء الهدية'}
+                          </Button>
+                        )
+                      } else {
+                        // Free user - show grant button
+                        return (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            icon={Gift}
+                            onClick={() => handleTogglePremiumGift(user.id)}
+                            disabled={isToggling}
+                            className="text-xs px-3 py-2 text-premium hover:text-premium border-premium/30 hover:bg-premium/10"
+                          >
+                            {isToggling ? 'جاري...' : 'منح بريميوم'}
+                          </Button>
+                        )
+                      }
+                    })()}
                   </div>
                 </div>
 

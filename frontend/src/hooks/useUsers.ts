@@ -13,6 +13,7 @@ interface UseUsersResult {
   error: string | null
   getAllUsers: () => Promise<void>
   deleteUser: (userId: string) => Promise<void>
+  togglePremiumGift: (userId: string) => Promise<{ action: 'granted' | 'revoked'; user: User }>
   clearError: () => void
 }
 
@@ -50,6 +51,25 @@ export function useUsers(): UseUsersResult {
     }
   }, [getAllUsers])
 
+  const togglePremiumGift = useCallback(async (userId: string): Promise<{ action: 'granted' | 'revoked'; user: User }> => {
+    try {
+      setError(null)
+      const result = await UserClient.togglePremiumGift(userId)
+      
+      // Update the specific user in the local state (optimistic update)
+      setUsers(prevUsers => 
+        prevUsers.map(user => 
+          user.id === userId ? result.user : user
+        )
+      )
+      
+      return { action: result.action, user: result.user }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to toggle premium gift')
+      throw err
+    }
+  }, [])
+
   useEffect(() => {
     getAllUsers()
   }, [getAllUsers])
@@ -60,6 +80,7 @@ export function useUsers(): UseUsersResult {
     error,
     getAllUsers,
     deleteUser,
+    togglePremiumGift,
     clearError,
   }
 }

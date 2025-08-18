@@ -12,6 +12,13 @@ export interface Subscription {
   plan?: 'monthly' | 'quarterly' | 'yearly'
   nextBillingDate?: string
   isActive: boolean
+  giftDetails?: GiftDetails
+}
+
+export interface GiftDetails {
+  grantedAt: string
+  expiresAt: string
+  type: 'admin_gift'
 }
 
 export interface FirebaseUser {

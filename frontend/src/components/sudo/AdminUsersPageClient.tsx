@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Users, Crown, UserCheck } from 'lucide-react'
+import { Users, Crown, UserCheck, Gift } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AdminUsersTable } from './AdminUsersTable'
 import { User } from '@/types'
@@ -7,11 +7,12 @@ import { User } from '@/types'
 interface AdminUsersPageClientProps {
   users: User[]
   onDeleteUser?: (userId: string) => Promise<void>
+  onTogglePremiumGift?: (userId: string) => Promise<{ action: 'granted' | 'revoked'; user: User }>
 }
 
-type FilterType = 'all' | 'premium' | 'free'
+type FilterType = 'all' | 'premium' | 'free' | 'gifted'
 
-export const AdminUsersPageClient = ({ users, onDeleteUser }: AdminUsersPageClientProps) => {
+export const AdminUsersPageClient = ({ users, onDeleteUser, onTogglePremiumGift }: AdminUsersPageClientProps) => {
   const [selectedFilter, setSelectedFilter] = useState<FilterType>('all')
 
   // Filter users based on selected filter
@@ -21,6 +22,8 @@ export const AdminUsersPageClient = ({ users, onDeleteUser }: AdminUsersPageClie
         return user.subscription.status === 'premium'
       case 'free':
         return user.subscription.status === 'free'
+      case 'gifted':
+        return user.subscription.status === 'premium' && user.subscription.giftDetails != null
       case 'all':
       default:
         return true
@@ -30,6 +33,7 @@ export const AdminUsersPageClient = ({ users, onDeleteUser }: AdminUsersPageClie
   // Get filter counts
   const premiumCount = users.filter(u => u.subscription.status === 'premium').length
   const freeCount = users.filter(u => u.subscription.status === 'free').length
+  const giftedCount = users.filter(u => u.subscription.status === 'premium' && u.subscription.giftDetails != null).length
 
   return (
     <>
@@ -47,7 +51,7 @@ export const AdminUsersPageClient = ({ users, onDeleteUser }: AdminUsersPageClie
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {/* Total Users */}
           <div className="glass rounded-xl p-4 border border-border">
             <div className="flex items-center gap-3">
@@ -86,6 +90,19 @@ export const AdminUsersPageClient = ({ users, onDeleteUser }: AdminUsersPageClie
               </div>
             </div>
           </div>
+
+          {/* Gifted Users */}
+          <div className="glass rounded-xl p-4 border border-border">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                <Gift className="w-5 h-5 text-orange-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">هدايا بريميوم</p>
+                <p className="text-xl font-bold text-foreground">{giftedCount}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Filter Buttons */}
@@ -112,6 +129,13 @@ export const AdminUsersPageClient = ({ users, onDeleteUser }: AdminUsersPageClie
           >
             مجاني ({freeCount})
           </Button>
+          <Button
+            variant={selectedFilter === 'gifted' ? 'primary' : 'outline'}
+            size="sm"
+            onClick={() => setSelectedFilter('gifted')}
+          >
+            هدايا ({giftedCount})
+          </Button>
         </div>
       </div>
 
@@ -119,6 +143,7 @@ export const AdminUsersPageClient = ({ users, onDeleteUser }: AdminUsersPageClie
       <AdminUsersTable
         users={filteredUsers}
         onDeleteUser={onDeleteUser}
+        onTogglePremiumGift={onTogglePremiumGift}
       />
     </>
   )

@@ -1,5 +1,6 @@
-import { User, FirebaseUser } from '@/types'
+import { User, FirebaseUser, GiftDetails } from '@/types'
 import { admin } from '@/firebase/admin'
+import { FieldValue } from 'firebase-admin/firestore'
 import { AuthRepository } from './auth.repository'
 import { cache } from 'react'
 
@@ -145,6 +146,82 @@ export class UserRepository {
     } catch (error) {
       console.error('Error granting premium subscription:', error)
       throw new Error('Failed to grant premium subscription')
+    }
+  }
+
+  /**
+   * Toggle premium gift for user (Admin function)
+   * If user is free or regular premium -> Grant 30-day gift
+   * If user has gift -> Revoke and make free
+   */
+  static async togglePremiumGift(userId: string): Promise<{ action: 'granted' | 'revoked'; user: User }> {
+    try {
+      // First get current user to check status
+      const currentUser = await this.getUserById(userId)
+      if (!currentUser) {
+        throw new Error('User not found')
+      }
+
+      let updatedSubscription: User['subscription']
+      let action: 'granted' | 'revoked'
+
+      // Check if user currently has a gift
+      const hasGift = currentUser.subscription.giftDetails != null
+
+      if (hasGift) {
+        // User has gift -> Revoke it (make free)
+        // Use direct field updates to delete optional fields
+        await admin.firestore()
+          .collection('users')
+          .doc(userId)
+          .update({
+            'subscription.status': 'free',
+            'subscription.plan': FieldValue.delete(),
+            'subscription.isActive': false,
+            'subscription.nextBillingDate': FieldValue.delete(),
+            'subscription.giftDetails': FieldValue.delete()
+          })
+        action = 'revoked'
+      } else {
+        // User doesn't have gift -> Grant 10-day gift
+        const now = new Date()
+        const expiresAt = new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000) // +10 days
+
+        const giftDetails: GiftDetails = {
+          grantedAt: now.toISOString(),
+          expiresAt: expiresAt.toISOString(),
+          type: 'admin_gift'
+        }
+
+        updatedSubscription = {
+          status: 'premium',
+          plan: 'monthly',
+          isActive: true,
+          nextBillingDate: expiresAt.toISOString(),
+          giftDetails
+        }
+        action = 'granted'
+
+        // Update user in Firestore
+        await admin.firestore()
+          .collection('users')
+          .doc(userId)
+          .update({ subscription: updatedSubscription })
+      }
+
+      // Get updated user
+      const updatedUser = await this.getUserById(userId)
+      if (!updatedUser) {
+        throw new Error('Failed to retrieve updated user')
+      }
+
+      console.log(`✅ ${action === 'granted' ? 'Granted' : 'Revoked'} premium gift for user: ${userId}`)
+      
+      return { action, user: updatedUser }
+
+    } catch (error) {
+      console.error('Error toggling premium gift:', error)
+      throw new Error('Failed to toggle premium gift')
     }
   }
 

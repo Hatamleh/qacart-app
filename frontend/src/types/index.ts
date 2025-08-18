@@ -1,6 +1,6 @@
 export type { Course } from './course.type'
 export type { Lesson } from './lesson.type'
-export type { User, Subscription, FirebaseUser } from './user.type'
+export type { User, Subscription, FirebaseUser, GiftDetails } from './user.type'
 export type { Plan, PricingOption } from './plan.type'
 export type { FAQQuestion } from './faq.type'
 export type { UserProgress } from './user-progress.type'
