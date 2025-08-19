@@ -50,8 +50,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       message: 'User deleted successfully' 
     })
 
-  } catch (error) {
-    console.error('Error deleting user:', error)
+  } catch {
     return NextResponse.json(
       { error: 'Failed to delete user' },
       { status: 500 }

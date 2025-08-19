@@ -1,7 +1,6 @@
 import { User, FirebaseUser, GiftDetails, GetUsersParams, GetUsersResponse } from '@/types'
 import { admin } from '@/firebase/admin'
 import { AuthRepository } from './auth.repository'
-import { cache } from 'react'
 import {firestore} from "firebase-admin";
 import FieldValue = firestore.FieldValue;
 
@@ -14,26 +13,6 @@ import FieldValue = firestore.FieldValue;
 export class UserRepository {
 
   // ===== USER DATA RETRIEVAL =====
-
-  /**
-   * Get the current authenticated user with full profile data
-   * Cached automatically by React - no duplicate calls within same request
-   */
-  static getCurrentUser = cache(async (): Promise<User | null> => {
-    try {
-      const userId = await AuthRepository.getAuthenticatedUserId()
-      if (!userId) {
-        return null
-      }
-
-      return await this.getUserById(userId)
-
-    } catch (error) {
-      console.error('Error getting current user:', error)
-      return null
-    }
-  })
-
   /**
    * Get user by ID (can be used internally or by session route)
    */
@@ -50,12 +29,11 @@ export class UserRepository {
         return await this.createUserProfile({
           uid: userId,
           email: decodedClaims.email || ''
-        }, 'magic-link')
+        })
       }
 
       return userDoc.data() as User
-    } catch (error) {
-      console.error('Error getting user by ID:', error)
+    } catch {
       return null
     }
   }
@@ -76,16 +54,14 @@ export class UserRepository {
       // Start building the query
       const query = admin.firestore().collection('users')
 
-      // Apply search filter first (most restrictive)
+            // Apply search filter first (most restrictive)
       if (search.trim()) {
         const searchTerm = search.trim().toLowerCase()
-        console.log('🔍 Search term:', searchTerm)
 
         // For search, we need to get all users and filter client-side
         // because Firestore doesn't support OR queries efficiently and
         // document ID search requires different handling
         const allUsersSnapshot = await query.get()
-        console.log('📊 Total users in DB:', allUsersSnapshot.docs.length)
 
         const allUsers = allUsersSnapshot.docs.map(doc => {
           const userData = doc.data() as User
@@ -96,23 +72,12 @@ export class UserRepository {
           }
         })
 
-        console.log('👤 Sample user for search debug:', allUsers[0] ? {
-          id: allUsers[0].id,
-          email: allUsers[0].email
-        } : 'No users found')
-
-        // Client-side search by email or ID
+                // Client-side search by email or ID
         let users = allUsers.filter(user => {
           const emailMatch = user.email.toLowerCase().includes(searchTerm)
           const idMatch = user.id.toLowerCase().includes(searchTerm)
-          const matches = emailMatch || idMatch
-          if (matches) {
-            console.log('✅ Search match found:', { email: user.email, id: user.id })
-          }
-          return matches
+          return emailMatch || idMatch
         })
-
-        console.log('🎯 Search results count:', users.length)
 
         // Apply status filter to search results
         users = this.applyStatusFilter(users, filter)
@@ -131,12 +96,9 @@ export class UserRepository {
         }
       }
 
-      // No search - use client-side filtering to avoid index requirements
-      console.log('🔽 Applying filter:', filter)
-
+            // No search - use client-side filtering to avoid index requirements
       // Get all users first (simpler than managing Firestore indexes)
       const allUsersSnapshot = await query.get()
-      console.log('📊 Total users for filtering:', allUsersSnapshot.docs.length)
 
       const allUsers = allUsersSnapshot.docs.map(doc => {
         const userData = doc.data() as User
@@ -146,18 +108,8 @@ export class UserRepository {
         }
       })
 
-      // Apply status filter client-side
+            // Apply status filter client-side
       const users = this.applyStatusFilter(allUsers, filter)
-      console.log('📊 After filter applied:', users.length)
-
-      if (users.length > 0) {
-        console.log('👤 Sample filtered user:', {
-          id: users[0].id,
-          email: users[0].email,
-          subscriptionStatus: users[0].subscription?.status,
-          hasGiftDetails: !!users[0].subscription?.giftDetails
-        })
-      }
 
       // Apply pagination client-side
       const total = users.length
@@ -172,8 +124,7 @@ export class UserRepository {
         currentSearch: search
       }
 
-    } catch (error) {
-      console.error('Error getting users with params:', error)
+    } catch {
       return {
         users: [],
         total: 0,
@@ -210,7 +161,7 @@ export class UserRepository {
   /**
    * Create user profile in Firestore after authentication
    */
-  static async createUserProfile(firebaseUser: FirebaseUser, authProvider: 'magic-link' | 'google'): Promise<User> {
+  static async createUserProfile(firebaseUser: FirebaseUser): Promise<User> {
     try {
       // Check if user already exists (race condition protection)
       const existingUser = await admin.firestore()
@@ -219,7 +170,6 @@ export class UserRepository {
         .get()
 
       if (existingUser.exists) {
-        console.log(`✅ User profile already exists:`, firebaseUser.email)
         return existingUser.data() as User
       }
 
@@ -240,11 +190,9 @@ export class UserRepository {
         .doc(firebaseUser.uid)
         .set(newUser)
 
-      console.log(`✅ User profile created via ${authProvider}:`, newUser.email)
       return newUser
 
-    } catch (error) {
-      console.error('Error creating user profile:', error)
+    } catch {
       throw new Error('Failed to create user profile')
     }
   }
@@ -272,9 +220,7 @@ export class UserRepository {
         .doc(userId)
         .update({ subscription })
 
-      console.log(`✅ Granted ${plan} premium to user: ${userId}`)
-    } catch (error) {
-      console.error('Error granting premium subscription:', error)
+    } catch {
       throw new Error('Failed to grant premium subscription')
     }
   }
@@ -345,12 +291,9 @@ export class UserRepository {
         throw new Error('Failed to retrieve updated user')
       }
 
-      console.log(`✅ ${action === 'granted' ? 'Granted' : 'Revoked'} premium gift for user: ${userId}`)
+            return { action, user: updatedUser }
 
-      return { action, user: updatedUser }
-
-    } catch (error) {
-      console.error('Error toggling premium gift:', error)
+    } catch {
       throw new Error('Failed to toggle premium gift')
     }
   }
@@ -385,9 +328,7 @@ export class UserRepository {
       })
       await batch.commit()
 
-      console.log(`✅ Admin deleted user and related data: ${userId}`)
-    } catch (error) {
-      console.error('Error deleting user:', error)
+    } catch {
       throw new Error('Failed to delete user')
     }
   }
@@ -405,9 +346,7 @@ export class UserRepository {
       // Same deletion process but for own account
       await this.deleteUserByAdmin(userId)
 
-      console.log(`✅ User deleted own account: ${userId}`)
-    } catch (error) {
-      console.error('Error deleting own account:', error)
+    } catch {
       throw new Error('Failed to delete account')
     }
   }

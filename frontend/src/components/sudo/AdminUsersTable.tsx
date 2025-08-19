@@ -22,8 +22,7 @@ export const AdminUsersTable = ({ users, onDeleteUser, onTogglePremiumGift }: Ad
     setDeletingUserId(userToDelete.id)
     try {
       await onDeleteUser(userToDelete.id)
-    } catch (error) {
-      console.error('Failed to delete user:', error)
+    } catch {
       // Error is handled by the hook
     } finally {
       setDeletingUserId(null)
@@ -43,8 +42,7 @@ export const AdminUsersTable = ({ users, onDeleteUser, onTogglePremiumGift }: Ad
     setTogglingUserId(userId)
     try {
       await onTogglePremiumGift(userId)
-    } catch (error) {
-      console.error('Failed to toggle premium gift:', error)
+    } catch {
       // Error is handled by the hook
     } finally {
       setTogglingUserId(null)

@@ -74,8 +74,7 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json(result)
 
-  } catch (error) {
-    console.error('Error fetching users for admin:', error)
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch users' },
       { status: 500 }

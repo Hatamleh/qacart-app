@@ -55,8 +55,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error('Error toggling premium gift:', error)
-    
     if (error instanceof Error && error.message === 'User not found') {
       return NextResponse.json(
         { error: 'User not found' },
