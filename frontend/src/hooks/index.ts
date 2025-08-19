@@ -7,7 +7,6 @@
 
 // Data fetching hooks (feature-specific)
 export { useCourses } from './useCourses'
-export { useCourse } from './useCourse'
 export { useLessons } from './useLessons'
 export { usePlans } from './usePlans'
 export { useUsers } from './useUsers'

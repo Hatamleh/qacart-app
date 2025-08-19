@@ -14,7 +14,7 @@ export default function AdminCoursesPage() {
 }
 
 function AdminCoursesPageContent() {
-  const { courses, loading, error } = useCourses()
+  const { courses, loading, error } = useCourses({ admin: true })
 
   if (loading) {
     return (

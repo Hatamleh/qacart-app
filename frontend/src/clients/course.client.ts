@@ -24,6 +24,24 @@ export class CourseClient {
   }
 
   /**
+   * Get all courses (Admin only)
+   * Uses admin endpoint with proper authentication
+   */
+  static async getAllCoursesAdmin(): Promise<{ courses: Course[] }> {
+    const response = await fetch('/api/sudo/courses', {
+      method: 'GET',
+      credentials: 'include',
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Failed to fetch courses')
+    }
+
+    return response.json()
+  }
+
+  /**
    * Get course by ID
    * Uses public endpoint - works for both users and admins
    */

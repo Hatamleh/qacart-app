@@ -3,7 +3,7 @@
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import Head from 'next/head'
 import { CoursePlayer } from '@/components/course-player/CoursePlayer'
-import { useCourse } from '@/hooks'
+import { useCourses } from '@/hooks'
 
 export default function CoursePlayerPage() {
   const params = useParams()
@@ -12,7 +12,7 @@ export default function CoursePlayerPage() {
   const courseId = params.courseId as string
   const lessonId = searchParams.get('lesson')
   
-  const { course, loading, error } = useCourse(courseId)
+  const { course, loading, error } = useCourses({ courseId })
 
   if (loading) {
     return (

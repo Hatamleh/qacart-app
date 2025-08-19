@@ -5,14 +5,14 @@ import Head from 'next/head'
 import { CourseHeader } from '@/components/course-detail/CourseHeader'
 import { CourseInfo } from '@/components/course-detail/CourseInfo'
 import { CourseLessons } from '@/components/course-detail/CourseLessons'
-import { useCourse } from '@/hooks'
+import { useCourses } from '@/hooks'
 
 export default function CourseDetailPage() {
   const params = useParams()
   const router = useRouter()
   const courseId = params.courseId as string
   
-  const { course, loading, error } = useCourse(courseId)
+  const { course, loading, error } = useCourses({ courseId })
 
   if (loading) {
     return (

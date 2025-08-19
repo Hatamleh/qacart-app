@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { AdminCourseEditor } from '@/components/sudo/AdminCourseEditor'
 import { AdminRouteGuard } from '@/components/auth/AdminRouteGuard'
-import { useCourse } from '@/hooks'
+import { useCourses } from '@/hooks'
 
 export default function AdminCourseEditPage() {
   return (
@@ -20,7 +20,7 @@ function AdminCourseEditPageContent() {
   const router = useRouter()
   const courseId = params.id as string
   
-  const { course, loading, error } = useCourse(courseId)
+  const { course, loading, error } = useCourses({ courseId })
 
   if (loading) {
     return (
