@@ -2,12 +2,20 @@
 
 import Head from 'next/head'
 import { NewCourseForm } from '@/components/sudo/NewCourseForm'
+import { AdminRouteGuard } from '@/components/auth/AdminRouteGuard'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 
 export default function NewCoursePage() {
+  return (
+    <AdminRouteGuard>
+      <NewCoursePageContent />
+    </AdminRouteGuard>
+  )
+}
 
+function NewCoursePageContent() {
   return (
     <>
       <Head>

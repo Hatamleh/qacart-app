@@ -2,9 +2,18 @@
 
 import Head from 'next/head'
 import { AdminCoursesPageClient } from '@/components/sudo/AdminCoursesPageClient'
+import { AdminRouteGuard } from '@/components/auth/AdminRouteGuard'
 import { useCourses } from '@/hooks'
 
 export default function AdminCoursesPage() {
+  return (
+    <AdminRouteGuard>
+      <AdminCoursesPageContent />
+    </AdminRouteGuard>
+  )
+}
+
+function AdminCoursesPageContent() {
   const { courses, loading, error } = useCourses()
 
   if (loading) {

@@ -2,9 +2,18 @@
 
 import Head from 'next/head'
 import { AdminUsersPageClient } from '@/components/sudo/AdminUsersPageClient'
+import { AdminRouteGuard } from '@/components/auth/AdminRouteGuard'
 import { useUsers } from '@/hooks'
 
 export default function AdminUsersPage() {
+  return (
+    <AdminRouteGuard>
+      <AdminUsersPageContent />
+    </AdminRouteGuard>
+  )
+}
+
+function AdminUsersPageContent() {
   const usersHook = useUsers()
   const { loading, error } = usersHook
 

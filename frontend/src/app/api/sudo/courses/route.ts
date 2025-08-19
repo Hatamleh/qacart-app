@@ -7,7 +7,7 @@ import { CourseRepository, AuthRepository } from '@/repositories'
  */
 export async function GET(request: NextRequest) {
   try {
-    // Check authentication
+    // Verify admin access
     const sessionCookie = request.cookies.get('session')?.value
     if (!sessionCookie) {
       return NextResponse.json(
@@ -16,16 +16,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const userId = await AuthRepository.verifySession(sessionCookie)
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Invalid session' },
-        { status: 401 }
-      )
-    }
-
-    // TODO: Check if user is admin
-    // For now, allow any authenticated user
+    await AuthRepository.verifyAdminAccess(sessionCookie)
 
     const courses = await CourseRepository.getAllCourses()
     
@@ -35,6 +26,21 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === 'Authentication required') {
+        return NextResponse.json(
+          { error: 'Authentication required' },
+          { status: 401 }
+        )
+      }
+      if (error.message === 'Admin access required') {
+        return NextResponse.json(
+          { error: 'Admin access required' },
+          { status: 403 }
+        )
+      }
+    }
+    
     console.error('Error fetching courses for admin:', error)
     return NextResponse.json(
       { error: 'Failed to fetch courses' },
@@ -49,7 +55,7 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication
+    // Verify admin access
     const sessionCookie = request.cookies.get('session')?.value
     if (!sessionCookie) {
       return NextResponse.json(
@@ -58,16 +64,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const userId = await AuthRepository.verifySession(sessionCookie)
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Invalid session' },
-        { status: 401 }
-      )
-    }
-
-    // TODO: Check if user is admin
-    // For now, allow any authenticated user
+    await AuthRepository.verifyAdminAccess(sessionCookie)
 
     const courseData = await request.json()
 
@@ -87,6 +84,21 @@ export async function POST(request: NextRequest) {
     }, { status: 201 })
 
   } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === 'Authentication required') {
+        return NextResponse.json(
+          { error: 'Authentication required' },
+          { status: 401 }
+        )
+      }
+      if (error.message === 'Admin access required') {
+        return NextResponse.json(
+          { error: 'Admin access required' },
+          { status: 403 }
+        )
+      }
+    }
+    
     console.error('Error creating course:', error)
     return NextResponse.json(
       { error: 'Failed to create course' },

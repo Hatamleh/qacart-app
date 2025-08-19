@@ -4,9 +4,18 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { AdminCourseEditor } from '@/components/sudo/AdminCourseEditor'
+import { AdminRouteGuard } from '@/components/auth/AdminRouteGuard'
 import { useCourse } from '@/hooks'
 
 export default function AdminCourseEditPage() {
+  return (
+    <AdminRouteGuard>
+      <AdminCourseEditPageContent />
+    </AdminRouteGuard>
+  )
+}
+
+function AdminCourseEditPageContent() {
   const params = useParams()
   const router = useRouter()
   const courseId = params.id as string

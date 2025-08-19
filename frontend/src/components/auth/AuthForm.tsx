@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { MagicLinkForm } from './MagicLinkForm'
 import { SocialLoginOptions } from './SocialLoginOptions'
@@ -18,13 +18,30 @@ export const AuthForm = () => {
   const [emailSent, setEmailSent] = useState('')
   const { user, isInitialized } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   // Check if user is already authenticated
   useEffect(() => {
     if (isInitialized && user) {
+      // Check for redirect parameter
+      const redirectTo = searchParams.get('redirect')
+      if (redirectTo) {
+        // Validate redirect URL for security
+        try {
+          const url = new URL(redirectTo, window.location.origin)
+          // Only allow redirects to same origin
+          if (url.origin === window.location.origin) {
+            router.push(redirectTo)
+            return
+          }
+        } catch {
+          // Invalid URL, ignore and use default
+        }
+      }
+      // Default redirect
       router.push('/')
     }
-  }, [user, isInitialized, router])
+  }, [user, isInitialized, router, searchParams])
 
   // Check if this is a magic link verification
   useEffect(() => {

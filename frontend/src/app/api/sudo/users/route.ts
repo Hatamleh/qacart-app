@@ -20,7 +20,7 @@ import { GetUsersParams } from '@/types'
  */
 export async function GET(request: NextRequest) {
   try {
-    // Check authentication
+    // Verify admin access
     const sessionCookie = request.cookies.get('session')?.value
     if (!sessionCookie) {
       return NextResponse.json(
@@ -29,16 +29,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const userId = await AuthRepository.verifySession(sessionCookie)
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Invalid session' },
-        { status: 401 }
-      )
-    }
-
-    // TODO: Check if user is admin
-    // For now, allow any authenticated user
+    await AuthRepository.verifyAdminAccess(sessionCookie)
 
     // Parse query parameters
     const { searchParams } = new URL(request.url)
@@ -74,7 +65,22 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json(result)
 
-  } catch {
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === 'Authentication required') {
+        return NextResponse.json(
+          { error: 'Authentication required' },
+          { status: 401 }
+        )
+      }
+      if (error.message === 'Admin access required') {
+        return NextResponse.json(
+          { error: 'Admin access required' },
+          { status: 403 }
+        )
+      }
+    }
+    
     return NextResponse.json(
       { error: 'Failed to fetch users' },
       { status: 500 }

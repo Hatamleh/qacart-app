@@ -142,6 +142,7 @@ export function useUsers(): UseUsersResult {
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete user')
+      throw err
     }
   }, [hasMore, loadMore])
 

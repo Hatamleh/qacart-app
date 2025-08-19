@@ -73,5 +73,80 @@ export class AuthRepository {
     }
   }
 
+  /**
+   * Verify admin access from session cookie
+   * Returns admin user ID if valid admin, throws error otherwise
+   */
+  static async getAuthenticatedAdminUserId(): Promise<string> {
+    try {
+      const cookieStore = await cookies()
+      const sessionCookie = cookieStore.get('session')?.value
+
+      if (!sessionCookie) {
+        throw new Error('Authentication required')
+      }
+
+      // Verify session first
+      const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true)
+      const userId = decodedClaims.uid
+
+      // Get user from Firestore to check role
+      const userDoc = await admin.firestore()
+        .collection('users')
+        .doc(userId)
+        .get()
+
+      if (!userDoc.exists) {
+        throw new Error('User not found')
+      }
+
+      const user = userDoc.data()
+      if (user?.role !== 'sudo') {
+        throw new Error('Admin access required')
+      }
+
+      return userId
+    } catch (error) {
+      console.error('Error verifying admin access:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Verify admin access from request session cookie
+   * Helper method for API routes
+   */
+  static async verifyAdminAccess(sessionCookie: string): Promise<string> {
+    try {
+      if (!sessionCookie) {
+        throw new Error('Authentication required')
+      }
+
+      // Verify session first
+      const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true)
+      const userId = decodedClaims.uid
+
+      // Get user from Firestore to check role
+      const userDoc = await admin.firestore()
+        .collection('users')
+        .doc(userId)
+        .get()
+
+      if (!userDoc.exists) {
+        throw new Error('User not found')
+      }
+
+      const user = userDoc.data()
+      if (user?.role !== 'sudo') {
+        throw new Error('Admin access required')
+      }
+
+      return userId
+    } catch (error) {
+      console.error('Error verifying admin access:', error)
+      throw error
+    }
+  }
+
 
 }

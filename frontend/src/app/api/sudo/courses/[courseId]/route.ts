@@ -13,7 +13,7 @@ interface RouteParams {
  */
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    // Check authentication
+    // Verify admin access
     const sessionCookie = request.cookies.get('session')?.value
     if (!sessionCookie) {
       return NextResponse.json(
@@ -22,15 +22,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       )
     }
 
-    const userId = await AuthRepository.verifySession(sessionCookie)
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Invalid session' },
-        { status: 401 }
-      )
-    }
-
-    // TODO: Check if user is admin
+    await AuthRepository.verifyAdminAccess(sessionCookie)
 
     const { courseId } = await params
     
@@ -46,6 +38,21 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ course })
 
   } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === 'Authentication required') {
+        return NextResponse.json(
+          { error: 'Authentication required' },
+          { status: 401 }
+        )
+      }
+      if (error.message === 'Admin access required') {
+        return NextResponse.json(
+          { error: 'Admin access required' },
+          { status: 403 }
+        )
+      }
+    }
+    
     console.error('Error fetching course for admin:', error)
     return NextResponse.json(
       { error: 'Failed to fetch course' },
@@ -60,7 +67,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
  */
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
-    // Check authentication
+    // Verify admin access
     const sessionCookie = request.cookies.get('session')?.value
     if (!sessionCookie) {
       return NextResponse.json(
@@ -69,15 +76,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       )
     }
 
-    const userId = await AuthRepository.verifySession(sessionCookie)
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Invalid session' },
-        { status: 401 }
-      )
-    }
-
-    // TODO: Check if user is admin
+    await AuthRepository.verifyAdminAccess(sessionCookie)
 
     const { courseId } = await params
     const updateData = await request.json()
@@ -93,6 +92,21 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === 'Authentication required') {
+        return NextResponse.json(
+          { error: 'Authentication required' },
+          { status: 401 }
+        )
+      }
+      if (error.message === 'Admin access required') {
+        return NextResponse.json(
+          { error: 'Admin access required' },
+          { status: 403 }
+        )
+      }
+    }
+    
     console.error('Error updating course:', error)
     return NextResponse.json(
       { error: 'Failed to update course' },
@@ -107,7 +121,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
  */
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
-    // Check authentication
+    // Verify admin access
     const sessionCookie = request.cookies.get('session')?.value
     if (!sessionCookie) {
       return NextResponse.json(
@@ -116,15 +130,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       )
     }
 
-    const userId = await AuthRepository.verifySession(sessionCookie)
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Invalid session' },
-        { status: 401 }
-      )
-    }
-
-    // TODO: Check if user is admin
+    await AuthRepository.verifyAdminAccess(sessionCookie)
 
     const { courseId } = await params
 
@@ -136,6 +142,21 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }, { status: 501 })
 
   } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === 'Authentication required') {
+        return NextResponse.json(
+          { error: 'Authentication required' },
+          { status: 401 }
+        )
+      }
+      if (error.message === 'Admin access required') {
+        return NextResponse.json(
+          { error: 'Admin access required' },
+          { status: 403 }
+        )
+      }
+    }
+    
     console.error('Error deleting course:', error)
     return NextResponse.json(
       { error: 'Failed to delete course' },
