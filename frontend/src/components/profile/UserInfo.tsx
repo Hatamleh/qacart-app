@@ -10,8 +10,12 @@ interface UserInfoProps {
 }
 
 export const UserInfo = ({ user }: UserInfoProps) => {
-  // Check if user has active premium subscription
-  const isPremium = user.subscription.status === 'premium' && user.subscription.isActive
+  // Check if user has premium access (paid subscription or admin gift)
+  const isPremium = user.subscription.status === 'premium' && 
+    (user.subscription.isActive || user.subscription.giftDetails != null)
+  
+  // Check if user is gifted
+  const isGifted = user.subscription.giftDetails != null
 
   return (
     <div className="bg-primary/10 backdrop-blur-md rounded-2xl p-8 border border-primary/20 shadow-xl mb-8">
@@ -62,7 +66,7 @@ export const UserInfo = ({ user }: UserInfoProps) => {
                   <div className="flex items-center gap-3">
                     <p className="font-semibold">عضوية بريميوم</p>
                     <Badge variant="primary">
-                      بريميوم مُفعّل
+                      {isGifted ? 'بريميوم (هدية)' : 'بريميوم مُفعّل'}
                     </Badge>
                   </div>
                 </div>

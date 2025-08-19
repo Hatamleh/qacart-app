@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     const sessionCookie = await AuthRepository.createSessionCookie(idToken)
 
     // Get user data
-    const user = await UserRepository.getUserById(userId)
+    let user = await UserRepository.getUserById(userId)
 
     if (!user) {
       return NextResponse.json(
@@ -33,6 +33,9 @@ export async function POST(request: NextRequest) {
         { status: 404 }
       )
     }
+
+    // Check and clean expired gifts
+    user = await UserRepository.checkAndCleanExpiredGift(user)
 
     // Create response with session cookie
     const response = NextResponse.json({ 

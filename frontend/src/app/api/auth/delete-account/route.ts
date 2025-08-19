@@ -26,6 +26,24 @@ export async function DELETE() {
     return response
   } catch (error) {
     console.error('Error deleting account:', error)
+    
+    // Handle specific admin protection error
+    if (error instanceof Error && error.message.includes('Admin users cannot delete')) {
+      return NextResponse.json(
+        { error: 'Admin users cannot delete their own accounts' },
+        { status: 403 }
+      )
+    }
+
+    // Handle authentication errors
+    if (error instanceof Error && error.message.includes('not authenticated')) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+
+    // Generic error
     return NextResponse.json(
       { error: 'Failed to delete account' },
       { status: 500 }

@@ -7,9 +7,14 @@ import { ConfirmationDialog } from './ConfirmationDialog'
 import { useAuth } from '@/contexts/AuthContext'
 
 export const DangerZoneSection = () => {
-  const { deleteAccount } = useAuth()
+  const { user, deleteAccount } = useAuth()
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  
+  // Don't show danger zone for admin users
+  if (user?.role === 'sudo') {
+    return null
+  }
 
   const handleDeleteClick = () => {
     setIsConfirmDialogOpen(true)

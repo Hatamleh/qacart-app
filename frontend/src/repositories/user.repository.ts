@@ -3,6 +3,7 @@ import { admin } from '@/firebase/admin'
 import { AuthRepository } from './auth.repository'
 import {firestore} from "firebase-admin";
 import FieldValue = firestore.FieldValue;
+import { isDateExpired } from '@/lib'
 
 
 /**
@@ -307,6 +308,23 @@ export class UserRepository {
    */
   static async deleteUserByAdmin(userId: string): Promise<void> {
     try {
+      // Check if the target user is an admin before deletion
+      const userDoc = await admin.firestore()
+        .collection('users')
+        .doc(userId)
+        .get()
+
+      if (!userDoc.exists) {
+        throw new Error('User not found')
+      }
+
+      const userData = userDoc.data()
+      
+      // Prevent deletion of admin users
+      if (userData?.role === 'sudo') {
+        throw new Error('Cannot delete admin users')
+      }
+
       // Delete from Firebase Auth
       await admin.auth().deleteUser(userId)
 
@@ -328,7 +346,14 @@ export class UserRepository {
       })
       await batch.commit()
 
-    } catch {
+    } catch (error) {
+      // Re-throw specific admin protection errors
+      if (error instanceof Error && (
+        error.message.includes('Cannot delete admin users') ||
+        error.message.includes('User not found')
+      )) {
+        throw error
+      }
       throw new Error('Failed to delete user')
     }
   }
@@ -343,10 +368,31 @@ export class UserRepository {
     }
 
     try {
-      // Same deletion process but for own account
+      // Get user data to check role before deletion
+      const userDoc = await admin.firestore()
+        .collection('users')
+        .doc(userId)
+        .get()
+
+      if (!userDoc.exists) {
+        throw new Error('User not found')
+      }
+
+      const userData = userDoc.data()
+      
+      // Prevent admin users from deleting their own accounts
+      if (userData?.role === 'sudo') {
+        throw new Error('Admin users cannot delete their own accounts')
+      }
+
+      // Proceed with deletion for non-admin users
       await this.deleteUserByAdmin(userId)
 
-    } catch {
+    } catch (error) {
+      // Re-throw specific admin protection error
+      if (error instanceof Error && error.message.includes('Admin users cannot delete')) {
+        throw error
+      }
       throw new Error('Failed to delete account')
     }
   }
@@ -354,6 +400,50 @@ export class UserRepository {
 
 
   // ===== UTILITY FUNCTIONS =====
+
+  /**
+   * Check and clean up expired gift subscriptions
+   * @param user - User object to check
+   * @returns Updated user object with expired gifts removed
+   */
+  static async checkAndCleanExpiredGift(user: User): Promise<User> {
+    // Check if user has a gift
+    if (!user.subscription.giftDetails?.expiresAt) {
+      return user
+    }
+
+    // Check if gift is expired
+    if (isDateExpired(user.subscription.giftDetails.expiresAt)) {
+      console.log(`🧹 Cleaning expired gift for user ${user.id}`)
+      
+      try {
+        // Update user in database to remove expired gift
+        await admin.firestore()
+          .collection('users')
+          .doc(user.id)
+          .update({
+            'subscription.status': 'free',
+            'subscription.plan': FieldValue.delete(),
+            'subscription.isActive': false,
+            'subscription.nextBillingDate': FieldValue.delete(),
+            'subscription.giftDetails': FieldValue.delete()
+          })
+
+        // Return updated user object
+        return {
+          ...user,
+          subscription: {
+            status: 'free',
+            isActive: false
+          }
+        }
+      } catch {
+        return user
+      }
+    }
+
+    return user
+  }
 
   /**
    * Calculate next billing date based on plan

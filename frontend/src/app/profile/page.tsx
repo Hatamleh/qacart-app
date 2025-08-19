@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 import { ProfileWelcome } from '@/components/profile/ProfileWelcome'
 import { UserInfo } from '@/components/profile/UserInfo'
 import { ManageAccountSection } from '@/components/profile/ManageAccountSection'
+import { AddedWithLove } from '@/components/profile/AddedWithLove'
 import { FAQSection } from '@/components/profile/FAQSection'
 import { ContactSection } from '@/components/profile/ContactSection'
 import { DangerZoneSection } from '@/components/profile/DangerZoneSection'
@@ -40,8 +41,12 @@ export default function ProfilePage() {
     return null
   }
 
-  // Check if user has active premium subscription
-  const isPremium = user.subscription.status === 'premium' && user.subscription.isActive
+  // Check if user has premium access (paid subscription or admin gift)
+  const isPremium = user.subscription.status === 'premium' && 
+    (user.subscription.isActive || user.subscription.giftDetails != null)
+  
+  // Check if user is gifted (for different UI treatment)
+  const isGifted = user.subscription.giftDetails != null
 
   return (
     <>
@@ -65,8 +70,11 @@ export default function ProfilePage() {
           {/* User Info - Pass real user data */}
           <UserInfo user={user} />
 
-          {/* Manage Account - Only show for premium users */}
-          {isPremium && <ManageAccountSection />}
+          {/* Added with Love - Only show for gifted users */}
+          {isGifted && <AddedWithLove user={user} />}
+
+          {/* Manage Account - Only show for paid premium users (not gifted) */}
+          {isPremium && !isGifted && <ManageAccountSection />}
 
           {/* FAQ */}
           <FAQSection questions={faqData} />

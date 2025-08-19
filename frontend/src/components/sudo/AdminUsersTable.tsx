@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Trash2, Crown, Gift, Calendar, User } from 'lucide-react'
+import { Trash2, Crown, Gift, Calendar, User, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { ConfirmationDialog } from '@/components/profile/ConfirmationDialog'
 import { User as UserType } from '@/types'
+import { formatDate } from '@/lib'
 
 interface AdminUsersTableProps {
   users: UserType[]
@@ -49,36 +50,42 @@ export const AdminUsersTable = ({ users, onDeleteUser, onTogglePremiumGift }: Ad
     }
   }
 
-  // Get subscription status display info
-  const getSubscriptionDisplay = (user: UserType) => {
-    const { subscription } = user
+  // Get user type display info (admin, premium, free)
+  const getUserTypeDisplay = (user: UserType) => {
+    // Check user role first
+    if (user.role === 'sudo') {
+      return {
+        text: 'مدير',
+        className: 'text-muted-foreground bg-muted/30 border-border',
+        icon: Settings,
+        subText: null
+      }
+    }
     
-    switch (subscription.status) {
-      case 'premium':
-        return {
-          text: 'بريميوم',
-          className: 'text-premium bg-premium/10 border-premium/20',
-          icon: Crown
-        }
-      case 'free':
-        return {
-          text: 'مجاني',
-          className: 'text-muted-foreground bg-muted/30 border-border',
-          icon: User
-        }
-      default:
-        return {
-          text: 'غير محدد',
-          className: 'text-muted-foreground bg-muted/30 border-border',
-          icon: User
-        }
+    // Check if user has premium access (paid or gifted)
+    const isPremium = user.subscription.status === 'premium' && 
+      (user.subscription.isActive || user.subscription.giftDetails != null)
+    
+    if (isPremium) {
+      const isGifted = user.subscription.giftDetails != null
+      return {
+        text: 'بريميوم',
+        className: 'text-muted-foreground bg-muted/30 border-border',
+        icon: Crown,
+        subText: isGifted ? 'هدية' : user.subscription.plan
+      }
+    }
+    
+    // Free user
+    return {
+      text: 'مجاني',
+      className: 'text-muted-foreground bg-muted/30 border-border',
+      icon: User,
+      subText: null
     }
   }
 
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    return dateString // Just return the original date string to avoid hydration mismatch
-  }
+
 
   return (
     <div className="space-y-6">
@@ -86,7 +93,7 @@ export const AdminUsersTable = ({ users, onDeleteUser, onTogglePremiumGift }: Ad
       <div className="bg-muted/30 rounded-xl p-4">
         <div className="grid grid-cols-12 gap-4 text-sm font-semibold text-muted-foreground">
           <div className="col-span-3">المستخدم</div>
-          <div className="col-span-2 text-center">حالة الاشتراك</div>
+          <div className="col-span-2 text-center">نوع المستخدم</div>
           <div className="col-span-2 text-center">تاريخ التسجيل</div>
           <div className="col-span-4 text-center">منح بريميوم</div>
           <div className="col-span-1 text-center">حذف</div>
@@ -96,8 +103,8 @@ export const AdminUsersTable = ({ users, onDeleteUser, onTogglePremiumGift }: Ad
       {/* Users List */}
       <div className="space-y-3">
         {users.map((user) => {
-          const subscriptionInfo = getSubscriptionDisplay(user)
-          const StatusIcon = subscriptionInfo.icon
+          const userTypeInfo = getUserTypeDisplay(user)
+          const TypeIcon = userTypeInfo.icon
           
           return (
             <div
@@ -126,17 +133,18 @@ export const AdminUsersTable = ({ users, onDeleteUser, onTogglePremiumGift }: Ad
                   </div>
                 </div>
 
-                {/* Subscription Status */}
+                {/* User Type */}
                 <div className="col-span-2 text-center">
-                  <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg border text-xs font-medium ${subscriptionInfo.className}`}>
-                    <StatusIcon className="w-3 h-3" />
-                    <span>{subscriptionInfo.text}</span>
+                  <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg border text-xs font-medium ${userTypeInfo.className}`}>
+                    <TypeIcon className="w-3 h-3" />
+                    <span>{userTypeInfo.text}</span>
                   </div>
-                  {user.subscription.status === 'premium' && user.subscription.plan && (
+                  {userTypeInfo.subText && (
                     <div className="text-xs text-muted-foreground mt-1">
-                      {user.subscription.plan === 'monthly' && 'شهري'}
-                      {user.subscription.plan === 'quarterly' && 'ربع سنوي'}
-                      {user.subscription.plan === 'yearly' && 'سنوي'}
+                      {userTypeInfo.subText === 'monthly' && 'شهري'}
+                      {userTypeInfo.subText === 'quarterly' && 'ربع سنوي'}
+                      {userTypeInfo.subText === 'yearly' && 'سنوي'}
+                      {userTypeInfo.subText === 'هدية' && 'هدية'}
                     </div>
                   )}
                 </div>
@@ -200,16 +208,24 @@ export const AdminUsersTable = ({ users, onDeleteUser, onTogglePremiumGift }: Ad
                 {/* Delete Column */}
                 <div className="col-span-1">
                   <div className="flex items-center justify-center">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      icon={Trash2}
-                      disabled={deletingUserId === user.id || !onDeleteUser}
-                      onClick={() => handleDeleteUser(user)}
-                      className="text-xs px-3 py-2 text-destructive hover:text-destructive hover:bg-destructive/10 disabled:opacity-50"
-                    >
-                      {deletingUserId === user.id ? 'جارٍ الحذف...' : 'حذف'}
-                    </Button>
+                    {user.role === 'sudo' ? (
+                      // Show disabled state for admin users
+                      <div className="text-xs px-3 py-2 text-muted-foreground bg-muted/30 rounded-lg border border-muted/20">
+                        محظور
+                      </div>
+                    ) : (
+                      // Show delete button for regular users
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        icon={Trash2}
+                        disabled={deletingUserId === user.id || !onDeleteUser}
+                        onClick={() => handleDeleteUser(user)}
+                        className="text-xs px-3 py-2 text-destructive hover:text-destructive hover:bg-destructive/10 disabled:opacity-50"
+                      >
+                        {deletingUserId === user.id ? 'جارٍ الحذف...' : 'حذف'}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

@@ -14,7 +14,10 @@ export const Navbar = () => {
     const showSignIn = !user
     const showProfile = !!user
     const showAdminLinks = user?.role === 'sudo'
-    const isPremium = (user?.subscription.status === 'premium' && user?.subscription.isActive) || user?.role === 'sudo'
+    // Check if user has premium access (paid subscription or admin gift)
+    // Note: Admins don't need to see premium indicator since they have admin privileges
+    const isPremium = user?.subscription.status === 'premium' && 
+        (user?.subscription.isActive || user?.subscription.giftDetails != null)
 
     // Handle logout
     const handleSignOut = async () => {

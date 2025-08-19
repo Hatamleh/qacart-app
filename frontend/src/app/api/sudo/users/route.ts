@@ -62,8 +62,17 @@ export async function GET(request: NextRequest) {
 
     // Get users with enhanced filtering
     const result = await UserRepository.getAllUsers(params)
-    
-    return NextResponse.json(result)
+
+    // Check and clean expired gifts for all users
+    const cleanedUsers = await Promise.all(
+      result.users.map(user => UserRepository.checkAndCleanExpiredGift(user))
+    )
+
+    // Return updated result with cleaned users
+    return NextResponse.json({
+      ...result,
+      users: cleanedUsers
+    })
 
   } catch (error) {
     if (error instanceof Error) {

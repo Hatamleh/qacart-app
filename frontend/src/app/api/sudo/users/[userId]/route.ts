@@ -55,6 +55,18 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
           { status: 403 }
         )
       }
+      if (error.message === 'Cannot delete admin users') {
+        return NextResponse.json(
+          { error: 'Cannot delete admin users' },
+          { status: 403 }
+        )
+      }
+      if (error.message === 'User not found') {
+        return NextResponse.json(
+          { error: 'User not found' },
+          { status: 404 }
+        )
+      }
     }
     
     return NextResponse.json(
