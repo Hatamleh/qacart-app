@@ -10,7 +10,6 @@ export type {
   StripeSubscriptionStatus,
   StripeCustomerData,
   StripeSubscriptionSync,
-  StripeInvoiceWithSubscription,
   SubscriptionUpdateData,
   UserSubscriptionUpdate
 } from './user.type'
