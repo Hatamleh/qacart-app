@@ -1,6 +1,6 @@
-import { Course } from '@/types'
-import { admin } from '@/firebase/admin'
-import { cache } from 'react'
+import {Course} from '@/types'
+import {admin} from '@/firebase/admin'
+import {cache} from 'react'
 
 /**
  * CourseRepository - Data access layer for course operations
@@ -18,12 +18,10 @@ export class CourseRepository {
         .orderBy('createdAt', 'desc')
         .get()
 
-      const courses = coursesSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
+      return coursesSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
       })) as Course[]
-
-      return courses
     } catch (error) {
       console.error('Error fetching courses from Firebase:', error)
       throw new Error('Failed to fetch courses')
@@ -45,12 +43,10 @@ export class CourseRepository {
         throw new Error('Course not found')
       }
 
-      const course = {
-        id: courseDoc.id,
-        ...courseDoc.data()
+      return {
+          id: courseDoc.id,
+          ...courseDoc.data()
       } as Course
-
-      return course
     } catch (error) {
       console.error(`Error fetching course ${courseId} from Firebase:`, error)
       throw new Error('Failed to fetch course')
@@ -76,13 +72,11 @@ export class CourseRepository {
         })
 
       // Return the complete course object
-      const createdCourse: Course = {
-        id: courseRef.id,
-        ...courseData,
-        lessons: courseData.lessons || []
+        return {
+          id: courseRef.id,
+          ...courseData,
+          lessons: courseData.lessons || []
       }
-
-      return createdCourse
     } catch (error) {
       console.error('Error creating course in Firebase:', error)
       throw new Error('Failed to create course')

@@ -54,8 +54,8 @@ export const NewCourseForm = () => {
 
       console.log('✅ Course created successfully:', result.course.id)
 
-      // Redirect to the course edit page to add lessons
-      router.push(`/sudo/courses/${result.course.id}`)
+      // Redirect to courses list so admin can see the new course and choose to edit
+      router.push('/sudo/courses')
 
     } catch (error) {
       console.error('❌ Failed to create course:', error)

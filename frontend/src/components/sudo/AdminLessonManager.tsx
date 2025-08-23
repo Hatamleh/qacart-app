@@ -12,9 +12,7 @@ interface AdminLessonManagerProps {
 }
 
 export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps) => {
-  const [expandedLessonId, setExpandedLessonId] = useState<string | null>(
-    course.lessons.length > 0 ? course.lessons[0].id : null
-  )
+  const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [deletingLessonId, setDeletingLessonId] = useState<string | null>(null)
   const [isCreating, setIsCreating] = useState(false)
@@ -35,7 +33,7 @@ export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps)
     setIsCreating(true)
 
     try {
-      const result = await LessonClient.createLesson(course.id, {
+      await LessonClient.createLesson(course.id, {
         title: 'درس جديد',
         durationInMinutes: 10,
         isFree: false,
@@ -47,8 +45,7 @@ export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps)
       // Refresh course data to get updated lessons
       await refetch()
       
-      // Expand the new lesson
-      setExpandedLessonId(result.lesson.id)
+      // Keep all lessons collapsed for cleaner interface
       
     } catch (error) {
       console.error('❌ Failed to create lesson:', error)
