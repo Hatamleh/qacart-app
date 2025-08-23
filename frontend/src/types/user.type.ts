@@ -1,13 +1,11 @@
 
-import Stripe from 'stripe'
-
 export interface User {
   id: string
   email: string
   role: 'user' | 'sudo'
   subscription: Subscription
   createdAt: string
-  
+
   // Stripe integration fields
   stripeCustomerId?: string    // Stripe Customer ID (cus_xxx) - created when user first subscribes
 }
@@ -18,7 +16,7 @@ export interface Subscription {
   nextBillingDate?: string
   isActive: boolean
   giftDetails?: GiftDetails
-  
+
   // Stripe integration fields
   stripeSubscriptionId?: string       // Stripe Subscription ID (sub_xxx) - for active subscriptions
   stripeStatus?: StripeSubscriptionStatus  // Real-time status from Stripe webhooks
@@ -76,10 +74,7 @@ export interface StripeSubscriptionSync {
   priceId: string
 }
 
-// Webhook-specific types for handling Stripe invoice data
-export interface StripeInvoiceWithSubscription extends Stripe.Invoice {
-  subscription?: string | { id: string }  // Can be string ID or object with ID
-}
+// Removed StripeInvoiceWithSubscription - no longer needed after webhook cleanup
 
 // Subscription update data structure for Firebase
 export interface SubscriptionUpdateData {
@@ -90,6 +85,8 @@ export interface SubscriptionUpdateData {
   plan?: 'monthly' | 'quarterly' | 'yearly'
   nextBillingDate?: string
   stripeStatus?: StripeSubscriptionStatus
+  stripeCancelAtPeriodEnd?: boolean
+  stripeCurrentPeriodEnd?: string
 }
 
 // User update structure for webhook operations

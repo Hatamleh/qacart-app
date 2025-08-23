@@ -1,6 +1,7 @@
 import { Calendar } from 'lucide-react'
 import { User } from '@/types'
 import { formatDate } from '@/lib'
+import { StripeClient } from '@/clients'
 
 interface NextBillingDateProps {
   user: User
@@ -28,17 +29,80 @@ export const NextBillingDate = ({ user }: NextBillingDateProps) => {
     )
   }
 
-  // For paid users, show next billing date
+  // For paid users, show billing information with better messaging
   if (user.subscription.status === 'premium' && user.subscription.nextBillingDate) {
+    const { stripeCancelAtPeriodEnd, stripeCurrentPeriodEnd } = user.subscription
+    
+    // If subscription is cancelled, show cancellation info
+    if (stripeCancelAtPeriodEnd && stripeCurrentPeriodEnd) {
+      const endDate = formatDate(stripeCurrentPeriodEnd)
+      return (
+        <div className="relative p-4 bg-background/95 border border-destructive/20 rounded-xl backdrop-blur-sm overflow-hidden">
+          {/* Subtle danger gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-destructive/[0.02] via-transparent to-destructive/[0.04] pointer-events-none" />
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-destructive/30 to-transparent" />
+          
+          <div className="relative flex items-start gap-3">
+            <div className="w-10 h-10 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Calendar className="w-5 h-5 text-destructive" />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-destructive mb-1">تم إلغاء الاشتراك</p>
+              <p className="text-sm text-muted-foreground mb-2">
+                ستحتفظ بالوصول للمحتوى المتقدم حتى <span className="font-semibold text-foreground">{endDate}</span>
+              </p>
+              <p className="text-xs text-muted-foreground/70 mb-3">
+                بعد هذا التاريخ، ستعود لعضوية مجانية مع الوصول للمحتوى الأساسي فقط
+              </p>
+              <button 
+                onClick={async () => {
+                  try {
+                    await StripeClient.redirectToBillingPortal()
+                  } catch (error) {
+                    console.error('Error opening billing portal:', error)
+                  }
+                }}
+                className="inline-flex items-center gap-1 text-xs text-primary hover:text-primary/80 hover:bg-primary/5 px-2 py-1 rounded-md transition-all duration-200 underline decoration-primary/30 hover:decoration-primary/60"
+              >
+                إعادة تفعيل الاشتراك ←
+              </button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+    
+    // Active subscription - show renewal info with management options
     return (
-      <div className="flex items-center justify-between p-4 bg-background/50 rounded-xl">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+      <div className="relative p-4 bg-background/95 border border-primary/20 rounded-xl backdrop-blur-sm overflow-hidden">
+        {/* Subtle success gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] via-transparent to-primary/[0.04] pointer-events-none" />
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+        
+        <div className="relative flex items-start gap-3">
+          <div className="w-10 h-10 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center flex-shrink-0">
             <Calendar className="w-5 h-5 text-primary" />
           </div>
-          <div>
-            <p className="text-sm text-muted-foreground">تاريخ الفوترة التالي</p>
-            <p className="font-semibold">{user.subscription.nextBillingDate}</p>
+          <div className="flex-1">
+            <p className="font-semibold text-primary mb-1">اشتراك نشط</p>
+            <p className="text-sm text-muted-foreground mb-2">
+              سيتم تجديد اشتراكك تلقائياً في <span className="font-semibold text-foreground">{formatDate(user.subscription.nextBillingDate)}</span>
+            </p>
+            <p className="text-xs text-muted-foreground/70 mb-3">
+              يمكنك إلغاء الاشتراك في أي وقت والاحتفاظ بالوصول حتى نهاية الفترة المدفوعة
+            </p>
+            <button 
+              onClick={async () => {
+                try {
+                  await StripeClient.redirectToBillingPortal()
+                } catch (error) {
+                  console.error('Error opening billing portal:', error)
+                }
+              }}
+              className="inline-flex items-center gap-1 text-xs text-primary hover:text-primary/80 hover:bg-primary/5 px-2 py-1 rounded-md transition-all duration-200 underline decoration-primary/30 hover:decoration-primary/60"
+            >
+              إدارة الاشتراك والفوترة ←
+            </button>
           </div>
         </div>
       </div>

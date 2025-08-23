@@ -7,15 +7,34 @@ interface SubscriptionStatusProps {
 }
 
 export const SubscriptionStatus = ({ user }: SubscriptionStatusProps) => {
-  const getSubscriptionStatusText = (status: string) => {
-    switch (status) {
-      case 'premium':
-        return 'عضوية بريميوم'
-      case 'free':
-        return 'عضوية مجانية'
-      default:
-        return 'غير محدد'
+  const getSubscriptionStatusText = () => {
+    const { status } = user.subscription
+    
+    if (status === 'premium') {
+      return 'عضوية بريميوم'
     }
+    
+    return 'عضوية مجانية'
+  }
+
+  const getBadgeText = () => {
+    const { status, stripeCancelAtPeriodEnd } = user.subscription
+    
+    if (status === 'premium') {
+      return stripeCancelAtPeriodEnd ? 'تم الإلغاء' : 'نشط'
+    }
+    
+    return 'مجاني'
+  }
+
+  const getBadgeVariant = (): 'primary' | 'secondary' | 'danger' => {
+    const { status, stripeCancelAtPeriodEnd } = user.subscription
+    
+    if (status === 'premium') {
+      return stripeCancelAtPeriodEnd ? 'danger' : 'primary'
+    }
+    
+    return 'secondary'
   }
 
   return (
@@ -27,9 +46,9 @@ export const SubscriptionStatus = ({ user }: SubscriptionStatusProps) => {
         <div>
           <p className="text-sm text-muted-foreground">حالة الاشتراك</p>
           <div className="flex items-center gap-3">
-            <p className="font-semibold">{getSubscriptionStatusText(user.subscription.status)}</p>
-            <Badge variant="primary">
-              {user.subscription.status === 'premium' ? 'بريميوم' : 'مجاني'}
+            <p className="font-semibold">{getSubscriptionStatusText()}</p>
+            <Badge variant={getBadgeVariant()}>
+              {getBadgeText()}
             </Badge>
           </div>
         </div>

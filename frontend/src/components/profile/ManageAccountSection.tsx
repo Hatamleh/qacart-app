@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Settings, FileText, Receipt, CreditCard, Crown, Loader2 } from 'lucide-react'
+import { Settings, CreditCard, Loader2 } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { StripeClient } from '@/clients'
 
@@ -16,11 +16,8 @@ export const ManageAccountSection = () => {
 
     try {
       switch (actionId) {
-        case 'get-invoice':
-        case 'get-receipt':
-        case 'update-payment':
-        case 'manage-subscription':
-          // All these actions redirect to Stripe billing portal
+        case 'manage-billing':
+          // Redirect to Stripe billing portal for all billing management
           await StripeClient.redirectToBillingPortal()
           break
         default:
@@ -33,32 +30,7 @@ export const ManageAccountSection = () => {
     }
   }
 
-  const actions = [
-    {
-      id: 'get-invoice',
-      title: 'الحصول على فاتورة',
-      description: 'تحميل فاتورة الاشتراك الحالي',
-      icon: FileText
-    },
-    {
-      id: 'get-receipt',
-      title: 'الحصول على إيصال',
-      description: 'تحميل إيصال آخر دفعة',
-      icon: Receipt
-    },
-    {
-      id: 'update-payment',
-      title: 'تحديث طريقة الدفع',
-      description: 'تغيير بطاقة الائتمان أو طريقة الدفع',
-      icon: CreditCard
-    },
-    {
-      id: 'manage-subscription',
-      title: 'إدارة الاشتراك',
-      description: 'تغيير أو إلغاء اشتراكك الحالي',
-      icon: Crown
-    }
-  ]
+
 
   return (
     <div className="bg-primary/10 backdrop-blur-md rounded-2xl p-8 border border-primary/20 shadow-xl mb-8">
@@ -69,47 +41,47 @@ export const ManageAccountSection = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-          <p className="text-red-600 text-sm">{error}</p>
+        <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-xl">
+          <p className="text-destructive text-sm">{error}</p>
         </div>
       )}
       
-      <div className="grid md:grid-cols-2 gap-4">
-        {actions.map((action) => (
-          <div
-            key={action.id}
-            className="p-4 bg-background/50 rounded-xl hover:bg-background/70 transition-colors"
-          >
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                <action.icon className="w-6 h-6 text-primary" />
-              </div>
-              
-              <div className="flex-1">
-                <h3 className="font-semibold mb-1">{action.title}</h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  {action.description}
-                </p>
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleActionClick(action.id)}
-                  disabled={loadingAction !== null}
-                >
-                  {loadingAction === action.id ? (
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>جاري المعالجة...</span>
-                    </div>
-                  ) : (
-                    action.id === 'manage-subscription' ? 'إدارة' : 'فتح'
-                  )}
-                </Button>
-              </div>
+      {/* Beautiful Billing Management Card */}
+      <div className="p-6 bg-background/80 backdrop-blur-sm border border-primary/20 rounded-2xl">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/30 rounded-xl flex items-center justify-center">
+              <CreditCard className="w-6 h-6 text-primary" />
+            </div>
+            
+            <div>
+              <h3 className="font-semibold text-lg mb-1">إدارة الفوترة والاشتراك</h3>
+              <p className="text-sm text-muted-foreground">
+                الفواتير، طرق الدفع، وإعدادات الاشتراك
+              </p>
             </div>
           </div>
-        ))}
+          
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={() => handleActionClick('manage-billing')}
+            disabled={loadingAction !== null}
+            className="px-6 py-3 rounded-xl hover:!scale-100 hover:!transform-none"
+          >
+            {loadingAction === 'manage-billing' ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>جاري الفتح...</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span>فتح لوحة التحكم</span>
+                <Settings className="w-4 h-4" />
+              </div>
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   )

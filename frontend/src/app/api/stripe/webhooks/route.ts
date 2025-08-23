@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { StripeRepository, UserRepository } from '@/repositories'
-import { StripeInvoiceWithSubscription, SubscriptionUpdateData, UserSubscriptionUpdate } from '@/types'
+import { SubscriptionUpdateData, UserSubscriptionUpdate } from '@/types'
 import Stripe from 'stripe'
 
 /**
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
 
 
 
-    // Handle different event types
+    // Handle different event types - keeping only essential events
     switch (event.type) {
       case 'checkout.session.completed':
         await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session)
@@ -52,16 +52,9 @@ export async function POST(request: NextRequest) {
         await handleSubscriptionDeleted(event.data.object as Stripe.Subscription)
         break
 
-      case 'invoice.payment_succeeded':
-        await handlePaymentSucceeded(event.data.object as Stripe.Invoice)
-        break
-
-      case 'invoice.payment_failed':
-        await handlePaymentFailed(event.data.object as Stripe.Invoice)
-        break
-
       default:
-        // Unhandled event type
+        console.log(`ℹ️ Unhandled webhook event type: ${event.type}`)
+        // We only handle essential subscription events
     }
 
     return NextResponse.json({ received: true })
@@ -158,97 +151,23 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   }
 }
 
-/**
- * Handle successful payment
- */
-async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  try {
-    // Cast invoice to our extended type to access subscription property
-    const invoiceWithSub = invoice as StripeInvoiceWithSubscription
-    
-    // Skip if not a subscription invoice
-    if (!invoiceWithSub.subscription) {
-      return
-    }
-
-    const subscriptionId = typeof invoiceWithSub.subscription === 'string' 
-      ? invoiceWithSub.subscription 
-      : invoiceWithSub.subscription?.id
-    
-    if (!subscriptionId) {
-      return
-    }
-
-    // Get the subscription
-    const subscription = await StripeRepository.getSubscription(subscriptionId)
-    if (!subscription) {
-      console.error('Could not retrieve subscription:', subscriptionId)
-      return
-    }
-
-    // Find user and update subscription
-    const customerId = subscription.customer as string
-    const userId = await findUserByCustomerId(customerId)
-    
-    if (userId) {
-      await updateUserSubscription(userId, subscription)
-    }
-
-  } catch (error) {
-    console.error('Error handling payment success:', error)
-  }
-}
-
-/**
- * Handle failed payment
- */
-async function handlePaymentFailed(invoice: Stripe.Invoice) {
-  try {
-    // Cast invoice to our extended type to access subscription property
-    const invoiceWithSub = invoice as StripeInvoiceWithSubscription
-    
-    // Skip if not a subscription invoice
-    if (!invoiceWithSub.subscription) {
-      return
-    }
-
-    const subscriptionId = typeof invoiceWithSub.subscription === 'string' 
-      ? invoiceWithSub.subscription 
-      : invoiceWithSub.subscription?.id
-    
-    if (!subscriptionId) {
-      return
-    }
-
-    // Get the subscription
-    const subscription = await StripeRepository.getSubscription(subscriptionId)
-    if (!subscription) {
-      console.error('Could not retrieve subscription:', subscriptionId)
-      return
-    }
-
-    // Find user and update subscription status
-    const customerId = subscription.customer as string
-    const userId = await findUserByCustomerId(customerId)
-    
-    if (userId) {
-      // For our simple model, we'll keep access during payment failures
-      // Stripe will handle retries and eventual cancellation
-      await updateUserSubscription(userId, subscription)
-    }
-
-  } catch (error) {
-    console.error('Error handling payment failure:', error)
-  }
-}
+// Removed payment handlers - subscription.updated handles all status changes
 
 /**
  * Update user subscription data in Firebase
+ * Now properly handles cancellation status and end dates
  */
 async function updateUserSubscription(userId: string, subscription: Stripe.Subscription) {
   try {
     const isActive = subscription.status === 'active'
     const priceId = subscription.items.data[0]?.price.id || ''
+
+    // Get cancellation fields with proper TypeScript typing (no 'any' needed)
+    const cancelAtPeriodEnd = subscription.cancel_at_period_end
+    
+    // Get current_period_end from subscription items (correct location!)
+    const subscriptionItem = subscription.items.data[0]
+    const currentPeriodEnd = subscriptionItem?.current_period_end
 
     // Determine plan type from price nickname (Arabic)
     let planType: 'monthly' | 'quarterly' | 'yearly' | undefined
@@ -261,10 +180,12 @@ async function updateUserSubscription(userId: string, subscription: Stripe.Subsc
       else if (nickname.includes('سنوي') || nickname.includes('yearly')) planType = 'yearly'
     }
 
-    // Calculate next billing date - use a fallback since current_period_end might not be available
-    const nextBillingDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days from now as fallback
+    // Use actual Stripe dates from subscription item
+    const currentPeriodEndISO = currentPeriodEnd 
+      ? new Date(currentPeriodEnd * 1000).toISOString()
+      : null
 
-    // Build subscription update object, excluding undefined values
+    // Build subscription update object
     const subscriptionData: SubscriptionUpdateData = {
       status: isActive ? 'premium' as const : 'free' as const,
       isActive,
@@ -272,15 +193,26 @@ async function updateUserSubscription(userId: string, subscription: Stripe.Subsc
       stripePriceId: priceId
     }
 
-    // Only add optional fields if they have values
+    // Add plan type if available
     if (planType) {
       subscriptionData.plan = planType
     }
-    if (isActive && nextBillingDate) {
-      subscriptionData.nextBillingDate = nextBillingDate
-    }
+
+    // Handle cancellation status and dates properly
     if (isActive) {
       subscriptionData.stripeStatus = 'active' as const
+      
+      if (cancelAtPeriodEnd && currentPeriodEndISO) {
+        // Subscription is cancelled but still active until period end
+        subscriptionData.stripeCancelAtPeriodEnd = true
+        subscriptionData.stripeCurrentPeriodEnd = currentPeriodEndISO
+        subscriptionData.nextBillingDate = currentPeriodEndISO // This becomes the end date
+      } else if (currentPeriodEndISO) {
+        // Active subscription with normal renewal
+        subscriptionData.stripeCancelAtPeriodEnd = false
+        subscriptionData.stripeCurrentPeriodEnd = currentPeriodEndISO
+        subscriptionData.nextBillingDate = currentPeriodEndISO
+      }
     }
 
     const subscriptionUpdate: UserSubscriptionUpdate = {
@@ -288,6 +220,13 @@ async function updateUserSubscription(userId: string, subscription: Stripe.Subsc
     }
 
     await UserRepository.updateUser(userId, subscriptionUpdate)
+
+    console.log(`✅ Updated subscription for user ${userId}:`, {
+      status: subscriptionData.status,
+      isActive: subscriptionData.isActive,
+      cancelAtPeriodEnd: subscriptionData.stripeCancelAtPeriodEnd,
+      periodEnd: subscriptionData.stripeCurrentPeriodEnd
+    })
 
   } catch (error) {
     console.error('Error updating user subscription:', error)
