@@ -10,9 +10,10 @@ import { Course } from '@/types'
 
 interface AdminCourseEditorProps {
   course: Course
+  refetch: () => Promise<void>
 }
 
-export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
+export const AdminCourseEditor = ({ course, refetch }: AdminCourseEditorProps) => {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   
@@ -188,6 +189,7 @@ export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
       {/* Lessons Management */}
       <AdminLessonManager
         course={course}
+        refetch={refetch}
       />
     </form>
   )

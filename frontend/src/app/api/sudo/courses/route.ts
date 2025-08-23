@@ -69,9 +69,9 @@ export async function POST(request: NextRequest) {
     const courseData = await request.json()
 
     // Validate required fields
-    if (!courseData.title || !courseData.description) {
+    if (!courseData.title || !courseData.shortDescription) {
       return NextResponse.json(
-        { error: 'Title and description are required' },
+        { error: 'Title and short description are required' },
         { status: 400 }
       )
     }

@@ -14,7 +14,7 @@ export default function AdminCoursesPage() {
 }
 
 function AdminCoursesPageContent() {
-  const { courses, loading, error } = useCourses({ admin: true })
+  const { courses, loading, error, refetch } = useCourses({ admin: true })
 
   if (loading) {
     return (
@@ -33,7 +33,7 @@ function AdminCoursesPageContent() {
         <div className="text-center">
           <p className="text-red-500 mb-4">خطأ في تحميل الدورات: {error}</p>
           <button 
-            onClick={() => window.location.reload()} 
+            onClick={() => refetch()} 
             className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
           >
             إعادة المحاولة
@@ -59,7 +59,7 @@ function AdminCoursesPageContent() {
       <main className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
           {/* Client-side component with modal functionality */}
-          <AdminCoursesPageClient courses={courses} />
+          <AdminCoursesPageClient courses={courses} refetch={refetch} />
         </div>
       </main>
     </>

@@ -53,7 +53,7 @@ export class LessonRepository {
    * Create a new lesson in a course (Admin only)
    * Adds lesson to the course's lessons array in Firebase
    */
-  static async createLesson(courseId: string, lessonData: Omit<Lesson, 'id'>): Promise<{ id: string }> {
+  static async createLesson(courseId: string, lessonData: Omit<Lesson, 'id'>): Promise<Lesson> {
     try {
       // Get current course to find lesson count
       const courseDoc = await admin.firestore()
@@ -88,7 +88,8 @@ export class LessonRepository {
           updatedAt: new Date().toISOString()
         })
 
-      return { id: newLessonId }
+      // Return the complete lesson object
+      return newLesson
     } catch (error) {
       console.error(`Error creating lesson in course ${courseId}:`, error)
       throw new Error('Failed to create lesson')

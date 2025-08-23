@@ -2,15 +2,16 @@
 
 import { useState } from 'react'
 import { Plus, GripVertical, Trash2, ChevronDown, Video, FileText, Save } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button, ConfirmationModal } from '@/components/ui'
 import { LessonClient } from '@/clients'
 import { Course } from '@/types'
 
 interface AdminLessonManagerProps {
   course: Course
+  refetch: () => Promise<void>
 }
 
-export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
+export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps) => {
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(
     course.lessons.length > 0 ? course.lessons[0].id : null
   )
@@ -19,6 +20,15 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
   const [isCreating, setIsCreating] = useState(false)
   const [draggedLessonId, setDraggedLessonId] = useState<string | null>(null)
   const [isReordering, setIsReordering] = useState(false)
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean
+    lessonId: string
+    lessonTitle: string
+  }>({
+    isOpen: false,
+    lessonId: '',
+    lessonTitle: ''
+  })
 
   // Handle lesson creation
   const handleCreateLesson = async () => {
@@ -34,6 +44,9 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
         lessonOrder: course.lessons.length + 1
       })
 
+      // Refresh course data to get updated lessons
+      await refetch()
+      
       // Expand the new lesson
       setExpandedLessonId(result.lesson.id)
       
@@ -44,16 +57,25 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
     }
   }
 
-  // Handle lesson deletion
-  const handleDeleteLesson = async (lessonId: string, lessonTitle: string) => {
-    if (!confirm(`هل أنت متأكد من حذف الدرس "${lessonTitle}"؟`)) {
-      return
-    }
+  // Show confirmation modal
+  const showDeleteConfirmation = (lessonId: string, lessonTitle: string) => {
+    setConfirmModal({
+      isOpen: true,
+      lessonId,
+      lessonTitle
+    })
+  }
 
+  // Handle lesson deletion
+  const handleDeleteLesson = async () => {
+    const { lessonId } = confirmModal
     setDeletingLessonId(lessonId)
 
     try {
       await LessonClient.deleteLesson(course.id, lessonId)
+      
+      // Refresh course data to get updated lessons
+      await refetch()
       
       // Close expansion if we deleted the expanded lesson
       if (expandedLessonId === lessonId) {
@@ -64,6 +86,7 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
       console.error('❌ Failed to delete lesson:', error)
     } finally {
       setDeletingLessonId(null)
+      setConfirmModal(prev => ({ ...prev, isOpen: false }))
     }
   }
 
@@ -86,6 +109,9 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
         articleContent: articleInput.value.trim(),
         isFree: freeCheckbox.checked
       })
+
+      // Refresh course data to get updated lesson
+      await refetch()
 
     } catch (error) {
       console.error('❌ Failed to update lesson:', error)
@@ -139,6 +165,9 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
 
       // Call reorder API with new lesson order
       await LessonClient.reorderLessons(course.id, newOrder.map(l => l.id))
+
+      // Refresh course data to get updated lesson order
+      await refetch()
 
     } catch (error) {
       console.error('❌ Failed to reorder lessons:', error)
@@ -254,7 +283,7 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
                     size="sm"
                     icon={Trash2}
                     className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                    onClick={() => handleDeleteLesson(lesson.id, lesson.title)}
+                    onClick={() => showDeleteConfirmation(lesson.id, lesson.title)}
                     disabled={deletingLessonId === lesson.id}
                   />
                 </div>
@@ -376,6 +405,19 @@ export const AdminLessonManager = ({ course }: AdminLessonManagerProps) => {
           </Button>
         </div>
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={handleDeleteLesson}
+        title="حذف الدرس"
+        message={`هل أنت متأكد من حذف الدرس "${confirmModal.lessonTitle}"؟ لا يمكن التراجع عن هذا الإجراء.`}
+        confirmText="حذف الدرس"
+        cancelText="إلغاء"
+        variant="danger"
+        isLoading={deletingLessonId === confirmModal.lessonId}
+      />
     </div>
   )
 }

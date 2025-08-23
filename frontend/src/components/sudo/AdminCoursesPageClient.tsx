@@ -6,9 +6,10 @@ import Link from 'next/link'
 
 interface AdminCoursesPageClientProps {
   courses: Course[]
+  refetch: () => Promise<void>
 }
 
-export const AdminCoursesPageClient = ({ courses }: AdminCoursesPageClientProps) => {
+export const AdminCoursesPageClient = ({ courses, refetch }: AdminCoursesPageClientProps) => {
 
   return (
     <>
@@ -41,7 +42,7 @@ export const AdminCoursesPageClient = ({ courses }: AdminCoursesPageClientProps)
       </div>
 
       {/* Courses Table */}
-      <AdminCoursesTable courses={courses} />
+      <AdminCoursesTable courses={courses} refetch={refetch} />
     </>
   )
 }

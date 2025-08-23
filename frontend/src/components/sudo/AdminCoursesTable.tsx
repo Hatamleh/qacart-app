@@ -4,9 +4,10 @@ import { EmptyCoursesState } from './EmptyCoursesState'
 
 interface AdminCoursesTableProps {
   courses: Course[]
+  refetch: () => Promise<void>
 }
 
-export const AdminCoursesTable = ({ courses }: AdminCoursesTableProps) => {
+export const AdminCoursesTable = ({ courses, refetch }: AdminCoursesTableProps) => {
 
   return (
     <div className="space-y-6">
@@ -23,7 +24,7 @@ export const AdminCoursesTable = ({ courses }: AdminCoursesTableProps) => {
 
       {/* Courses List */}
       {courses.length > 0 ? (
-        <CoursesList courses={courses} />
+        <CoursesList courses={courses} refetch={refetch} />
       ) : (
         <EmptyCoursesState />
       )}

@@ -20,7 +20,7 @@ function AdminCourseEditPageContent() {
   const router = useRouter()
   const courseId = params.id as string
   
-  const { course, loading, error } = useCourses({ courseId })
+  const { course, loading, error, refetch } = useCourses({ courseId })
 
   if (loading) {
     return (
@@ -40,7 +40,7 @@ function AdminCourseEditPageContent() {
           <p className="text-red-500 mb-4">خطأ في تحميل الدورة: {error}</p>
           <div className="space-x-4">
             <button 
-              onClick={() => window.location.reload()} 
+              onClick={() => refetch()} 
               className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
             >
               إعادة المحاولة
@@ -99,7 +99,7 @@ function AdminCourseEditPageContent() {
           </div>
 
           {/* Course Editor Component */}
-          <AdminCourseEditor course={course} />
+          <AdminCourseEditor course={course} refetch={refetch} />
         </div>
       </main>
     </>

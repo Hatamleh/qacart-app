@@ -2,36 +2,52 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+
 import { Edit, Trash2, Clock, Users, Calendar, BookOpen } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button, ConfirmationModal } from '@/components/ui'
 import { CourseClient } from '@/clients/course.client'
 import { Course } from '@/types'
 
 interface CoursesListProps {
   courses: Course[]
+  refetch: () => Promise<void>
 }
 
-export const CoursesList = ({ courses }: CoursesListProps) => {
-  const router = useRouter()
+export const CoursesList = ({ courses, refetch }: CoursesListProps) => {
   const [deletingCourseId, setDeletingCourseId] = useState<string | null>(null)
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean
+    courseId: string
+    courseTitle: string
+  }>({
+    isOpen: false,
+    courseId: '',
+    courseTitle: ''
+  })
+
+  // Show confirmation modal
+  const showDeleteConfirmation = (courseId: string, courseTitle: string) => {
+    setConfirmModal({
+      isOpen: true,
+      courseId,
+      courseTitle
+    })
+  }
 
   // Handle course deletion
-  const handleDeleteCourse = async (courseId: string, courseTitle: string) => {
-    if (!confirm(`هل أنت متأكد من حذف دورة "${courseTitle}"؟`)) {
-      return
-    }
-
+  const handleDeleteCourse = async () => {
+    const { courseId } = confirmModal
     setDeletingCourseId(courseId)
 
     try {
       await CourseClient.deleteCourse(courseId)
-      // Refresh the page to see updated courses list
-      router.refresh()
+      // Refresh courses list using hook's refetch method
+      await refetch()
     } catch (error) {
       console.error('❌ Failed to delete course:', error)
     } finally {
       setDeletingCourseId(null)
+      setConfirmModal(prev => ({ ...prev, isOpen: false }))
     }
   }
 
@@ -117,7 +133,7 @@ export const CoursesList = ({ courses }: CoursesListProps) => {
                   size="sm"
                   icon={Trash2}
                   className="text-xs px-3 py-2 text-destructive hover:text-destructive hover:bg-destructive/10"
-                  onClick={() => handleDeleteCourse(course.id, course.title)}
+                  onClick={() => showDeleteConfirmation(course.id, course.title)}
                   disabled={deletingCourseId === course.id}
                 >
                   {deletingCourseId === course.id ? 'جاري الحذف...' : 'حذف'}
@@ -127,6 +143,19 @@ export const CoursesList = ({ courses }: CoursesListProps) => {
           </div>
         </div>
       ))}
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={handleDeleteCourse}
+        title="حذف الدورة"
+        message={`هل أنت متأكد من حذف دورة "${confirmModal.courseTitle}"؟ لا يمكن التراجع عن هذا الإجراء.`}
+        confirmText="حذف الدورة"
+        cancelText="إلغاء"
+        variant="danger"
+        isLoading={deletingCourseId === confirmModal.courseId}
+      />
     </div>
   )
 }

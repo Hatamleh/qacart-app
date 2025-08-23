@@ -63,7 +63,7 @@ export class CourseRepository {
    * Create a new course (Admin only)
    * Saves to Firebase Firestore
    */
-  static async createCourse(courseData: Omit<Course, 'id'>): Promise<{ id: string }> {
+  static async createCourse(courseData: Omit<Course, 'id'>): Promise<Course> {
     try {
       // Create course document in Firestore
       const courseRef = await admin.firestore()
@@ -75,7 +75,14 @@ export class CourseRepository {
           updatedAt: new Date().toISOString()
         })
 
-      return { id: courseRef.id }
+      // Return the complete course object
+      const createdCourse: Course = {
+        id: courseRef.id,
+        ...courseData,
+        lessons: courseData.lessons || []
+      }
+
+      return createdCourse
     } catch (error) {
       console.error('Error creating course in Firebase:', error)
       throw new Error('Failed to create course')

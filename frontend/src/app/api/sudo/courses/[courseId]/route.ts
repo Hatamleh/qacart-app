@@ -134,12 +134,12 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     const { courseId } = await params
 
-    // TODO: Implement delete course method in CourseRepository
-    // const success = await CourseRepository.removeCourse(id)
+    // Delete the course using CourseRepository
+    await CourseRepository.deleteCourse(courseId)
     
     return NextResponse.json({ 
-      message: `Course deletion not implemented yet for course: ${courseId}` 
-    }, { status: 501 })
+      message: 'Course deleted successfully' 
+    })
 
   } catch (error) {
     if (error instanceof Error) {
