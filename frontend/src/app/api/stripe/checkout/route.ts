@@ -56,10 +56,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Set default URLs if not provided
+    // Set default URLs to redirect to profile with status
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-    const checkoutSuccessUrl = successUrl || `${baseUrl}/premium/success`
-    const checkoutCancelUrl = cancelUrl || `${baseUrl}/premium/cancel`
+    const checkoutSuccessUrl = successUrl || `${baseUrl}/profile?status=success`
+    const checkoutCancelUrl = cancelUrl || `${baseUrl}/profile?status=cancelled`
 
     let customerId = user.stripeCustomerId
 
