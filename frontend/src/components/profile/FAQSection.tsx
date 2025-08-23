@@ -1,4 +1,4 @@
-import { HelpCircle, ChevronDown } from 'lucide-react'
+import { HelpCircle } from 'lucide-react'
 import { FAQQuestion } from '@/types'
 
 interface FAQSectionProps {
@@ -20,9 +20,8 @@ export const FAQSection = ({ questions }: FAQSectionProps) => {
             key={question.id}
             className="bg-background/50 rounded-xl overflow-hidden"
           >
-            <div className="p-4 flex items-center justify-between">
+            <div className="p-4">
               <span className="font-semibold">{question.question}</span>
-              <ChevronDown className="w-5 h-5 text-primary" />
             </div>
             
             <div className="px-4 pb-4">
