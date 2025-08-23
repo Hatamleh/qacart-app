@@ -64,7 +64,17 @@ export const UserInfo = ({ user }: UserInfoProps) => {
                 <div>
                   <p className="text-sm text-muted-foreground">حالة الاشتراك</p>
                   <div className="flex items-center gap-3">
-                    <p className="font-semibold">عضوية بريميوم</p>
+                    <div>
+                      <p className="font-semibold">عضوية بريميوم</p>
+                      {/* Show plan type if available */}
+                      {user.subscription.plan && !isGifted && (
+                        <p className="text-xs text-muted-foreground">
+                          {user.subscription.plan === 'monthly' && 'اشتراك شهري'}
+                          {user.subscription.plan === 'quarterly' && 'اشتراك ربع سنوي'}
+                          {user.subscription.plan === 'yearly' && 'اشتراك سنوي'}
+                        </p>
+                      )}
+                    </div>
                     <Badge variant="primary">
                       {isGifted ? 'بريميوم (هدية)' : 'بريميوم مُفعّل'}
                     </Badge>

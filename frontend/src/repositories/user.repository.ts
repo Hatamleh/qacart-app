@@ -465,4 +465,42 @@ export class UserRepository {
 
     return now.toISOString().split('T')[0] // Return YYYY-MM-DD format
   }
+
+  /**
+   * Update user data (used for Stripe integration)
+   */
+  static async updateUser(userId: string, updates: Partial<User>): Promise<void> {
+    try {
+      await admin.firestore()
+        .collection('users')
+        .doc(userId)
+        .update(updates)
+    } catch (error) {
+      console.error('Error updating user:', error)
+      throw new Error('Failed to update user')
+    }
+  }
+
+  /**
+   * Find user by Stripe customer ID (used for webhook processing)
+   */
+  static async findUserByStripeCustomerId(customerId: string): Promise<string | null> {
+    try {
+      const usersSnapshot = await admin.firestore()
+        .collection('users')
+        .where('stripeCustomerId', '==', customerId)
+        .limit(1)
+        .get()
+
+      if (usersSnapshot.empty) {
+        return null
+      }
+
+      return usersSnapshot.docs[0].id
+
+    } catch (error) {
+      console.error('Error finding user by Stripe customer ID:', error)
+      return null
+    }
+  }
 }

@@ -1,7 +1,38 @@
-import { Settings, FileText, Receipt, CreditCard, Crown } from 'lucide-react'
+'use client'
+
+import { useState } from 'react'
+import { Settings, FileText, Receipt, CreditCard, Crown, Loader2 } from 'lucide-react'
 import { Button } from '../ui/Button'
+import { StripeClient } from '@/clients'
 
 export const ManageAccountSection = () => {
+  const [loadingAction, setLoadingAction] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  // Handle action clicks
+  const handleActionClick = async (actionId: string) => {
+    setLoadingAction(actionId)
+    setError(null)
+
+    try {
+      switch (actionId) {
+        case 'get-invoice':
+        case 'get-receipt':
+        case 'update-payment':
+        case 'manage-subscription':
+          // All these actions redirect to Stripe billing portal
+          await StripeClient.redirectToBillingPortal()
+          break
+        default:
+          console.warn('Unknown action:', actionId)
+      }
+    } catch (error) {
+      console.error('Action error:', error)
+      setError(error instanceof Error ? error.message : 'حدث خطأ غير متوقع')
+      setLoadingAction(null)
+    }
+  }
+
   const actions = [
     {
       id: 'get-invoice',
@@ -35,6 +66,13 @@ export const ManageAccountSection = () => {
         <Settings className="w-6 h-6 text-primary" />
         إدارة الحساب
       </h2>
+
+      {/* Error Message */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+          <p className="text-red-600 text-sm">{error}</p>
+        </div>
+      )}
       
       <div className="grid md:grid-cols-2 gap-4">
         {actions.map((action) => (
@@ -56,8 +94,17 @@ export const ManageAccountSection = () => {
                 <Button
                   variant="outline"
                   size="sm"
+                  onClick={() => handleActionClick(action.id)}
+                  disabled={loadingAction !== null}
                 >
-                  {action.id === 'manage-subscription' ? 'إدارة' : 'تحميل'}
+                  {loadingAction === action.id ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>جاري المعالجة...</span>
+                    </div>
+                  ) : (
+                    action.id === 'manage-subscription' ? 'إدارة' : 'فتح'
+                  )}
                 </Button>
               </div>
             </div>

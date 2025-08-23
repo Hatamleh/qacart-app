@@ -2,7 +2,7 @@ import React from 'react'
 
 interface ButtonProps {
     children?: React.ReactNode
-    variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive'
     size?: 'sm' | 'md' | 'lg'
     className?: string
     disabled?: boolean
@@ -40,7 +40,8 @@ export const Button: React.FC<ButtonProps> = ({
         primary: 'bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl hover:scale-105',
         secondary: 'bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md hover:shadow-lg hover:scale-105',
         outline: 'bg-transparent hover:bg-primary/10 text-primary border border-primary/30 hover:border-primary',
-        ghost: 'bg-transparent hover:bg-primary/10 text-primary hover:text-primary/90'
+        ghost: 'bg-transparent hover:bg-primary/10 text-primary hover:text-primary/90',
+        destructive: 'bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl hover:scale-105'
     }
 
     // Loading spinner

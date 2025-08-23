@@ -12,7 +12,8 @@ export const planData: Plan = {
       price: 4.99,
       currency: "$",
       popular: false,
-      savings: null
+      savings: null,
+      stripePriceId: "price_monthly_placeholder" // Replace with real Stripe price ID from Firebase
     },
     {
       id: "quarterly",
@@ -21,7 +22,8 @@ export const planData: Plan = {
       price: 12.99,
       currency: "$",
       popular: true,
-      savings: "وفر 13%"
+      savings: "وفر 13%",
+      stripePriceId: "price_quarterly_placeholder" // Replace with real Stripe price ID from Firebase
     },
     {
       id: "yearly",
@@ -30,7 +32,8 @@ export const planData: Plan = {
       price: 49.99,
       currency: "$",
       popular: false,
-      savings: "وفر 17%"
+      savings: "وفر 17%",
+      stripePriceId: "price_yearly_placeholder" // Replace with real Stripe price ID from Firebase
     }
   ],
   features: [

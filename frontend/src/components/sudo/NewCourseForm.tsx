@@ -39,7 +39,7 @@ export const NewCourseForm = () => {
 
     try {
       // Create course using CourseClient
-      const result = await CourseClient.createCourse({
+      await CourseClient.createCourse({
         title: formData.title.trim(),
         shortDescription: formData.shortDescription.trim(),
         type: formData.type,
@@ -52,7 +52,7 @@ export const NewCourseForm = () => {
         lessons: [] // Empty lessons array for new course
       })
 
-      console.log('✅ Course created successfully:', result.course.id)
+
 
       // Redirect to courses list so admin can see the new course and choose to edit
       router.push('/sudo/courses')
