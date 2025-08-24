@@ -31,3 +31,14 @@ export type {
   CompleteLessonRequest,
   CreateProgressRequest
 } from './progress.type'
+export type {
+  Certificate,
+  IssueCertificateRequest,
+  IssueCertificateResponse,
+  VerifyCertificateRequest,
+  VerifyCertificateResponse,
+  GetUserCertificatesResponse,
+  CertificateEligibility,
+  CertificateTemplateData,
+  CertificateStats
+} from './certificate.type'
