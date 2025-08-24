@@ -68,7 +68,7 @@ export class CourseRepository {
           ...courseData,
           lessons: courseData.lessons || [],
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          lastUpdated: new Date().toISOString()
         })
 
       // Return the complete course object
@@ -99,7 +99,7 @@ export class CourseRepository {
         .doc(courseId)
         .update({
           ...updateData,
-          updatedAt: new Date().toISOString()
+          lastUpdated: new Date().toISOString()
         })
     } catch (error) {
       console.error(`Error updating course ${courseId} in Firebase:`, error)

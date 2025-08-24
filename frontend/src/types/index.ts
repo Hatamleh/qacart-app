@@ -20,4 +20,14 @@ export type {
   StripeCheckoutResponse 
 } from './plan.type'
 export type { FAQQuestion } from './faq.type'
-export type { UserProgress } from './user-progress.type'
+export type { 
+  UserProgress, 
+  UserProgressLegacy, 
+  LessonProgressDetail 
+} from './user-progress.type'
+export type {
+  ProgressResponse,
+  CompleteLessonResponse,
+  CompleteLessonRequest,
+  CreateProgressRequest
+} from './progress.type'

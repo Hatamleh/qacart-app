@@ -3,7 +3,7 @@
 import { Lock, Check, Clock, Circle } from 'lucide-react'
 import { Course, Lesson } from '@/types'
 import { Button } from '../ui/Button'
-import { currentUserData, userProgressData } from '@/data'
+import { useProgressContext } from '@/contexts/ProgressContext'
 
 interface LessonNavigationProps {
   course: Course
@@ -16,10 +16,7 @@ export const LessonNavigation = ({
   currentLesson,
   onLessonSelect
 }: LessonNavigationProps) => {
-  // Get current user's progress for this course
-  const userProgress = userProgressData.find(
-    p => p.userId === currentUserData.id && p.courseId === course.id
-  )
+  const { isLessonCompleted } = useProgressContext()
 
   return (
     <div className="min-h-screen bg-primary/10 flex flex-col mr-2 rounded-lg"> {/* Added blue background with opacity */}
@@ -39,7 +36,7 @@ export const LessonNavigation = ({
           {course.lessons.map((lesson) => {
             const isActive = lesson.id === currentLesson.id
             const isLocked = !lesson.isFree
-            const isCompleted = userProgress ? userProgress.completedLessons.includes(lesson.id) : false
+            const isCompleted = isLessonCompleted(lesson.id)
 
             return (
               <Button

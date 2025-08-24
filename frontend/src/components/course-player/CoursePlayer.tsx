@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { LessonNavigation } from './LessonNavigation'
 import { LessonVideoArea } from './LessonVideoArea'
@@ -7,6 +8,7 @@ import { LessonControls } from './LessonControls'
 import { LessonArticle } from './LessonArticle'
 import { CourseInfoSection } from './CourseInfoSection'
 import { ProgressNote } from './ProgressNote'
+import { useProgressContext } from '@/contexts/ProgressContext'
 
 import type { Course, Lesson } from '@/types'
 
@@ -23,6 +25,8 @@ export const CoursePlayer = ({
 }: CoursePlayerProps) => {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { markLessonComplete, isAuthenticated } = useProgressContext()
+  const [isMarkingComplete, setIsMarkingComplete] = useState(false)
 
   // Navigation functions
   const navigateToLesson = (lesson: Lesson) => {
@@ -47,12 +51,47 @@ export const CoursePlayer = ({
     }
   }
 
-  const handleMarkComplete = () => {
-    // TODO: Implement lesson completion logic
-    console.log('Mark lesson complete:', currentLesson.id)
-    
-    // Auto-advance to next lesson after marking complete
-    navigateToNextLesson()
+  const handleMarkComplete = async () => {
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      console.warn('User must be authenticated to mark lessons complete')
+      return
+    }
+
+    // Prevent multiple simultaneous completion attempts
+    if (isMarkingComplete) {
+      return
+    }
+
+    try {
+      setIsMarkingComplete(true)
+      
+      // Mark lesson as complete using the progress hook
+      await markLessonComplete(
+        currentLesson.id,
+        course.lessons.length,
+        currentLesson.durationInMinutes // Optional: use lesson duration as time spent
+      )
+
+      console.log('✅ Lesson marked complete:', currentLesson.id)
+      
+      // Auto-advance to next lesson after successful completion
+      // Small delay to allow UI updates to show before navigation
+      setTimeout(() => {
+        navigateToNextLesson()
+      }, 300)
+
+    } catch (error) {
+      console.error('❌ Error marking lesson complete:', error)
+      
+      // Show user-friendly error message (you can enhance this with toast notifications)
+      const errorMessage = error instanceof Error ? error.message : 'فشل في تسجيل إكمال الدرس'
+      console.warn('User-facing error:', errorMessage)
+      
+      // Don't navigate on error - let user try again
+    } finally {
+      setIsMarkingComplete(false)
+    }
   }
   // Get previous and next lessons for navigation
   const currentIndex = course.lessons.findIndex(l => l.id === currentLesson.id)
@@ -106,10 +145,10 @@ export const CoursePlayer = ({
               currentLesson={currentLesson}
               previousLesson={previousLesson}
               nextLesson={nextLesson}
-              courseId={course.id}
               onPrevious={navigateToPreviousLesson}
               onNext={navigateToNextLesson}
               onMarkComplete={handleMarkComplete}
+              isMarkingComplete={isMarkingComplete}
               afterArticle={true}
             />
           </div>

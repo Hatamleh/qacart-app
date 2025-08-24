@@ -3,16 +3,16 @@
 import { ChevronLeft, ChevronRight, Check, Star } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Lesson } from '@/types'
-import { currentUserData, userProgressData } from '@/data'
+import { useProgressContext } from '@/contexts/ProgressContext'
 
 interface LessonControlsProps {
   currentLesson: Lesson
   previousLesson: Lesson | null
   nextLesson: Lesson | null
-  courseId?: string
   onPrevious?: () => void
   onNext?: () => void
   onMarkComplete?: () => void
+  isMarkingComplete?: boolean
   afterArticle?: boolean
 }
 
@@ -20,17 +20,16 @@ export const LessonControls = ({
   currentLesson,
   previousLesson,
   nextLesson,
-  courseId,
   onPrevious,
   onNext,
   onMarkComplete,
+  isMarkingComplete = false,
   afterArticle = false
 }: LessonControlsProps) => {
+  const { isLessonCompleted } = useProgressContext()
+
   // Check if the current lesson is completed
-  const userProgress = userProgressData.find(
-    p => p.userId === currentUserData.id && p.courseId === courseId
-  )
-  const isLessonCompleted = userProgress ? userProgress.completedLessons.includes(currentLesson.id) : false
+  const lessonCompleted = isLessonCompleted(currentLesson.id)
 
   return (
     <div className={`p-6 mx-8 rounded-lg border border-primary/10 bg-muted ${afterArticle ? 'mb-24' : ''}`}>
@@ -52,13 +51,19 @@ export const LessonControls = ({
         {/* Mark Complete Button - Center */}
         <div className="flex-1 flex justify-center">
           <Button
-            variant={isLessonCompleted ? "secondary" : "primary"}
+            variant={lessonCompleted ? "outline" : "primary"}
             onClick={() => onMarkComplete?.()}
-            icon={isLessonCompleted ? Check : Star}
+            icon={lessonCompleted ? Check : Star}
             iconPosition="left"
-            className="text-sm px-6"
+            className={`text-sm px-6 ${lessonCompleted ? 'border-green-500 text-green-600 bg-green-50 hover:bg-green-50 cursor-default' : ''}`}
+            disabled={isMarkingComplete || lessonCompleted}
           >
-            {isLessonCompleted ? 'مكتمل' : 'أكمل الدرس الآن'}
+            {isMarkingComplete 
+              ? 'جارٍ الحفظ...' 
+              : lessonCompleted 
+                ? 'مكتمل' 
+                : 'أكمل الدرس الآن'
+            }
           </Button>
         </div>
 

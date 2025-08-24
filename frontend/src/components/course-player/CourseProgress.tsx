@@ -1,17 +1,49 @@
+'use client'
+
 import type { Course } from '@/types'
-import { currentUserData, userProgressData } from '@/data'
+import { useProgressContext } from '@/contexts/ProgressContext'
 
 interface CourseProgressProps {
   course: Course
 }
 
 export const CourseProgress = ({ course }: CourseProgressProps) => {
-  // Get current user's progress for this course
-  const userProgress = userProgressData.find(
-    p => p.userId === currentUserData.id && p.courseId === course.id
-  )
-  const completedLessonsCount = userProgress ? userProgress.completedLessons.length : 0
-  const progressPercentage = Math.round((completedLessonsCount / course.lessons.length) * 100)
+  const { 
+    progressPercentage, 
+    completedLessonsCount, 
+    loading, 
+    isAuthenticated 
+  } = useProgressContext()
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="text-right ml-6">
+        <div className="bg-background/50 rounded-lg p-4 border border-primary/20">
+          <div className="text-sm text-muted-foreground mb-1">التقدم الإجمالي</div>
+          <div className="text-2xl font-bold text-primary animate-pulse">---%</div>
+          <div className="text-xs text-muted-foreground mt-1">
+            جارٍ التحميل...
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show authentication required state
+  if (!isAuthenticated) {
+    return (
+      <div className="text-right ml-6">
+        <div className="bg-background/50 rounded-lg p-4 border border-primary/20">
+          <div className="text-sm text-muted-foreground mb-1">التقدم الإجمالي</div>
+          <div className="text-2xl font-bold text-muted-foreground">---%</div>
+          <div className="text-xs text-muted-foreground mt-1">
+            يجب تسجيل الدخول
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="text-right ml-6">

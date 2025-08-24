@@ -3,6 +3,7 @@
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import Head from 'next/head'
 import { CoursePlayer } from '@/components/course-player/CoursePlayer'
+import { ProgressProvider } from '@/contexts/ProgressContext'
 import { useCourses } from '@/hooks'
 
 export default function CoursePlayerPage() {
@@ -70,11 +71,13 @@ export default function CoursePlayerPage() {
         <meta property="og:locale" content="ar_SA" />
       </Head>
 
-      <CoursePlayer
-        course={course}
-        currentLesson={currentLesson}
-        courseId={courseId}
-      />
+      <ProgressProvider courseId={courseId}>
+        <CoursePlayer
+          course={course}
+          currentLesson={currentLesson}
+          courseId={courseId}
+        />
+      </ProgressProvider>
     </>
   )
 }

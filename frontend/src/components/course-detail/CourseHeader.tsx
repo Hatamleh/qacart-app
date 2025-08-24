@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Button } from '../ui/Button'
 import { Badge } from '../ui/Badge'
 import { VimeoPlayer } from '../video/VimeoPlayer'
+import { formatDateShort } from '@/lib'
 import type { Course } from '@/types'
 
 // Hardcoded instructor data (since it's always Hatem)
@@ -55,7 +56,7 @@ export const CourseHeader = ({ course }: CourseHeaderProps) => {
                     <div className="inline-flex items-center gap-3 px-6 py-3 bg-primary/10 rounded-full border border-primary/20">
                         <Calendar className="w-5 h-5 text-primary" />
                         <span className="text-sm text-muted-foreground">آخر تحديث:</span>
-                        <span className="text-sm font-semibold text-primary">{course.lastUpdated}</span>
+                        <span className="text-sm font-semibold text-primary">{formatDateShort(course.lastUpdated)}</span>
                     </div>
                 </div>
 

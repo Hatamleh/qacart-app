@@ -85,7 +85,7 @@ export class LessonRepository {
         .doc(courseId)
         .update({
           lessons: updatedLessons,
-          updatedAt: new Date().toISOString()
+          lastUpdated: new Date().toISOString()
         })
 
       // Return the complete lesson object
@@ -135,7 +135,7 @@ export class LessonRepository {
         .doc(courseId)
         .update({
           lessons: updatedLessons,
-          updatedAt: new Date().toISOString()
+          lastUpdated: new Date().toISOString()
         })
     } catch (error) {
       console.error(`Error updating lesson ${lessonId} in course ${courseId}:`, error)
@@ -182,7 +182,7 @@ export class LessonRepository {
         .doc(courseId)
         .update({
           lessons: updatedLessons,
-          updatedAt: new Date().toISOString()
+          lastUpdated: new Date().toISOString()
         })
     } catch (error) {
       console.error(`Error deleting lesson ${lessonId} from course ${courseId}:`, error)
@@ -228,7 +228,7 @@ export class LessonRepository {
         .doc(courseId)
         .update({
           lessons: reorderedLessons,
-          updatedAt: new Date().toISOString()
+          lastUpdated: new Date().toISOString()
         })
     } catch (error) {
       console.error(`Error reordering lessons in course ${courseId}:`, error)
