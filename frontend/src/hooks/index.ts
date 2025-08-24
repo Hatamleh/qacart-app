@@ -11,5 +11,6 @@ export { useLessons } from './useLessons'
 export { usePlans } from './usePlans'
 export { useUsers } from './useUsers'
 export { useProgress } from './useProgress'
+export { useCertificates } from './useCertificates'
 
 // Note: Auth uses AuthContext, not a hook

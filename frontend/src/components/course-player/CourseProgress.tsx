@@ -2,6 +2,7 @@
 
 import type { Course } from '@/types'
 import { useProgressContext } from '@/contexts/ProgressContext'
+import { CertificateSection } from '@/components/certificates'
 
 interface CourseProgressProps {
   course: Course
@@ -46,7 +47,8 @@ export const CourseProgress = ({ course }: CourseProgressProps) => {
   }
 
   return (
-    <div className="text-right ml-6">
+    <div className="text-right ml-6 space-y-4">
+      {/* Progress Section */}
       <div className="bg-background/50 rounded-lg p-4 border border-primary/20">
         <div className="text-sm text-muted-foreground mb-1">التقدم الإجمالي</div>
         <div className="text-2xl font-bold text-primary">{progressPercentage}%</div>
@@ -54,6 +56,13 @@ export const CourseProgress = ({ course }: CourseProgressProps) => {
           {completedLessonsCount} من {course.lessons.length} مكتمل
         </div>
       </div>
+
+      {/* Certificate Section */}
+      <CertificateSection
+        courseId={course.id}
+        courseName={course.title}
+        progressPercentage={progressPercentage}
+      />
     </div>
   )
 }

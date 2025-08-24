@@ -133,7 +133,7 @@ export class CertificateClient {
 
   /**
    * Verify certificate authenticity (public method)
-   * No authentication required
+   * No authentication required - for backwards compatibility
    */
   static async verifyCertificate(request: VerifyCertificateRequest): Promise<VerifyCertificateResponse> {
     try {
@@ -164,6 +164,47 @@ export class CertificateClient {
       console.error('Error verifying certificate:', error)
       return {
         success: false,
+        error: 'فشل في التحقق من الشهادة'
+      }
+    }
+  }
+
+  /**
+   * Verify certificate by verification code only (public method)
+   * Simplified verification for public use
+   */
+  static async verifyCertificateByCode(verificationCode: string): Promise<VerifyCertificateResponse & { 
+    isValid: boolean 
+    message: string 
+    certificate?: Certificate 
+  }> {
+    try {
+      // For now, we'll need to get all certificates and find by verification code
+      // This is a temporary solution until we create a proper verification endpoint
+      const response = await fetch('/api/certificates/verify-by-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ verificationCode }),
+      })
+
+      const data = await response.json()
+
+      return {
+        success: data.success,
+        isValid: data.success,
+        certificate: data.certificate,
+        message: data.message || (data.success ? 'الشهادة صحيحة' : 'الشهادة غير صحيحة'),
+        error: data.error
+      }
+
+    } catch (error) {
+      console.error('Error verifying certificate by code:', error)
+      return {
+        success: false,
+        isValid: false,
+        message: 'فشل في التحقق من الشهادة',
         error: 'فشل في التحقق من الشهادة'
       }
     }

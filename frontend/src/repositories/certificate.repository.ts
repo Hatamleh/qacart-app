@@ -101,7 +101,7 @@ export class CertificateRepository {
         status: 'issued',
         language: 'ar',
         verificationCode,
-        issuerSignature: 'حاتم حسني - مؤسس QAcart'
+        issuerSignature: 'حاتم حتاملة - مؤسس QAcart'
       }
       
       // 5. Save to Firebase
@@ -178,6 +178,49 @@ export class CertificateRepository {
     } catch (error) {
       console.error('Error fetching user certificates:', error)
       throw new Error('فشل في جلب الشهادات')
+    }
+  }
+
+  /**
+   * Verify certificate by verification code only
+   * Public method for simplified certificate verification
+   */
+  static async verifyCertificateByCode(verificationCode: string): Promise<{
+    isValid: boolean
+    certificate?: Certificate
+    message: string
+  }> {
+    try {
+      // Query certificates by verification code
+      const certificatesSnapshot = await admin.firestore()
+        .collection('certificates')
+        .where('verificationCode', '==', verificationCode)
+        .where('status', '==', 'issued')
+        .limit(1)
+        .get()
+
+      if (certificatesSnapshot.empty) {
+        return {
+          isValid: false,
+          message: 'رمز التحقق غير صحيح أو الشهادة غير موجودة'
+        }
+      }
+
+      const certificateDoc = certificatesSnapshot.docs[0]
+      const certificate = certificateDoc.data() as Certificate
+
+      return {
+        isValid: true,
+        certificate,
+        message: 'الشهادة صحيحة ومعتمدة من QAcart'
+      }
+
+    } catch (error) {
+      console.error('Error verifying certificate by code:', error)
+      return {
+        isValid: false,
+        message: 'فشل في التحقق من الشهادة'
+      }
     }
   }
 
