@@ -1,13 +1,9 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { CertificateClient } from '@/clients'
-import { useAuth } from '@/contexts/AuthContext'
-import type { 
-  Certificate, 
-  CertificateEligibility, 
-  IssueCertificateRequest
-} from '@/types'
+import {useCallback, useEffect, useState} from 'react'
+import {CertificateClient} from '@/clients'
+import {useAuth} from '@/contexts/AuthContext'
+import type {Certificate, CertificateEligibility, IssueCertificateRequest} from '@/types'
 
 /**
  * Custom hook for managing certificate operations
@@ -69,7 +65,7 @@ export const useCertificates = () => {
       setLoading(true)
       setError(null)
       const response = await CertificateClient.issueCertificate(request)
-      
+
       if (response.success && response.certificate) {
         // Update local certificates list
         setCertificates(prev => [...prev, response.certificate!])
@@ -98,8 +94,7 @@ export const useCertificates = () => {
     try {
       setLoading(true)
       setError(null)
-      const verification = await CertificateClient.verifyCertificateByCode(verificationCode)
-      return verification
+        return await CertificateClient.verifyCertificateByCode(verificationCode)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'خطأ في التحقق من الشهادة')
       console.error('Error verifying certificate:', err)
@@ -174,20 +169,20 @@ export const useCertificates = () => {
     certificates,
     loading,
     error,
-    
+
     // Actions
     fetchUserCertificates,
     checkEligibility,
     issueCertificate,
     verifyCertificate,
-    
+
     // Helpers
     getCertificateByCourse,
     hasCertificate,
     getCertificateShareUrl,
     getCertificateVerifyUrl,
     getCertificateStatusText,
-    
+
     // Computed
     certificateCount: certificates.length,
     hasAnyCertificates: certificates.length > 0
