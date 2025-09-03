@@ -68,7 +68,7 @@ export const LessonNavigation = ({
                   </div>
 
                   {/* Lesson Info */}
-                  <div className="flex-1 min-w-0 text-left">
+                  <div className="flex-1 min-w-0 text-right">
                     <div className={`text-sm font-medium mb-1 ${
                       isActive ? 'text-primary' : 'text-foreground'
                     }`}>
