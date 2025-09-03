@@ -1,8 +1,8 @@
 import { Heart, Shield, FileText, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { GridBackground } from '../ui/GridBackground'
-import { SocialLinks } from '../ui/SocialLinks'
+import { GridBackground } from '@/components/ui'
+import { SocialLinks } from '@/components/ui'
 
 export const Footer = () => {
     return (

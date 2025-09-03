@@ -1,6 +1,6 @@
 import { BookOpen, Award } from 'lucide-react'
 import Link from 'next/link'
-import { GridBackground } from '../ui/GridBackground'
+import { GridBackground } from '@/components/ui'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
 import { coursesData } from '@/data'

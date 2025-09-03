@@ -1,7 +1,7 @@
 'use client'
 
 import { BookOpen, Play, Download } from 'lucide-react'
-import { GridBackground } from '../ui/GridBackground'
+import { GridBackground } from '@/components/ui'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
 

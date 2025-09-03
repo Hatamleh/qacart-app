@@ -1,5 +1,5 @@
 import Stripe from 'stripe'
-import { StripeCustomerData, StripeSubscriptionSync } from '@/types'
+import {StripeCustomerData, StripeSubscriptionSync} from '@/types'
 
 /**
  * StripeRepository - Data access layer for Stripe operations
@@ -37,13 +37,11 @@ export class StripeRepository {
     try {
       const stripe = this.getStripe()
 
-      const customer = await stripe.customers.create({
-        email: customerData.email,
-        name: customerData.name,
-        metadata: customerData.metadata || {}
+      return await stripe.customers.create({
+          email: customerData.email,
+          name: customerData.name,
+          metadata: customerData.metadata || {}
       })
-
-      return customer
     } catch (error) {
       console.error('Error creating Stripe customer:', error)
       throw new Error('Failed to create customer')
@@ -129,9 +127,7 @@ export class StripeRepository {
         sessionParams.customer_email = customerEmail
       }
 
-      const session = await stripe.checkout.sessions.create(sessionParams)
-
-      return session
+      return await stripe.checkout.sessions.create(sessionParams)
     } catch (error) {
       console.error('Error creating checkout session:', error)
       throw new Error('Failed to create checkout session')
@@ -147,11 +143,9 @@ export class StripeRepository {
     try {
       const stripe = this.getStripe()
 
-      const session = await stripe.checkout.sessions.retrieve(sessionId, {
-        expand: ['subscription', 'customer']
+      return await stripe.checkout.sessions.retrieve(sessionId, {
+          expand: ['subscription', 'customer']
       })
-
-      return session
     } catch (error) {
       console.error('Error retrieving checkout session:', error)
       return null
@@ -169,9 +163,7 @@ export class StripeRepository {
     try {
       const stripe = this.getStripe()
 
-      const subscription = await stripe.subscriptions.retrieve(subscriptionId)
-
-      return subscription
+      return await stripe.subscriptions.retrieve(subscriptionId)
     } catch (error) {
       console.error('Error retrieving subscription:', error)
       return null
@@ -187,11 +179,9 @@ export class StripeRepository {
     try {
       const stripe = this.getStripe()
 
-      const subscription = await stripe.subscriptions.update(subscriptionId, {
-        cancel_at_period_end: true
+      return await stripe.subscriptions.update(subscriptionId, {
+          cancel_at_period_end: true
       })
-
-      return subscription
     } catch (error) {
       console.error('Error canceling subscription:', error)
       throw new Error('Failed to cancel subscription')
@@ -207,11 +197,9 @@ export class StripeRepository {
     try {
       const stripe = this.getStripe()
 
-      const subscription = await stripe.subscriptions.update(subscriptionId, {
-        cancel_at_period_end: false
+      return await stripe.subscriptions.update(subscriptionId, {
+          cancel_at_period_end: false
       })
-
-      return subscription
     } catch (error) {
       console.error('Error reactivating subscription:', error)
       throw new Error('Failed to reactivate subscription')
@@ -233,12 +221,10 @@ export class StripeRepository {
     try {
       const stripe = this.getStripe()
 
-      const session = await stripe.billingPortal.sessions.create({
-        customer: customerId,
-        return_url: returnUrl,
+      return await stripe.billingPortal.sessions.create({
+          customer: customerId,
+          return_url: returnUrl,
       })
-
-      return session
     } catch (error) {
       console.error('Error creating billing portal session:', error)
       throw new Error('Failed to create billing portal session')
@@ -262,9 +248,7 @@ export class StripeRepository {
         throw new Error('STRIPE_WEBHOOK_SECRET environment variable is not set')
       }
 
-      const event = stripe.webhooks.constructEvent(payload, signature, webhookSecret)
-
-      return event
+      return stripe.webhooks.constructEvent(payload, signature, webhookSecret)
     } catch (error) {
       console.error('Error constructing webhook event:', error)
       throw new Error('Invalid webhook signature')
