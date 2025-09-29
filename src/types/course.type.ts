@@ -12,7 +12,6 @@ export interface Course {
   durationInMinutes: number
   studentsCount: number
   tags: string[]
-  learningGoals: string[]
 }
 
 

@@ -56,8 +56,10 @@ export default function CoursePlayerPage() {
     )
   }
 
-  const currentLessonId = lessonId || course.lessons[0]?.id
-  const currentLesson = course.lessons.find(l => l.id === currentLessonId) || course.lessons[0]
+  // If no lesson is selected, show overview
+  const currentLesson = lessonId
+    ? course.lessons.find(l => l.id === lessonId) || course.lessons[0]
+    : null
 
   return (
     <>

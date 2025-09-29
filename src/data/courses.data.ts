@@ -12,14 +12,6 @@ export const coursesData: Course[] = [
     durationInMinutes: 240,
     studentsCount: 320,
     tags: ["إعداد", "مبتدئ", "أدوات التطوير"],
-    learningGoals: [
-      "فهم متطلبات بيئة التطوير الحديثة",
-      "إعداد وتكوين نظام التشغيل للبرمجة",
-      "تثبيت وإعداد Git لإدارة المشاريع",
-      "اختيار وإعداد IDE المناسب",
-      "إدارة البيئات الافتراضية والتبعية",
-      "إتقان استخدام Terminal وسطر الأوامر"
-    ],
     lessons: [
       {
         id: "lesson_101",
@@ -87,14 +79,6 @@ export const coursesData: Course[] = [
     durationInMinutes: 480,
     studentsCount: 450,
     tags: ["اختبار يدوي", "مبتدئ", "QA"],
-    learningGoals: [
-      "فهم أساسيات اختبار البرمجيات ومفاهيمه الأساسية",
-      "تعلم أنواع الاختبارات المختلفة (وحدة، تكامل، نظام)",
-      "إتقان كتابة Test Cases فعالة ومفصلة",
-      "تطبيق استراتيجيات اختبار مختلفة حسب نوع المشروع",
-      "فهم وإدارة دورة حياة العيوب والأخطاء",
-      "استخدام أدوات إدارة الاختبارات الشائعة"
-    ],
     lessons: [
       {
         id: "lesson_201",
@@ -171,14 +155,6 @@ export const coursesData: Course[] = [
     durationInMinutes: 720,
     studentsCount: 280,
     tags: ["Selenium", "Java", "أتمتة", "متوسط"],
-    learningGoals: [
-      "فهم مفاهيم أتمتة الاختبارات باستخدام Selenium",
-      "إعداد بيئة عمل Selenium مع Java من الصفر",
-      "تعلم التفاعل مع عناصر الصفحة بطرق مختلفة",
-      "إتقان نمط Page Object Model لتنظيم الكود",
-      "استخدام TestNG لتنظيم وتشغيل الاختبارات",
-      "بناء مشروع اختبار شامل وقابل للصيانة"
-    ],
     lessons: [
       {
         id: "lesson_301",
@@ -246,14 +222,6 @@ export const coursesData: Course[] = [
     durationInMinutes: 900,
     studentsCount: 150,
     tags: ["Playwright", "TypeScript", "أتمتة", "متقدم"],
-    learningGoals: [
-      "فهم ميزات Playwright وما يميزه عن أدوات الأتمتة الأخرى",
-      "إعداد مشروع Playwright مع TypeScript من البداية",
-      "كتابة اختبارات فعالة للواجهات الحديثة",
-      "اختبار APIs باستخدام Playwright المتقدم",
-      "تشغيل الاختبارات على متصفحات متعددة",
-      "دمج الاختبارات مع أنظمة CI/CD الحديثة"
-    ],
     lessons: [
       {
         id: "lesson_401",

@@ -7,7 +7,7 @@ import { useProgressContext } from '@/contexts/ProgressContext'
 
 interface LessonNavigationProps {
   course: Course
-  currentLesson: Lesson
+  currentLesson: Lesson | null
   onLessonSelect?: (lesson: Lesson) => void
 }
 
@@ -34,7 +34,7 @@ export const LessonNavigation = ({
       <div className="flex-1 overflow-y-auto">
         <div className="p-2 space-y-1">
           {course.lessons.map((lesson) => {
-            const isActive = lesson.id === currentLesson.id
+            const isActive = currentLesson ? lesson.id === currentLesson.id : false
             const isLocked = !lesson.isFree
             const isCompleted = isLessonCompleted(lesson.id)
 

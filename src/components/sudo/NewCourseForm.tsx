@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Save, BookOpen, Target } from 'lucide-react'
+import { Save, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { CourseClient } from '@/clients/course.client'
 
@@ -16,8 +16,7 @@ export const NewCourseForm = () => {
     shortDescription: '',
     type: 'يدوي',
     vimeoId: '',
-    studentsCount: 0,
-    learningGoals: ['', '', '', '', '', ''] // Exactly 6 learning goals
+    studentsCount: 0
   })
 
   // Handle form submission
@@ -26,12 +25,6 @@ export const NewCourseForm = () => {
 
     // Basic validation
     if (!formData.title.trim() || !formData.shortDescription.trim()) {
-      return
-    }
-
-    // Check if all learning goals are filled
-    const filledGoals = formData.learningGoals.filter(goal => goal.trim())
-    if (filledGoals.length < 6) {
       return
     }
 
@@ -48,7 +41,6 @@ export const NewCourseForm = () => {
         lastUpdated: new Date().toLocaleDateString('ar-SA'),
         durationInMinutes: 0, // Will be calculated when lessons are added
         tags: [formData.type], // Use course type as initial tag
-        learningGoals: formData.learningGoals.map(goal => goal.trim()),
         lessons: [] // Empty lessons array for new course
       })
 
@@ -67,14 +59,6 @@ export const NewCourseForm = () => {
   // Handle input changes
   const updateField = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }))
-  }
-
-  // Handle learning goal changes
-  const updateLearningGoal = (index: number, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      learningGoals: prev.learningGoals.map((goal, i) => i === index ? value : goal)
-    }))
   }
 
 
@@ -151,42 +135,6 @@ export const NewCourseForm = () => {
               required
             />
           </div>
-        </div>
-
-        {/* Learning Goals Section */}
-        <div className="glass rounded-xl p-6 border border-border space-y-6">
-          <div className="flex items-center justify-between">
-            <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Target className="w-5 h-5 text-primary" />
-              أهداف التعلم
-            </h4>
-            <span className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-lg">
-              جميع الأهداف مطلوبة
-            </span>
-          </div>
-
-          <p className="text-sm text-muted-foreground">
-            اكتب ما سيتعلمه الطلاب في هذه الدورة (6 أهداف مطلوبة)
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {formData.learningGoals.map((goal, index) => (
-              <div key={index}>
-                <label className="block text-sm font-medium text-muted-foreground mb-2">
-                  الهدف {index + 1} *
-                </label>
-                <input
-                  type="text"
-                  value={goal}
-                  onChange={(e) => updateLearningGoal(index, e.target.value)}
-                  placeholder={`مثال: ${index === 0 ? 'فهم أساسيات اختبار البرمجيات' : index === 1 ? 'تعلم كتابة حالات الاختبار' : 'إتقان أدوات الاختبار الحديثة'}`}
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
-                  required
-                />
-              </div>
-            ))}
-          </div>
-
         </div>
 
         {/* Instructor & Media Section */}
