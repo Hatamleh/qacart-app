@@ -85,11 +85,8 @@ export const NextBillingDate = ({ user }: NextBillingDateProps) => {
           </div>
           <div className="flex-1">
             <p className="font-semibold text-primary mb-1">اشتراك نشط</p>
-            <p className="text-sm text-muted-foreground mb-2">
-              سيتم تجديد اشتراكك تلقائياً في <span className="font-semibold text-foreground">{formatDate(user.subscription.nextBillingDate)}</span>
-            </p>
-            <p className="text-xs text-muted-foreground/70 mb-3">
-              يمكنك إلغاء الاشتراك في أي وقت والاحتفاظ بالوصول حتى نهاية الفترة المدفوعة
+            <p className="text-sm text-muted-foreground mb-3">
+              اشتراكك نشط حتى <span className="font-semibold text-foreground">{formatDate(user.subscription.nextBillingDate)}</span>
             </p>
             <button 
               onClick={async () => {

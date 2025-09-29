@@ -6,7 +6,6 @@ import { useEffect, useState, Suspense } from 'react'
 import { CheckCircle, XCircle, X } from 'lucide-react'
 import { ProfileWelcome } from '@/components/profile/ProfileWelcome'
 import { UserInfo } from '@/components/profile/UserInfo'
-import { ManageAccountSection } from '@/components/profile/ManageAccountSection'
 import { AddedWithLove } from '@/components/profile/AddedWithLove'
 import { FAQSection } from '@/components/profile/FAQSection'
 import { ContactSection } from '@/components/profile/ContactSection'
@@ -144,9 +143,6 @@ export default function ProfilePage() {
 
           {/* Added with Love - Only show for gifted users */}
           {isGifted && <AddedWithLove user={user} />}
-
-          {/* Manage Account - Only show for paid premium users (not gifted) */}
-          {isPremium && !isGifted && <ManageAccountSection />}
 
           {/* FAQ */}
           <FAQSection questions={faqData} />
