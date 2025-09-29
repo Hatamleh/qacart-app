@@ -21,7 +21,8 @@ export default function AuthPage() {
         <div className="w-full max-w-md">
           <Suspense fallback={
             <div className="max-w-md mx-auto">
-              <div className="relative bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-xl border border-primary/10 rounded-3xl overflow-hidden shadow-[0_20px_70px_-10px_rgba(59,130,246,0.15)]">
+              <div className="relative terminal-window bg-muted border-2 border-border overflow-hidden">
+                <div className="absolute top-8 left-0 w-full h-px bg-border" />
                 <div className="p-8 lg:p-10">
                   <CardLoader />
                 </div>

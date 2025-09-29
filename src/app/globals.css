@@ -1,23 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700&display=swap');
+/* ===== CODING THEME FONTS ===== */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@100;200;300;400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-/* ===== CSS VARIABLES FOR THEMING ===== */
+/* ===== CSS VARIABLES FOR CODING THEME ===== */
 :root {
-    /* Base Colors */
-    --background: #0f172a;     /* Main background */
-    --foreground: #f9fafb;     /* Main text */
-    --muted: #1f2937;          /* Secondary backgrounds */
-    --muted-foreground: #94a3b8; /* Secondary text */
-    --border: #374151;         /* All borders */
+    /* Base Colors - Nord/Coding Theme */
+    --background: #323846;     /* Dark gray-blue background */
+    --foreground: #D8DEE9;     /* Snow white text */
+    --muted: #2E3440;          /* Darker secondary background */
+    --muted-foreground: #81A1C1; /* Muted frost blue-gray */
+    --border: #4C566A;         /* Polar night border */
 
-    /* Brand & Action Colors */
-    --primary: #60a5fa;        /* Brand blue & primary actions */
-    --premium: #f59e0b;        /* Premium features & success states */
-    --destructive: #ef4444;    /* Delete & danger actions */
+    /* Brand & Action Colors - Nord Palette */
+    --primary: #88C0D0;        /* Frost blue - primary actions */
+    --secondary: #81A1C1;      /* Frost blue-gray */
+    --accent-orange: #D08770;  /* Aurora orange */
+    --accent-purple: #B48EAD;  /* Aurora purple */
+    --premium: #A3BE8C;        /* Aurora green - success/premium */
+    --destructive: #BF616A;    /* Aurora red - danger */
 
     /* Extras */
-    --radius: 0.5rem;          /* Border radius */
-    --font-cairo: 'Cairo', 'Tajawal', 'Noto Sans Arabic', sans-serif;
+    --radius: 0.25rem;         /* Sharp border radius for coding theme */
+    --font-arabic: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', sans-serif;
+    --font-headers: 'Oswald', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 }
 
 /* ===== TAILWIND THEME CONFIGURATION ===== */
@@ -31,11 +37,16 @@
 
     /* Brand & Action Colors */
     --color-primary: var(--primary);
+    --color-secondary: var(--secondary);
+    --color-accent-orange: var(--accent-orange);
+    --color-accent-purple: var(--accent-purple);
     --color-premium: var(--premium);
     --color-destructive: var(--destructive);
 
     /* Typography */
-    --font-sans: var(--font-cairo);
+    --font-sans: var(--font-arabic);
+    --font-headers: var(--font-headers);
+    --font-mono: var(--font-mono);
 
     /* Border radius */
     --border-radius: var(--radius);
@@ -55,13 +66,28 @@ html {
 body {
     background: var(--background);
     color: var(--foreground);
-    font-family: var(--font-cairo), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-arabic), ui-sans-serif, system-ui, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    line-height: 1.6;
+    line-height: 1.7;
     margin: 0;
     min-height: 100vh;
+    letter-spacing: 0.01em;
+}
+
+/* Headers use Oswald with coding style */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-headers);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Code and monospace elements */
+code, pre, .monospace {
+    font-family: var(--font-mono);
+    font-weight: 300;
 }
 
 /* ===== SCROLL BAR STYLING ===== */
@@ -88,20 +114,56 @@ body {
     outline-offset: 2px;
 }
 
-/* ===== CURRENTLY USED CUSTOM STYLES ===== */
+/* ===== CODING THEME CUSTOM STYLES ===== */
 
-/* Glass morphism effect - Used in Card component */
+/* Terminal/Code editor style card */
 .glass {
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     background: var(--muted);
-    border: 1px solid var(--border);
+    border: 2px solid var(--border);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(136, 192, 208, 0.1);
 }
 
-/* Gradient text - Used for QAcart logo text */
+/* Coding style gradient text */
 .gradient-text {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+/* Terminal window effect */
+.terminal-window {
+    background: var(--muted);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    position: relative;
+    padding-top: 2rem;
+}
+
+.terminal-window::before {
+    content: '';
+    position: absolute;
+    top: 0.5rem;
+    left: 0.75rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--destructive);
+    box-shadow: 18px 0 0 var(--premium), 36px 0 0 var(--primary);
+}
+
+/* Code syntax highlighting style borders */
+.code-accent {
+    border-left: 3px solid var(--primary);
+    padding-left: 1rem;
+}
+
+.code-accent-orange {
+    border-left: 3px solid var(--accent-orange);
+    padding-left: 1rem;
+}
+
+.code-accent-purple {
+    border-left: 3px solid var(--accent-purple);
+    padding-left: 1rem;
 }

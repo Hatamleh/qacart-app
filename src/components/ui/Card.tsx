@@ -23,31 +23,31 @@ export const Card: React.FC<CardProps> = ({
                                               hover = true,
                                               children
                                           }) => {
-    // Base styles for cards
-    const baseStyles = 'p-6 rounded-2xl glass border border-border transition-all duration-300'
+    // Base styles for cards - Terminal/coding theme
+    const baseStyles = 'p-6 rounded glass border-2 border-border transition-all duration-300 shadow-[0_4px_6px_rgba(0,0,0,0.3)]'
 
-    // Hover styles
+    // Hover styles - Coding theme glow
     const hoverStyles = hover
-        ? 'hover:border-primary/50 group transform hover:scale-105 cursor-pointer'
+        ? 'hover:border-primary hover:shadow-[0_0_20px_rgba(136,192,208,0.3)] group cursor-pointer'
         : ''
 
-    // Badge styles
+    // Badge styles - Nord colors
     const badgeStyles = {
         default: 'text-muted-foreground',
         primary: 'text-primary',
-        secondary: 'text-secondary-foreground',
-        success: 'text-primary',
-        warning: 'text-primary',
-        danger: 'text-primary'
+        secondary: 'text-secondary',
+        success: 'text-premium',
+        warning: 'text-accent-orange',
+        danger: 'text-destructive'
     }
 
     const classes = `${baseStyles} ${hoverStyles} ${className}`
 
     return (
         <div className={classes} onClick={onClick}>
-            {/* Icon */}
+            {/* Icon - Coding style with accent border */}
             {Icon && (
-                <div className="w-16 h-16 mx-auto mb-4 bg-primary/20 rounded-xl flex items-center justify-center group-hover:bg-primary/30 transition-all duration-300">
+                <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded border-2 border-primary/30 flex items-center justify-center group-hover:border-primary group-hover:shadow-[0_0_15px_rgba(136,192,208,0.4)] transition-all duration-300">
                     <Icon className="w-8 h-8 text-primary" />
                 </div>
             )}

@@ -56,28 +56,28 @@ export const MagicLinkForm = ({ onEmailSent }: MagicLinkFormProps) => {
   return (
     <form onSubmit={handleSubmit} className="mb-8">
       <div className="mb-6">
-        <label htmlFor="email" className="block text-sm font-semibold text-muted-foreground/80 uppercase tracking-wider mb-4">
-          البريد الإلكتروني
+        <label htmlFor="email" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 font-mono">
+          // email_address
         </label>
         <div className="relative group">
-          <Mail className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-primary/60 group-focus-within:text-primary transition-colors" />
+          <Mail className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-primary transition-colors group-focus-within:text-primary group-focus-within:drop-shadow-[0_0_8px_rgba(136,192,208,0.6)]" />
           <input
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="أدخل بريدك الإلكتروني"
-            className="w-full pr-12 pl-4 py-4 rounded-2xl border border-primary/10 bg-background/50 backdrop-blur-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 hover:border-primary/20 transition-all duration-300"
+            placeholder="your.email@example.com"
+            className="w-full pr-12 pl-4 py-3 rounded border-2 border-border bg-background text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary focus:shadow-[0_0_10px_rgba(136,192,208,0.3)] transition-all duration-200 font-mono text-sm"
             required
             disabled={isLoading}
           />
         </div>
       </div>
 
-      {/* Error Message */}
+      {/* Error Message - Coding style */}
       {error && (
-        <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-xl">
-          <p className="text-sm text-destructive text-center">{error}</p>
+        <div className="mb-4 p-3 bg-destructive/10 border-2 border-destructive/40 rounded">
+          <p className="text-sm text-destructive text-center font-mono">ERROR: {error}</p>
         </div>
       )}
 
@@ -85,12 +85,12 @@ export const MagicLinkForm = ({ onEmailSent }: MagicLinkFormProps) => {
         type="submit"
         variant="primary"
         size="lg"
-        className="w-full py-4 text-lg font-semibold rounded-2xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        className="w-full"
         disabled={isLoading || !email.trim()}
         icon={isLoading ? Loader2 : Mail}
         iconPosition="left"
       >
-        {isLoading ? 'جاري الإرسال...' : 'إرسال رابط تسجيل الدخول'}
+        {isLoading ? 'جاري_الإرسال...' : 'إرسال_رابط_تسجيل_الدخول'}
       </Button>
     </form>
   )

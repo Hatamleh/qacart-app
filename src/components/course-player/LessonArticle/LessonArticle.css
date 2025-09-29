@@ -1,48 +1,57 @@
 /* ===== LESSON ARTICLE STYLES ===== */
 /* Dedicated CSS for markdown content rendering in lesson articles */
 
-/* Container */
+/* Container - Coding Theme */
 .markdown-content {
   max-width: none;
-  font-family: 'Cairo', 'Tajawal', 'Noto Sans Arabic', sans-serif;
+  font-family: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', sans-serif;
   direction: rtl;
   text-align: right;
   line-height: 1.8;
 }
 
-/* Headers */
+/* Headers - Oswald Coding Style */
 .markdown-content h1 {
   font-size: 2.5rem;
   font-weight: 700;
   margin: 3rem 0 2rem 0;
-  color: #111827;
-  border-bottom: 2px solid #e5e7eb;
+  color: #88C0D0; /* Primary blue */
+  border-bottom: 2px solid #4C566A; /* Border color */
   padding-bottom: 1rem;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .markdown-content h2 {
   font-size: 1.875rem;
   font-weight: 600;
   margin: 2.5rem 0 1.5rem 0;
-  color: #1f2937;
+  color: #88C0D0; /* Primary blue */
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .markdown-content h3 {
   font-size: 1.5rem;
   font-weight: 500;
   margin: 2rem 0 1rem 0;
-  color: #e2e8f0; /* Much lighter, closer to white */
+  color: #D8DEE9; /* Foreground color */
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-/* Paragraphs */
+/* Paragraphs - Nord Theme */
 .markdown-content p {
   font-size: 1.125rem;
   margin-bottom: 1.5rem;
-  color: #e2e8f0 !important; /* Much lighter, closer to white */
+  color: #D8DEE9 !important; /* Snow white text */
   line-height: 1.8;
 }
 
-/* Beautiful Lists with custom bullets */
+/* Lists - Coding Theme */
 .markdown-content ul, .markdown-content ol {
   margin: 1.5rem 0;
   padding-right: 1.5rem;
@@ -52,18 +61,18 @@
 .markdown-content ul li {
   position: relative;
   margin-bottom: 0.75rem;
-  color: #e2e8f0 !important; /* Much lighter, closer to white */
+  color: #D8DEE9 !important; /* Snow white text */
   line-height: 1.7;
   padding-right: 1.5rem;
 }
 
-/* Custom bullet points */
+/* Custom bullet points - Primary blue */
 .markdown-content ul li::before {
-  content: "•";
+  content: "▸";
   position: absolute;
   right: 0;
   top: 0;
-  color: #3b82f6;
+  color: #88C0D0; /* Primary blue */
   font-weight: bold;
   font-size: 1.2em;
   line-height: 1.4;
@@ -77,57 +86,55 @@
 .markdown-content ol li {
   position: relative;
   margin-bottom: 0.75rem;
-  color: #e2e8f0 !important; /* Much lighter, closer to white */
+  color: #D8DEE9 !important; /* Snow white text */
   line-height: 1.7;
   padding-right: 2rem;
   counter-increment: list-counter;
 }
 
-/* Custom numbers */
+/* Custom numbers - Primary blue */
 .markdown-content ol li::before {
   content: counter(list-counter) ".";
   position: absolute;
   right: 0;
   top: 0;
-  color: #3b82f6;
+  color: #88C0D0; /* Primary blue */
   font-weight: bold;
   font-size: 1em;
   line-height: 1.7;
   min-width: 1.5rem;
 }
 
-/* Custom QAcart Code Blocks - Clean & Modern */
+/* Code Blocks - Terminal Style */
 .markdown-content pre {
   direction: ltr !important;
   text-align: left !important;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
-  border-radius: 12px;
-  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+  background: #2E3440; /* Muted background */
+  border: 2px solid #4C566A; /* Border color */
+  border-radius: 0.25rem; /* Sharp corners */
+  padding: 1.5rem;
   margin: 2rem 0;
   overflow-x: auto;
   font-size: 0.9rem;
   line-height: 1.6;
   position: relative;
-  box-shadow: 
-    0 10px 30px rgba(0, 0, 0, 0.3),
-    0 4px 15px rgba(59, 130, 246, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Copy button styling */
+/* Copy button - Coding Theme */
 .markdown-content pre .copy-button {
   position: absolute;
   top: 12px;
   right: 12px;
   background: transparent;
-  color: #cbd5e1;
-  border: none;
-  border-radius: 6px;
-  padding: 8px;
+  color: #81A1C1; /* Muted foreground */
+  border: 2px solid transparent;
+  border-radius: 0.25rem;
+  padding: 6px;
   cursor: pointer;
   transition: all 0.2s;
   z-index: 10;
-  opacity: 0.6;
+  opacity: 0.7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,52 +142,53 @@
 
 .markdown-content pre .copy-button:hover {
   opacity: 1;
-  color: #60a5fa;
-  transform: scale(1.05);
+  color: #88C0D0; /* Primary blue */
+  border-color: #88C0D0;
+  background: #88C0D0/10;
 }
 
-/* Code text styling */
+/* Code text styling - JetBrains Mono */
 .markdown-content pre code {
-  color: #f8fafc !important;
+  color: #D8DEE9 !important; /* Foreground */
   background: none !important;
-  font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', monospace !important;
-  font-weight: 500;
+  font-family: 'JetBrains Mono', 'Monaco', 'Consolas', monospace !important;
+  font-weight: 300; /* Thin weight */
 }
 
-/* Custom Syntax Highlighting Colors */
+/* Nord Syntax Highlighting Colors */
 .markdown-content pre .hljs-comment {
-  color: #94a3b8 !important;
+  color: #81A1C1 !important; /* Secondary blue */
   font-style: italic !important;
 }
 
 .markdown-content pre .hljs-keyword {
-  color: #60a5fa !important;
+  color: #88C0D0 !important; /* Primary blue */
   font-weight: 600 !important;
 }
 
 .markdown-content pre .hljs-string {
-  color: #34d399 !important;
+  color: #A3BE8C !important; /* Premium green */
 }
 
 .markdown-content pre .hljs-number {
-  color: #fbbf24 !important;
+  color: #D08770 !important; /* Accent orange */
 }
 
 .markdown-content pre .hljs-function {
-  color: #a78bfa !important;
+  color: #B48EAD !important; /* Accent purple */
   font-weight: 600 !important;
 }
 
 .markdown-content pre .hljs-variable {
-  color: #fb7185 !important;
+  color: #D8DEE9 !important; /* Foreground */
 }
 
 .markdown-content pre .hljs-operator {
-  color: #fde047 !important;
+  color: #88C0D0 !important; /* Primary blue */
 }
 
 .markdown-content pre .hljs-built_in {
-  color: #06b6d4 !important;
+  color: #88C0D0 !important; /* Primary blue */
 }
 
 /* Language-Specific Optimizations */
@@ -236,15 +244,15 @@
   color: #60a5fa !important; /* Blue for HTML tags if needed */
 }
 
-/* Inline code */
+/* Inline code - Coding Theme */
 .markdown-content code {
-  background: #f1f5f9;
-  color: #1e293b;
+  background: #2E3440; /* Muted background */
+  color: #A3BE8C; /* Premium green for inline code */
   padding: 0.25rem 0.5rem;
-  border-radius: 0.375rem;
+  border-radius: 0.25rem;
   font-size: 0.875rem;
-  font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
-  border: 1px solid #e2e8f0;
+  font-family: 'JetBrains Mono', 'Monaco', 'Consolas', monospace;
+  border: 1px solid #4C566A; /* Border color */
 }
 
 .markdown-content pre code {
@@ -283,9 +291,9 @@
   background: #f9fafb;
 }
 
-/* Links */
+/* Links - Primary Blue */
 .markdown-content a {
-  color: #64748b;
+  color: #88C0D0; /* Primary blue */
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
@@ -293,69 +301,44 @@
 }
 
 .markdown-content a:hover {
-  color: #3b82f6;
+  color: #D08770; /* Accent orange */
   text-decoration-thickness: 2px;
 }
 
-/* Blockquotes */
+/* Blockquotes - Terminal Style */
 .markdown-content blockquote {
   margin: 1.5rem 0;
   padding: 1.5rem;
-  border-radius: 1rem;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%) !important;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 0.25rem;
+  background: #2E3440 !important; /* Muted background */
+  border: 2px solid #4C566A; /* Border color */
+  border-right: 4px solid #88C0D0; /* Primary blue accent */
   position: relative;
   overflow: hidden;
-  box-shadow: 
-    0 20px 25px -5px rgba(0, 0, 0, 0.3), 
-    0 10px 10px -5px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(59, 130, 246, 0.1);
-  color: #f1f5f9 !important;
-}
-
-.markdown-content blockquote::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
-  border-radius: 1rem;
-  pointer-events: none;
-}
-
-.markdown-content blockquote::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
-  border-radius: 0 1rem 1rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  color: #D8DEE9 !important; /* Foreground */
 }
 
 .markdown-content blockquote strong {
-  color: #60a5fa !important;
+  color: #88C0D0 !important; /* Primary blue */
   font-weight: 600;
 }
 
 .markdown-content blockquote p {
-  color: #cbd5e1 !important;
+  color: #D8DEE9 !important; /* Foreground */
   margin: 0;
   line-height: 1.6;
 }
 
-/* Strong and emphasis */
+/* Strong and emphasis - Coding Theme */
 .markdown-content strong {
   font-weight: 600;
-  color: #3b82f6; /* Brand blue color for better visibility */
+  color: #A3BE8C; /* Premium green for emphasis */
 }
 
 .markdown-content em {
   font-style: italic;
-  color: #6366f1; /* Slightly different blue for emphasis */
+  color: #B48EAD; /* Accent purple for emphasis */
 }
 
 /* Dark mode support */

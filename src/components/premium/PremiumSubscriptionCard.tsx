@@ -70,20 +70,19 @@ export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) 
 
   return (
     <div className="max-w-lg mx-auto">
-      {/* Modern Glass Card */}
-      <div className="relative bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-xl border border-primary/10 rounded-3xl overflow-hidden shadow-[0_20px_70px_-10px_rgba(59,130,246,0.15)] hover:shadow-[0_25px_80px_-5px_rgba(59,130,246,0.2)] transition-all duration-500">
+      {/* Terminal-style Card */}
+      <div className="relative terminal-window bg-muted border-2 border-premium overflow-hidden">
 
-        {/* Subtle Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] via-transparent to-primary/[0.04] pointer-events-none" />
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+        {/* Terminal accent line below dots */}
+        <div className="absolute top-8 left-0 w-full h-px bg-border" />
 
         {/* Card Content */}
         <div className="relative p-8 lg:p-10">
 
-          {/* Plan Badge */}
+          {/* Plan Badge - Coding style */}
           <div className="flex justify-center mb-8">
-            <div className="px-6 py-2 bg-primary/10 border border-primary/20 rounded-full">
-              <h3 className="text-lg font-semibold text-primary tracking-wide">{plan.name}</h3>
+            <div className="px-6 py-2 bg-premium/10 border-2 border-premium/40 rounded shadow-[0_0_10px_rgba(163,190,140,0.2)]">
+              <h3 className="text-sm font-bold text-premium tracking-wider uppercase">// {plan.name}</h3>
             </div>
           </div>
 
@@ -100,10 +99,10 @@ export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) 
           {/* Features Grid */}
           <PlanFeatures features={plan.features} />
 
-          {/* Error Message */}
+          {/* Error Message - Coding style */}
           {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl">
-              <p className="text-red-600 text-sm text-center">{error}</p>
+            <div className="mb-4 p-4 bg-destructive/10 border-2 border-destructive/40 rounded">
+              <p className="text-destructive text-sm text-center font-mono">ERROR: {error}</p>
             </div>
           )}
 
@@ -114,7 +113,7 @@ export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) 
               size="lg"
               onClick={handleSubscribe}
               disabled={isLoading}
-              className="w-full py-4 text-lg font-semibold rounded-2xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center gap-2">
@@ -122,7 +121,7 @@ export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) 
                   <span>جاري المعالجة...</span>
                 </div>
               ) : (
-                'اشترك الآن'
+                'اشترك_الآن'
               )}
             </Button>
           </div>

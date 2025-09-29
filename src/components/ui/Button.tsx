@@ -25,23 +25,23 @@ export const Button: React.FC<ButtonProps> = ({
                                                   type = 'button',
                                                   onClick
                                               }) => {
-    // Base styles for all buttons
-    const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:outline-2 focus:outline-primary focus:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+    // Base styles for all buttons - Coding theme
+    const baseStyles = 'inline-flex items-center justify-center font-semibold rounded transition-all duration-200 focus:outline-none focus:outline-2 focus:outline-primary focus:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide'
 
     // Size variants
     const sizeStyles = {
-        sm: 'px-4 py-2 text-sm gap-2',
-        md: 'px-6 py-3 text-base gap-2',
-        lg: 'px-8 py-4 text-lg gap-3'
+        sm: 'px-4 py-2 text-xs gap-2',
+        md: 'px-6 py-2.5 text-sm gap-2',
+        lg: 'px-8 py-3 text-base gap-3'
     }
 
-    // Color variants
+    // Color variants - Coding theme with borders
     const variantStyles = {
-        primary: 'bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl hover:scale-105',
-        secondary: 'bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md hover:shadow-lg hover:scale-105',
-        outline: 'bg-transparent hover:bg-primary/10 text-primary border border-primary/30 hover:border-primary',
-        ghost: 'bg-transparent hover:bg-primary/10 text-primary hover:text-primary/90',
-        destructive: 'bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl hover:scale-105'
+        primary: 'bg-primary hover:bg-primary/90 text-background border-2 border-primary shadow-[0_0_15px_rgba(136,192,208,0.3)] hover:shadow-[0_0_25px_rgba(136,192,208,0.5)]',
+        secondary: 'bg-secondary hover:bg-secondary/90 text-background border-2 border-secondary shadow-md hover:shadow-lg',
+        outline: 'bg-transparent hover:bg-primary/10 text-primary border-2 border-primary hover:border-primary hover:shadow-[0_0_10px_rgba(136,192,208,0.3)]',
+        ghost: 'bg-transparent hover:bg-primary/10 text-primary hover:text-primary/90 border-2 border-transparent',
+        destructive: 'bg-destructive hover:bg-destructive/90 text-foreground border-2 border-destructive shadow-md hover:shadow-lg'
     }
 
     // Loading spinner

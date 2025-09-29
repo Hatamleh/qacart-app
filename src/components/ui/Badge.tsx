@@ -17,25 +17,25 @@ export const Badge: React.FC<BadgeProps> = ({
                                                 withPulse = false,
                                                 pulseColor = 'bg-primary'
                                             }) => {
-    // Base styles for all badges
-    const baseStyles = 'inline-flex items-center gap-2 rounded-full font-semibold transition-all duration-200'
+    // Base styles for all badges - Coding theme
+    const baseStyles = 'inline-flex items-center gap-2 rounded font-semibold transition-all duration-200 uppercase tracking-wider border-2'
 
     // Size variants
     const sizeStyles = {
-        sm: 'px-3 py-1 text-xs',
-        md: 'px-6 py-2 text-sm',
-        lg: 'px-8 py-3 text-base'
+        sm: 'px-2.5 py-0.5 text-[10px]',
+        md: 'px-4 py-1 text-xs',
+        lg: 'px-6 py-2 text-sm'
     }
 
-    // Color variants
+    // Color variants - Nord/Coding theme
     const variantStyles = {
-        default: 'bg-muted/50 border border-border text-muted-foreground',
-        primary: 'bg-primary/10 border border-primary/20 text-primary',
-        secondary: 'bg-secondary/10 border border-secondary/20 text-secondary-foreground',
-        success: 'bg-primary/10 border border-primary/20 text-primary',
-        warning: 'bg-primary/10 border border-primary/20 text-primary',
-        danger: 'bg-primary/10 border border-primary/20 text-primary',
-        premium: 'bg-premium/10 border border-premium/20 text-premium'
+        default: 'bg-muted/50 border-border text-muted-foreground',
+        primary: 'bg-primary/10 border-primary/40 text-primary shadow-[0_0_10px_rgba(136,192,208,0.2)]',
+        secondary: 'bg-secondary/10 border-secondary/40 text-secondary',
+        success: 'bg-premium/10 border-premium/40 text-premium shadow-[0_0_10px_rgba(163,190,140,0.2)]',
+        warning: 'bg-accent-orange/10 border-accent-orange/40 text-accent-orange',
+        danger: 'bg-destructive/10 border-destructive/40 text-destructive',
+        premium: 'bg-premium/10 border-premium/40 text-premium shadow-[0_0_10px_rgba(163,190,140,0.2)]'
     }
 
     const classes = `${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`
