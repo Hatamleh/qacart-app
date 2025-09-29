@@ -191,57 +191,54 @@
   color: #88C0D0 !important; /* Primary blue */
 }
 
-/* Language-Specific Optimizations */
+/* Language-Specific Nord Colors */
 
-/* Java Specific */
-.markdown-content pre .hljs-meta {
-  color: #f59e0b !important; /* Orange for @annotations */
+/* Java & Python Annotations/Decorators */
+.markdown-content pre .hljs-meta,
+.markdown-content pre .hljs-decorator {
+  color: #D08770 !important; /* Accent orange */
 }
 
 .markdown-content pre .hljs-type {
-  color: #60a5fa !important; /* Blue for class names */
+  color: #88C0D0 !important; /* Primary blue */
   font-weight: 600 !important;
 }
 
-/* Python Specific */
-.markdown-content pre .hljs-decorator {
-  color: #f59e0b !important; /* Orange for @decorators */
-}
-
+/* Parameters */
 .markdown-content pre .hljs-params {
-  color: #fb7185 !important; /* Rose for parameters */
+  color: #D8DEE9 !important; /* Foreground */
 }
 
-/* JavaScript/TypeScript Specific */
+/* JavaScript/TypeScript */
 .markdown-content pre .hljs-attr {
-  color: #34d399 !important; /* Green for object attributes */
+  color: #A3BE8C !important; /* Premium green */
 }
 
 .markdown-content pre .hljs-property {
-  color: #06b6d4 !important; /* Cyan for properties */
+  color: #88C0D0 !important; /* Primary blue */
 }
 
 .markdown-content pre .hljs-title {
-  color: #a78bfa !important; /* Purple for function/method names */
+  color: #B48EAD !important; /* Accent purple */
   font-weight: 600 !important;
 }
 
-/* Shell/Bash Specific */
+/* Literals & Symbols */
 .markdown-content pre .hljs-literal {
-  color: #fbbf24 !important; /* Amber for true/false/null */
+  color: #D08770 !important; /* Accent orange */
 }
 
 .markdown-content pre .hljs-symbol {
-  color: #10b981 !important; /* Emerald for symbols */
+  color: #A3BE8C !important; /* Premium green */
 }
 
-/* Enhanced readability for all languages */
+/* Punctuation & Tags */
 .markdown-content pre .hljs-punctuation {
-  color: #cbd5e1 !important; /* Light gray for brackets, semicolons */
+  color: #81A1C1 !important; /* Secondary */
 }
 
 .markdown-content pre .hljs-tag {
-  color: #60a5fa !important; /* Blue for HTML tags if needed */
+  color: #88C0D0 !important; /* Primary blue */
 }
 
 /* Inline code - Coding Theme */
