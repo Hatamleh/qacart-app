@@ -18,6 +18,7 @@ export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps)
   const [isCreating, setIsCreating] = useState(false)
   const [draggedLessonId, setDraggedLessonId] = useState<string | null>(null)
   const [isReordering, setIsReordering] = useState(false)
+  const [lessonTypes, setLessonTypes] = useState<Record<string, 'video' | 'article'>>({})
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean
     lessonId: string
@@ -37,8 +38,8 @@ export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps)
         title: 'درس جديد',
         durationInMinutes: 10,
         isFree: false,
+        lessonType: 'video',
         vimeoId: '',
-        articleContent: '# درس جديد\n\nاكتب محتوى الدرس هنا...',
         lessonOrder: course.lessons.length + 1
       })
 
@@ -95,15 +96,19 @@ export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps)
       // Get form values from DOM elements by their IDs
       const titleInput = document.getElementById(`lesson-title-${lessonId}`) as HTMLInputElement
       const durationInput = document.getElementById(`lesson-duration-${lessonId}`) as HTMLInputElement
+      const lessonTypeVideo = document.getElementById(`lesson-type-video-${lessonId}`) as HTMLInputElement
       const vimeoInput = document.getElementById(`lesson-vimeo-${lessonId}`) as HTMLInputElement
       const articleInput = document.getElementById(`lesson-article-${lessonId}`) as HTMLTextAreaElement
       const freeCheckbox = document.getElementById(`lesson-free-${lessonId}`) as HTMLInputElement
 
+      const lessonType = lessonTypeVideo.checked ? 'video' : 'article'
+
       await LessonClient.updateLesson(course.id, lessonId, {
         title: titleInput.value.trim(),
         durationInMinutes: parseInt(durationInput.value) || 0,
-        vimeoId: vimeoInput.value.trim(),
-        articleContent: articleInput.value.trim(),
+        lessonType: lessonType,
+        vimeoId: lessonType === 'video' ? vimeoInput.value.trim() : undefined,
+        articleContent: lessonType === 'article' ? articleInput.value.trim() : undefined,
         isFree: freeCheckbox.checked
       })
 
@@ -120,6 +125,18 @@ export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps)
   // Toggle lesson expansion
   const toggleLessonExpansion = (lessonId: string) => {
     setExpandedLessonId(expandedLessonId === lessonId ? null : lessonId)
+    // Initialize lesson type when expanding
+    if (expandedLessonId !== lessonId) {
+      const lesson = course.lessons.find(l => l.id === lessonId)
+      if (lesson && !lessonTypes[lessonId]) {
+        setLessonTypes(prev => ({ ...prev, [lessonId]: lesson.lessonType }))
+      }
+    }
+  }
+
+  // Handle lesson type change
+  const handleLessonTypeChange = (lessonId: string, type: 'video' | 'article') => {
+    setLessonTypes(prev => ({ ...prev, [lessonId]: type }))
   }
 
   // Handle drag and drop reordering
@@ -320,33 +337,70 @@ export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps)
                     </div>
                   </div>
 
-                  {/* Vimeo ID */}
+                  {/* Lesson Type Selector */}
                   <div>
                     <label className="block text-sm font-medium text-muted-foreground mb-2">
-                      معرف فيديو Vimeo (اختياري)
+                      نوع الدرس
                     </label>
-                    <input
-                      type="text"
-                      id={`lesson-vimeo-${lesson.id}`}
-                      defaultValue={lesson.vimeoId || ''}
-                      placeholder="290256877"
-                      className="w-full px-3 py-2 rounded-lg border border-border bg-background/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/25"
-                    />
+                    <div className="flex gap-4">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          id={`lesson-type-video-${lesson.id}`}
+                          name={`lesson-type-${lesson.id}`}
+                          checked={(lessonTypes[lesson.id] || lesson.lessonType) === 'video'}
+                          onChange={() => handleLessonTypeChange(lesson.id, 'video')}
+                          className="w-4 h-4 text-primary border-border focus:ring-primary/25"
+                        />
+                        <Video className="w-4 h-4 text-primary" />
+                        <span className="text-sm text-foreground">فيديو</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          id={`lesson-type-article-${lesson.id}`}
+                          name={`lesson-type-${lesson.id}`}
+                          checked={(lessonTypes[lesson.id] || lesson.lessonType) === 'article'}
+                          onChange={() => handleLessonTypeChange(lesson.id, 'article')}
+                          className="w-4 h-4 text-primary border-border focus:ring-primary/25"
+                        />
+                        <FileText className="w-4 h-4 text-primary" />
+                        <span className="text-sm text-foreground">مقال</span>
+                      </label>
+                    </div>
                   </div>
 
-                  {/* Article Content */}
-                  <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-2">
-                      محتوى المقال (Markdown)
-                    </label>
-                    <textarea
-                      id={`lesson-article-${lesson.id}`}
-                      defaultValue={lesson.articleContent || ''}
-                      rows={8}
-                      placeholder="اكتب محتوى الدرس بتنسيق Markdown..."
-                      className="w-full px-3 py-2 rounded-lg border border-border bg-background/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 resize-none font-mono"
-                    />
-                  </div>
+                  {/* Vimeo ID - Show only for video type */}
+                  {(lessonTypes[lesson.id] || lesson.lessonType) === 'video' && (
+                    <div>
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">
+                        معرف فيديو Vimeo
+                      </label>
+                      <input
+                        type="text"
+                        id={`lesson-vimeo-${lesson.id}`}
+                        defaultValue={lesson.vimeoId || ''}
+                        placeholder="290256877"
+                        className="w-full px-3 py-2 rounded-lg border border-border bg-background/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/25"
+                      />
+                    </div>
+                  )}
+
+                  {/* Article Content - Show only for article type */}
+                  {(lessonTypes[lesson.id] || lesson.lessonType) === 'article' && (
+                    <div>
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">
+                        محتوى المقال (Markdown)
+                      </label>
+                      <textarea
+                        id={`lesson-article-${lesson.id}`}
+                        defaultValue={lesson.articleContent || ''}
+                        rows={8}
+                        placeholder="اكتب محتوى الدرس بتنسيق Markdown..."
+                        className="w-full px-3 py-2 rounded-lg border border-border bg-background/50 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/25 resize-none font-mono"
+                      />
+                    </div>
+                  )}
 
                   {/* Lesson Settings */}
                   <div className="flex items-center justify-between">
