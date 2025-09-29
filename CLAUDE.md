@@ -89,8 +89,8 @@ The codebase follows a clean separation between client-side, API, and data acces
 Key types defined in `src/types/`:
 - **User**: `id`, `email`, `role`, `subscription`, `stripeCustomerId`
 - **Subscription**: `status` ('premium'/'free'), `plan`, `stripeSubscriptionId`, `isActive`
-- **Course**: `id`, `title`, `vimeoId`, `lessons[]`, `type`, `tags`, `shortDescription`, `durationInMinutes`, `studentsCount`
-- **Lesson**: `id`, `title`, `vimeoId`, `articleContent`, `isFree`, `lessonOrder`, `durationInMinutes`
+- **Course**: `id`, `title`, `vimeoId`, `lessons[]`, `tags`, `shortDescription`, `durationInMinutes`, `studentsCount`, `lastUpdated`
+- **Lesson**: `id`, `title`, `lessonType` ('video' | 'article'), `vimeoId?`, `articleContent?`, `isFree`, `lessonOrder`, `durationInMinutes`
 
 ## Key Patterns
 

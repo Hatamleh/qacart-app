@@ -102,8 +102,8 @@ export const CoursePlayer = ({
   const previousLesson = currentIndex > 0 ? course.lessons[currentIndex - 1] : null
   const nextLesson = currentIndex < course.lessons.length - 1 ? course.lessons[currentIndex + 1] : null
 
-  // Check if a lesson has video
-  const hasVideo = currentLesson && (currentLesson.isFree || currentLesson.vimeoId)
+  // Check if lesson is video type
+  const isVideoLesson = currentLesson?.lessonType === 'video'
 
   return (
     <div className="bg-background">
@@ -115,7 +115,7 @@ export const CoursePlayer = ({
         {/* Progress Note - Under course info */}
         <ProgressNote />
 
-        <div className="flex gap-6">
+        <div className="flex gap-6 items-start">
         {/* Lesson Navigation Sidebar - Always visible */}
         <div className="w-80 flex-shrink-0">
           <LessonNavigation
@@ -129,20 +129,20 @@ export const CoursePlayer = ({
         <div className="flex-1 flex flex-col">
           {currentLesson ? (
             <>
-              {/* Video Area - Only show if video exists */}
-              {hasVideo && (
-                <div className="flex-shrink-0">
-                  <LessonVideoArea
-                    lesson={currentLesson}
-                    course={course}
-                  />
-                </div>
+              {/* Video Lesson */}
+              {isVideoLesson && (
+                <LessonVideoArea
+                  lesson={currentLesson}
+                  course={course}
+                />
               )}
 
-              {/* Lesson Article */}
-              <div className="flex-1">
-                <LessonArticle lesson={currentLesson} noTopPadding={!hasVideo} />
-              </div>
+              {/* Article Lesson */}
+              {currentLesson.lessonType === 'article' && (
+                <div className="flex-1">
+                  <LessonArticle lesson={currentLesson} noTopPadding={true} />
+                </div>
+              )}
 
               {/* Lesson Controls - Always at the bottom after article */}
               <div className="flex-shrink-0">

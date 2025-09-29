@@ -77,9 +77,6 @@ export const CoursesList = ({ courses, refetch }: CoursesListProps) => {
                     {course.shortDescription}
                   </p>
                   <div className="flex items-center gap-2 text-xs">
-                    <span className="px-2 py-1 bg-primary/10 text-primary rounded-md">
-                      {course.type}
-                    </span>
                     <span className="text-muted-foreground">
                       {course.lessons.length} درس
                     </span>

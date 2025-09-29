@@ -14,7 +14,6 @@ export const NewCourseForm = () => {
   const [formData, setFormData] = useState({
     title: '',
     shortDescription: '',
-    type: 'يدوي',
     vimeoId: '',
     studentsCount: 0
   })
@@ -35,12 +34,11 @@ export const NewCourseForm = () => {
       await CourseClient.createCourse({
         title: formData.title.trim(),
         shortDescription: formData.shortDescription.trim(),
-        type: formData.type,
         vimeoId: formData.vimeoId.trim() || '',
         studentsCount: formData.studentsCount,
         lastUpdated: new Date().toLocaleDateString('ar-SA'),
         durationInMinutes: 0, // Will be calculated when lessons are added
-        tags: [formData.type], // Use course type as initial tag
+        tags: [], // Empty tags array - can be added later
         lessons: [] // Empty lessons array for new course
       })
 
@@ -88,37 +86,19 @@ export const NewCourseForm = () => {
             المعلومات الأساسية
           </h4>
 
-          {/* Course Title & Type Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <label className="block text-sm font-semibold text-muted-foreground mb-3">
-                عنوان الدورة *
-              </label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => updateField('title', e.target.value)}
-                placeholder="مثال: أساسيات اختبار البرمجيات"
-                className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 transition-all duration-200 shadow-sm"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-muted-foreground mb-3">
-                نوع الدورة
-              </label>
-              <select
-                value={formData.type}
-                onChange={(e) => updateField('type', e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 shadow-sm"
-              >
-                <option value="يدوي">اختبار يدوي</option>
-                <option value="أتمتة">اختبار الأتمتة</option>
-                <option value="API">اختبار API</option>
-                <option value="أداء">اختبار الأداء</option>
-              </select>
-            </div>
+          {/* Course Title */}
+          <div>
+            <label className="block text-sm font-semibold text-muted-foreground mb-3">
+              عنوان الدورة *
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => updateField('title', e.target.value)}
+              placeholder="مثال: أساسيات اختبار البرمجيات"
+              className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30 transition-all duration-200 shadow-sm"
+              required
+            />
           </div>
 
           {/* Short Description */}

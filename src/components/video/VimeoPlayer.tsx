@@ -33,7 +33,7 @@ export const VimeoPlayer = ({
   }
 
   return (
-    <div className={`relative rounded-xl overflow-hidden shadow-2xl ${className}`}>
+    <div className={`relative overflow-hidden ${className}`}>
       {/* Thumbnail/Preview State */}
       {!showPlayer && (
         <div className="relative">

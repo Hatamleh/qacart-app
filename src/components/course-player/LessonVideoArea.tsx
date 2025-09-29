@@ -19,20 +19,17 @@ export const LessonVideoArea = ({
   }
 
   return (
-    <div className="relative bg-background">
-      {/* Video Player or Access Gate */}
-      <div className="w-full">
-        {/* Check if a lesson requires payment and user doesn't have access */}
-        {!lesson.isFree ? (
-          <AccessGate lesson={lesson} userHasPaidAccess={false} />
-        ) : (
-          <VimeoPlayer
-            vimeoId={lesson.vimeoId!}
-            title={lesson.title}
-            className="w-full"
-          />
-        )}
-      </div>
-    </div>
+    <>
+      {/* Check if a lesson requires payment and user doesn't have access */}
+      {!lesson.isFree ? (
+        <AccessGate lesson={lesson} userHasPaidAccess={false} />
+      ) : (
+        <VimeoPlayer
+          vimeoId={lesson.vimeoId!}
+          title={lesson.title}
+          className="w-full"
+        />
+      )}
+    </>
   )
 }

@@ -20,7 +20,6 @@ export const AdminCourseEditor = ({ course, refetch }: AdminCourseEditorProps) =
   // Form state
   const [formData, setFormData] = useState({
     title: course.title,
-    type: course.type,
     shortDescription: course.shortDescription,
     vimeoId: course.vimeoId,
     studentsCount: course.studentsCount
@@ -41,7 +40,6 @@ export const AdminCourseEditor = ({ course, refetch }: AdminCourseEditorProps) =
       // Update course using CourseClient
       await CourseClient.updateCourse(course.id, {
         title: formData.title.trim(),
-        type: formData.type,
         shortDescription: formData.shortDescription.trim(),
         vimeoId: formData.vimeoId.trim(),
         studentsCount: formData.studentsCount,
@@ -96,7 +94,7 @@ export const AdminCourseEditor = ({ course, refetch }: AdminCourseEditorProps) =
           معلومات الدورة الأساسية
         </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6">
 
           {/* Course Title */}
           <div>
@@ -110,23 +108,6 @@ export const AdminCourseEditor = ({ course, refetch }: AdminCourseEditorProps) =
               className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
               required
             />
-          </div>
-
-          {/* Course Type */}
-          <div>
-            <label className="block text-sm font-semibold text-muted-foreground mb-2">
-              نوع الدورة
-            </label>
-            <select
-              value={formData.type}
-              onChange={(e) => updateField('type', e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-border bg-background/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/30"
-            >
-              <option value="يدوي">يدوي</option>
-              <option value="أتمتة">أتمتة</option>
-              <option value="API">API</option>
-              <option value="أداء">أداء</option>
-            </select>
           </div>
 
           {/* Short Description */}

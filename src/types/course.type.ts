@@ -8,7 +8,6 @@ export interface Course {
   vimeoId: string
   lastUpdated: string
   lessons: Lesson[]
-  type: string
   durationInMinutes: number
   studentsCount: number
   tags: string[]

@@ -1,6 +1,5 @@
 import { Clock, Users } from 'lucide-react'
 import Link from 'next/link'
-import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
 import type { Course } from '@/types'
 
@@ -12,9 +11,6 @@ export const CourseCard = ({ course }: CourseCardProps) => {
     return (
         <div className="glass rounded-lg p-6 hover:border-primary/50 transition-colors">
             <div className="mb-4">
-                <Badge variant="primary" className="text-xs mb-3">
-                    {course.type}
-                </Badge>
                 <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
                 <p className="text-muted-foreground text-sm">
                     {course.shortDescription}

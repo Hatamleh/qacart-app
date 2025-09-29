@@ -1,6 +1,6 @@
 'use client'
 
-import { Lock, Check, Clock, Circle } from 'lucide-react'
+import { Lock, Check, Clock, Circle, PlayCircle, FileText } from 'lucide-react'
 import { Course, Lesson } from '@/types'
 import { Button } from '../ui/Button'
 import { useProgressContext } from '@/contexts/ProgressContext'
@@ -76,7 +76,11 @@ export const LessonNavigation = ({
                     </div>
 
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Clock className="w-3 h-3" />
+                      {lesson.lessonType === 'video' ? (
+                        <PlayCircle className="w-3 h-3" />
+                      ) : (
+                        <FileText className="w-3 h-3" />
+                      )}
                       <span>{lesson.durationInMinutes} دقيقة</span>
                     </div>
                   </div>
