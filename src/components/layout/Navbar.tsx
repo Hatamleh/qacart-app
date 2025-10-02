@@ -1,7 +1,7 @@
 'use client'
 
-import React from 'react'
-import { LogIn, BookOpen, Crown, User, Settings, LogOut } from 'lucide-react'
+import React, { useState } from 'react'
+import { LogIn, BookOpen, Crown, User, Settings, LogOut, Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '../ui/Button'
@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext'
 
 export const Navbar = () => {
     const { user, isLoading, isInitialized, signOut } = useAuth()
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
     // Helper functions to determine what to show based on user state
     const showSignIn = !user
@@ -190,11 +191,119 @@ export const Navbar = () => {
                         )}
                     </div>
 
-                    {/* Mobile Menu Icon Placeholder */}
+                    {/* Mobile Menu Toggle */}
                     <div className="lg:hidden">
-                        {/* Future: Mobile menu implementation */}
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                            aria-label="Toggle menu"
+                        >
+                            {isMobileMenuOpen ? (
+                                <X className="w-6 h-6 text-foreground" />
+                            ) : (
+                                <Menu className="w-6 h-6 text-foreground" />
+                            )}
+                        </button>
                     </div>
                 </nav>
+
+                {/* Mobile Menu */}
+                {isMobileMenuOpen && (
+                    <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur-md">
+                        <div className="container mx-auto px-4 py-4 space-y-3">
+                            {/* Courses Link */}
+                            <Link
+                                href="/courses"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors"
+                            >
+                                <BookOpen className="w-5 h-5" />
+                                <span>الدورات</span>
+                            </Link>
+
+                            {/* Admin Links */}
+                            {showAdminLinks && (
+                                <>
+                                    <Link
+                                        href="/sudo/courses"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors"
+                                    >
+                                        <Settings className="w-5 h-5" />
+                                        <span>إدارة الدورات</span>
+                                    </Link>
+                                    <Link
+                                        href="/sudo/users"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors"
+                                    >
+                                        <User className="w-5 h-5" />
+                                        <span>إدارة المستخدمين</span>
+                                    </Link>
+                                </>
+                            )}
+
+                            {/* Premium Link/Badge */}
+                            {isPremium ? (
+                                <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-premium/20 border border-premium/30 text-premium">
+                                    <Crown className="w-5 h-5" />
+                                    <span>بريميوم مُفعّل</span>
+                                </div>
+                            ) : (
+                                <Link
+                                    href="/premium"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="flex items-center gap-2 px-4 py-3 rounded-lg bg-premium/20 border border-premium/30 text-premium hover:bg-premium/30"
+                                >
+                                    <Crown className="w-5 h-5" />
+                                    <span>{user ? 'اشترك في بريميوم' : 'بريميوم'}</span>
+                                </Link>
+                            )}
+
+                            {/* Divider */}
+                            <div className="border-t border-border my-2"></div>
+
+                            {/* Auth Buttons */}
+                            {showProfile && (
+                                <Link
+                                    href="/profile"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors"
+                                >
+                                    <User className="w-5 h-5" />
+                                    <span>الملف الشخصي</span>
+                                </Link>
+                            )}
+
+                            {showSignIn ? (
+                                <Link
+                                    href="/auth"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="block"
+                                >
+                                    <Button variant="primary" size="sm" icon={LogIn} iconPosition="left" className="w-full">
+                                        تسجيل الدخول
+                                    </Button>
+                                </Link>
+                            ) : (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    icon={LogOut}
+                                    iconPosition="left"
+                                    onClick={() => {
+                                        handleSignOut()
+                                        setIsMobileMenuOpen(false)
+                                    }}
+                                    loading={isLoading}
+                                    className="w-full"
+                                >
+                                    تسجيل الخروج
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
         </header>
     )

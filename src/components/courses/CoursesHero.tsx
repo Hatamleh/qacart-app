@@ -1,6 +1,6 @@
 'use client'
 
-import { BookOpen, Play, Download } from 'lucide-react'
+import { BookOpen } from 'lucide-react'
 import { GridBackground } from '@/components/ui'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
@@ -20,48 +20,24 @@ export const CoursesHero = () => {
 
                     {/* Main Title */}
                     <h1 className="text-4xl lg:text-6xl font-bold mb-8 leading-tight">
-                        تعلم اختبار البرمجيات<br />
+                        طوّر مهاراتك التقنية<br />
                         مع <span className="gradient-text">خبراء المجال</span>
                     </h1>
 
                     {/* Subtitle */}
                     <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-                        اكتشف مجموعة شاملة من الدورات التدريبية المصممة لتطوير مهاراتك في اختبار البرمجيات من المبتدئ إلى المتقدم
+                        اكتشف دورات تدريبية شاملة في البرمجة، اختبار البرمجيات، والذكاء الاصطناعي من المبتدئ إلى المتقدم
                     </p>
 
-                    {/* Stats */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-2xl mx-auto">
-                        <div className="text-center">
-                            <div className="text-3xl font-bold text-primary mb-2">25+</div>
-                            <div className="text-sm text-muted-foreground">دورة تدريبية</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-3xl font-bold text-primary mb-2">500+</div>
-                            <div className="text-sm text-muted-foreground">ساعة تدريب</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-3xl font-bold text-primary mb-2">1500+</div>
-                            <div className="text-sm text-muted-foreground">طالب نشط</div>
-                        </div>
-                    </div>
-
-                    {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                    {/* CTA Button */}
+                    <div className="flex justify-center mb-16">
                         <Button
                             variant="primary"
                             size="lg"
-                            icon={Play}
+                            icon={BookOpen}
                             iconPosition="right"
                         >
-                            تصفح الدورات
-                        </Button>
-                        <Button
-                            variant="secondary"
-                            size="lg"
-                            icon={Download}
-                            iconPosition="right"
-                        >
-                            تحميل خطة الدراسة
+                            استكشف الدورات
                         </Button>
                     </div>
                 </div>

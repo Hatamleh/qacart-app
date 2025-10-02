@@ -1,17 +1,16 @@
 import { Metadata } from 'next'
 import { Hero } from '@/components/landing/Hero'
 import { HardTruth } from '@/components/landing/HardTruth'
-import { LetsGo } from '@/components/landing/LetsGo'
 
 export const metadata: Metadata = {
-  title: 'QAcart - منصة تعلم اختبار البرمجيات',
-  description: 'تعلم اختبار البرمجيات من الصفر مع خبراء المجال في منصة QAcart التعليمية',
-  keywords: ['اختبار البرمجيات', 'تعلم', 'QA', 'Testing', 'Software'],
+  title: 'QAcart - منصة تعليمية للبرمجة واختبار البرمجيات والذكاء الاصطناعي',
+  description: 'تعلم البرمجة، اختبار البرمجيات، والذكاء الاصطناعي من الصفر مع خبراء المجال في منصة QAcart التعليمية',
+  keywords: ['البرمجة', 'اختبار البرمجيات', 'الذكاء الاصطناعي', 'تعلم', 'QA', 'Testing', 'AI', 'Development'],
   authors: [{ name: 'QAcart Team' }],
   robots: 'index, follow',
   openGraph: {
-    title: 'QAcart - منصة تعلم اختبار البرمجيات',
-    description: 'تعلم اختبار البرمجيات من الصفر مع خبراء المجال',
+    title: 'QAcart - منصة تعليمية للبرمجة واختبار البرمجيات والذكاء الاصطناعي',
+    description: 'تعلم البرمجة، اختبار البرمجيات، والذكاء الاصطناعي من الصفر مع خبراء المجال',
     type: 'website',
     locale: 'ar_SA',
     alternateLocale: 'en_US',
@@ -26,9 +25,6 @@ export default function HomePage() {
 
       {/* Hard Truth Section */}
       <HardTruth />
-
-      {/* Lets Go Section */}
-      <LetsGo />
     </>
   )
 }

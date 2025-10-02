@@ -23,12 +23,12 @@ export const Hero = () => {
 
                     {/* Main Title */}
                     <h1 className="text-5xl lg:text-7xl font-bold mb-8">
-                        تعلم الاختبار <span className="gradient-text">بشكل أسرع</span>
+                        تعلم البرمجة <span className="gradient-text">بشكل احترافي</span>
                     </h1>
 
                     {/* Subtitle */}
                     <p className="text-lg text-muted-foreground mb-12 max-w-3xl mx-auto">
-                        <span className="gradient-text">QAcart</span> هي طريقة سريعة بشكل مذهل ومسلية للغاية لتطوير مهاراتك في اختبار البرمجيات
+                        <span className="gradient-text">QAcart</span> منصة تعليمية متكاملة لتعلم البرمجة، اختبار البرمجيات، والذكاء الاصطناعي بمحتوى عربي عالي الجودة
                     </p>
 
                     {/* CTA Button */}
