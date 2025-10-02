@@ -29,10 +29,10 @@ export default async function CoursePlayerPage({
     }
   }
 
-  // Find current lesson
+  // Find current lesson - default to first lesson if no lessonId is provided
   const currentLesson = lessonId
     ? course.lessons.find(l => l.id === lessonId) || course.lessons[0]
-    : null
+    : course.lessons[0]
 
   return (
     <CoursePlayerClient

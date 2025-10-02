@@ -44,10 +44,10 @@ export const LessonNavigation = ({
                 key={lesson.id}
                 variant="ghost"
                 onClick={() => onLessonSelect?.(lesson)}
-                className={`w-full text-right p-3 h-auto justify-start ${
-                  isActive 
-                    ? 'bg-primary/10 hover:bg-primary/15' 
-                    : 'hover:bg-muted/30'
+                className={`w-full text-right p-3 h-auto justify-start border-2 ${
+                  isActive
+                    ? 'bg-primary/20 hover:bg-primary/25 border-primary shadow-[0_0_8px_rgba(136,192,208,0.4)]'
+                    : 'hover:bg-muted/30 border-transparent'
                 }`}
               >
                 <div className="flex items-start gap-3 w-full">
