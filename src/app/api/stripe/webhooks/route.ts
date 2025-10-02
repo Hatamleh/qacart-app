@@ -23,70 +23,61 @@ function getStripe(): Stripe {
  * Handle Stripe webhook events for subscription management
  */
 export async function POST(request: NextRequest) {
-  try {
-    // Get the raw body and signature
-    const body = await request.text()
-    const headersList = await headers()
-    const signature = headersList.get('stripe-signature')
+  // Get the raw body and signature
+  const body = await request.text()
+  const headersList = await headers()
+  const signature = headersList.get('stripe-signature')
 
-    if (!signature) {
-      console.error('❌ Missing Stripe signature')
-      return NextResponse.json(
-        { error: 'Missing signature' },
-        { status: 400 }
-      )
-    }
-
-    // Verify and construct the webhook event
-    let event: Stripe.Event
-    try {
-      const stripe = getStripe()
-      const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
-
-      if (!webhookSecret) {
-        throw new Error('STRIPE_WEBHOOK_SECRET environment variable is not set')
-      }
-
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
-    } catch (error) {
-      console.error('❌ Webhook signature verification failed:', error)
-      return NextResponse.json(
-        { error: 'توقيع غير صحيح' },
-        { status: 400 }
-      )
-    }
-
-
-
-    // Handle different event types - keeping only essential events
-    switch (event.type) {
-      case 'checkout.session.completed':
-        await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session)
-        break
-
-      case 'customer.subscription.created':
-      case 'customer.subscription.updated':
-        await handleSubscriptionUpdated(event.data.object as Stripe.Subscription)
-        break
-
-      case 'customer.subscription.deleted':
-        await handleSubscriptionDeleted(event.data.object as Stripe.Subscription)
-        break
-
-      default:
-        console.log(`ℹ️ Unhandled webhook event type: ${event.type}`)
-        // We only handle essential subscription events
-    }
-
-    return NextResponse.json({ received: true })
-
-  } catch (error) {
-    console.error('❌ Webhook handler error:', error)
+  if (!signature) {
+    console.error('❌ Missing Stripe signature')
     return NextResponse.json(
-      { error: 'فشل في معالجة الحدث' },
-      { status: 500 }
+      { error: 'Missing signature' },
+      { status: 400 }
     )
   }
+
+  // Verify and construct the webhook event
+  let event: Stripe.Event
+  try {
+    const stripe = getStripe()
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+
+    if (!webhookSecret) {
+      throw new Error('STRIPE_WEBHOOK_SECRET environment variable is not set')
+    }
+
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
+  } catch (error) {
+    console.error('❌ Webhook signature verification failed:', error)
+    return NextResponse.json(
+      { error: 'توقيع غير صحيح' },
+      { status: 400 }
+    )
+  }
+
+
+
+  // Handle different event types - keeping only essential events
+  switch (event.type) {
+    case 'checkout.session.completed':
+      await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session)
+      break
+
+    case 'customer.subscription.created':
+    case 'customer.subscription.updated':
+      await handleSubscriptionUpdated(event.data.object as Stripe.Subscription)
+      break
+
+    case 'customer.subscription.deleted':
+      await handleSubscriptionDeleted(event.data.object as Stripe.Subscription)
+      break
+
+    default:
+      console.log(`ℹ️ Unhandled webhook event type: ${event.type}`)
+      // We only handle essential subscription events
+  }
+
+  return NextResponse.json({ received: true })
 }
 
 /**
