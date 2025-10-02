@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans_Arabic, Oswald, JetBrains_Mono } from "next/font/google";
+import { IBM_Plex_Sans_Arabic, Cairo } from "next/font/google";
 import "./globals.css";
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { AuthProvider } from '@/contexts/AuthContext';
 
-// Configure IBM Plex Sans Arabic for body text
 const ibmPlexArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic", "latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -13,19 +12,10 @@ const ibmPlexArabic = IBM_Plex_Sans_Arabic({
   display: "swap",
 });
 
-// Configure Oswald for headers (coding style)
-const oswald = Oswald({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-headers",
-  display: "swap",
-});
-
-// Configure JetBrains Mono for code/monospace
-const jetBrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700"],
-  variable: "--font-mono",
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-cairo",
   display: "swap",
 });
 
@@ -53,7 +43,7 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
-      className={`${ibmPlexArabic.variable} ${oswald.variable} ${jetBrainsMono.variable}`}
+      className={`${ibmPlexArabic.variable} ${cairo.variable}`}
       data-scroll-behavior="smooth"
     >
       <body className={`${ibmPlexArabic.className} antialiased`}>

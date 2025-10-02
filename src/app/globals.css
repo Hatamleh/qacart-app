@@ -1,5 +1,5 @@
 /* ===== CODING THEME FONTS ===== */
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@100;200;300;400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@100;200;300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 /* ===== CSS VARIABLES FOR CODING THEME ===== */
@@ -22,6 +22,7 @@
     /* Extras */
     --radius: 0.25rem;         /* Sharp border radius for coding theme */
     --font-arabic: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', sans-serif;
+    --font-cairo: 'Cairo', sans-serif;
     --font-headers: 'Oswald', sans-serif;
     --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 }
@@ -76,12 +77,11 @@ body {
     letter-spacing: 0.01em;
 }
 
-/* Headers use Oswald with coding style */
+/* Headers use IBM Plex Sans Arabic with bold weight */
 h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-headers);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-family: var(--font-arabic);
+    font-weight: 700;
+    letter-spacing: 0.02em;
 }
 
 /* Code and monospace elements */
