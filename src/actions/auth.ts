@@ -94,78 +94,66 @@ async function getUserById(userId: string): Promise<User | null> {
  * Called after client-side Firebase authentication
  */
 export async function createSession(idToken: string): Promise<User> {
-  try {
-    if (!idToken) {
-      throw new Error('ID token is required')
-    }
-
-    // Verify token and get user ID
-    const decodedToken = await admin.auth().verifyIdToken(idToken)
-    const userId = decodedToken.uid
-
-    // Create session cookie (5 days)
-    const expiresIn = 60 * 60 * 24 * 5 * 1000
-    const sessionCookie = await admin.auth().createSessionCookie(idToken, { expiresIn })
-
-    // Get user data
-    let user = await getUserById(userId)
-
-    if (!user) {
-      throw new Error('User not found')
-    }
-
-    // Check and clean expired gifts
-    user = await checkAndCleanExpiredGift(user)
-
-    // Set session cookie
-    const cookieStore = await cookies()
-    cookieStore.set('session', sessionCookie, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 5, // 5 days
-      path: '/'
-    })
-
-    return user
-
-  } catch (error) {
-    console.error('Session creation error:', error)
-    throw new Error('Failed to create session')
+  if (!idToken) {
+    throw new Error('ID token is required')
   }
+
+  // Verify token and get user ID
+  const decodedToken = await admin.auth().verifyIdToken(idToken)
+  const userId = decodedToken.uid
+
+  // Create session cookie (5 days)
+  const expiresIn = 60 * 60 * 24 * 5 * 1000
+  const sessionCookie = await admin.auth().createSessionCookie(idToken, { expiresIn })
+
+  // Get user data
+  let user = await getUserById(userId)
+
+  if (!user) {
+    throw new Error('User not found')
+  }
+
+  // Check and clean expired gifts
+  user = await checkAndCleanExpiredGift(user)
+
+  // Set session cookie
+  const cookieStore = await cookies()
+  cookieStore.set('session', sessionCookie, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 24 * 5, // 5 days
+    path: '/'
+  })
+
+  return user
 }
 
 /**
  * Logout user and clear session
  */
 export async function logoutUser(): Promise<void> {
-  try {
-    const cookieStore = await cookies()
-    const sessionCookie = cookieStore.get('session')?.value
+  const cookieStore = await cookies()
+  const sessionCookie = cookieStore.get('session')?.value
 
-    // Revoke session from Firebase
-    if (sessionCookie) {
-      try {
-        const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie)
-        await admin.auth().revokeRefreshTokens(decodedClaims.uid)
-      } catch (error) {
-        console.error('Error revoking session:', error)
-      }
+  // Revoke session from Firebase
+  if (sessionCookie) {
+    try {
+      const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie)
+      await admin.auth().revokeRefreshTokens(decodedClaims.uid)
+    } catch (error) {
+      console.error('Error revoking session:', error)
     }
-
-    // Clear session cookie
-    cookieStore.set('session', '', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 0, // Expire immediately
-      path: '/'
-    })
-
-  } catch (error) {
-    console.error('Logout error:', error)
-    throw new Error('Failed to logout')
   }
+
+  // Clear session cookie
+  cookieStore.set('session', '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 0, // Expire immediately
+    path: '/'
+  })
 }
 
 /**
@@ -173,42 +161,36 @@ export async function logoutUser(): Promise<void> {
  * Requires authentication
  */
 export async function deleteAccount(): Promise<void> {
-  try {
-    const cookieStore = await cookies()
-    const sessionCookie = cookieStore.get('session')?.value
+  const cookieStore = await cookies()
+  const sessionCookie = cookieStore.get('session')?.value
 
-    if (!sessionCookie) {
-      throw new Error('Authentication required')
-    }
-
-    // Verify session and get user ID
-    const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true)
-    const userId = decodedClaims.uid
-
-    if (!userId) {
-      throw new Error('Invalid session')
-    }
-
-    // Delete user from Firestore
-    await admin.firestore().collection('users').doc(userId).delete()
-
-    // Delete user from Firebase Auth
-    await admin.auth().deleteUser(userId)
-
-    // Clear session cookie
-    cookieStore.set('session', '', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 0,
-      path: '/'
-    })
-
-    // Redirect to home
-    redirect('/')
-
-  } catch (error) {
-    console.error('Delete account error:', error)
-    throw new Error('Failed to delete account')
+  if (!sessionCookie) {
+    throw new Error('Authentication required')
   }
+
+  // Verify session and get user ID
+  const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true)
+  const userId = decodedClaims.uid
+
+  if (!userId) {
+    throw new Error('Invalid session')
+  }
+
+  // Delete user from Firestore
+  await admin.firestore().collection('users').doc(userId).delete()
+
+  // Delete user from Firebase Auth
+  await admin.auth().deleteUser(userId)
+
+  // Clear session cookie
+  cookieStore.set('session', '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 0,
+    path: '/'
+  })
+
+  // Redirect to home
+  redirect('/')
 }

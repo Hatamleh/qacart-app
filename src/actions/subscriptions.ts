@@ -48,52 +48,46 @@ export async function createCheckoutSession(
 ): Promise<{ sessionId: string; url: string }> {
   const userId = await requireAuth()
 
-  try {
-    // Get user info for Stripe
-    const user = await getUserById(userId)
+  // Get user info for Stripe
+  const user = await getUserById(userId)
 
-    if (!user) {
-      throw new Error('User not found')
-    }
+  if (!user) {
+    throw new Error('User not found')
+  }
 
-    const stripe = getStripe()
+  const stripe = getStripe()
 
-    const sessionParams: Stripe.Checkout.SessionCreateParams = {
-      mode: 'subscription',
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price: request.priceId,
-          quantity: 1,
-        },
-      ],
-      success_url: request.successUrl || '/profile',
-      cancel_url: request.cancelUrl || '/premium',
-      metadata: {
-        userId: user.id,
+  const sessionParams: Stripe.Checkout.SessionCreateParams = {
+    mode: 'subscription',
+    payment_method_types: ['card'],
+    line_items: [
+      {
+        price: request.priceId,
+        quantity: 1,
       },
-      allow_promotion_codes: true,
-      billing_address_collection: 'auto',
-      customer_creation: user.stripeCustomerId ? undefined : 'always',
-    }
+    ],
+    success_url: request.successUrl || '/profile',
+    cancel_url: request.cancelUrl || '/premium',
+    metadata: {
+      userId: user.id,
+    },
+    allow_promotion_codes: true,
+    billing_address_collection: 'auto',
+    customer_creation: user.stripeCustomerId ? undefined : 'always',
+  }
 
-    // Set customer or customer email
-    if (user.stripeCustomerId) {
-      sessionParams.customer = user.stripeCustomerId
-    } else {
-      sessionParams.customer_email = user.email
-    }
+  // Set customer or customer email
+  if (user.stripeCustomerId) {
+    sessionParams.customer = user.stripeCustomerId
+  } else {
+    sessionParams.customer_email = user.email
+  }
 
-    const session = await stripe.checkout.sessions.create(sessionParams)
+  const session = await stripe.checkout.sessions.create(sessionParams)
 
-    return {
-      sessionId: session.id,
-      url: session.url || ''
-    }
-
-  } catch (error) {
-    console.error('Error creating checkout session:', error)
-    throw new Error('Failed to create checkout session')
+  return {
+    sessionId: session.id,
+    url: session.url || ''
   }
 }
 
@@ -106,29 +100,23 @@ export async function createBillingPortalSession(
 ): Promise<{ url: string }> {
   const userId = await requireAuth()
 
-  try {
-    // Get user for Stripe customer ID
-    const user = await getUserById(userId)
+  // Get user for Stripe customer ID
+  const user = await getUserById(userId)
 
-    if (!user) {
-      throw new Error('User not found')
-    }
-
-    if (!user.stripeCustomerId) {
-      throw new Error('No Stripe customer ID found')
-    }
-
-    const stripe = getStripe()
-
-    const session = await stripe.billingPortal.sessions.create({
-      customer: user.stripeCustomerId,
-      return_url: returnUrl || '/',
-    })
-
-    return { url: session.url }
-
-  } catch (error) {
-    console.error('Error creating billing portal session:', error)
-    throw new Error('Failed to create billing portal session')
+  if (!user) {
+    throw new Error('User not found')
   }
+
+  if (!user.stripeCustomerId) {
+    throw new Error('No Stripe customer ID found')
+  }
+
+  const stripe = getStripe()
+
+  const session = await stripe.billingPortal.sessions.create({
+    customer: user.stripeCustomerId,
+    return_url: returnUrl || '/',
+  })
+
+  return { url: session.url }
 }
