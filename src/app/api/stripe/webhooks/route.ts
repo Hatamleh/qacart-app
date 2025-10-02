@@ -93,87 +93,72 @@ export async function POST(request: NextRequest) {
  * Handle successful checkout completion
  */
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
-  try {
-    // Get the subscription from the session
-    const subscriptionId = session.subscription as string
-    if (!subscriptionId) {
-      console.error('No subscription ID in checkout session')
-      return
-    }
-
-    // Get user ID from session metadata
-    const userId = session.metadata?.userId
-    if (!userId) {
-      console.error('No user ID in session metadata')
-      return
-    }
-
-    // Get the subscription details
-    const stripe = getStripe()
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId)
-    if (!subscription) {
-      console.error('Could not retrieve subscription:', subscriptionId)
-      return
-    }
-
-    // Update user subscription in Firebase
-    await updateUserSubscription(userId, subscription)
-
-  } catch (error) {
-    console.error('Error handling checkout completion:', error)
+  // Get the subscription from the session
+  const subscriptionId = session.subscription as string
+  if (!subscriptionId) {
+    console.error('No subscription ID in checkout session')
+    return
   }
+
+  // Get user ID from session metadata
+  const userId = session.metadata?.userId
+  if (!userId) {
+    console.error('No user ID in session metadata')
+    return
+  }
+
+  // Get the subscription details
+  const stripe = getStripe()
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+  if (!subscription) {
+    console.error('Could not retrieve subscription:', subscriptionId)
+    return
+  }
+
+  // Update user subscription in Firebase
+  await updateUserSubscription(userId, subscription)
 }
 
 /**
  * Handle subscription creation or updates
  */
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
-  try {
-    // Find user by Stripe customer ID
-    const customerId = subscription.customer as string
-    const userId = await findUserByCustomerId(customerId)
-    
-    if (!userId) {
-      console.error('Could not find user for customer:', customerId)
-      return
-    }
+  // Find user by Stripe customer ID
+  const customerId = subscription.customer as string
+  const userId = await findUserByCustomerId(customerId)
 
-    // Update user subscription in Firebase
-    await updateUserSubscription(userId, subscription)
-
-  } catch (error) {
-    console.error('Error handling subscription update:', error)
+  if (!userId) {
+    console.error('Could not find user for customer:', customerId)
+    return
   }
+
+  // Update user subscription in Firebase
+  await updateUserSubscription(userId, subscription)
 }
 
 /**
  * Handle subscription deletion/cancellation
  */
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
-  try {
-    // Find user by Stripe customer ID
-    const customerId = subscription.customer as string
-    const userId = await findUserByCustomerId(customerId)
-    
-    if (!userId) {
-      console.error('Could not find user for customer:', customerId)
-      return
-    }
+  // Find user by Stripe customer ID
+  const customerId = subscription.customer as string
+  const userId = await findUserByCustomerId(customerId)
 
-    // Update user to free status
-    await admin.firestore()
-      .collection('users')
-      .doc(userId)
-      .update({
-        subscription: {
-          status: 'free',
-          isActive: false
-        }
-      })
-
-  } catch (error) {
-    console.error('Error handling subscription deletion:', error)
+  if (!userId) {
+    console.error('Could not find user for customer:', customerId)
+    return
   }
+
+  // Update user to free status
+  await admin.firestore()
+    .collection('users')
+    .doc(userId)
+    .update({
+      subscription: {
+        status: 'free',
+        isActive: false
+      }
+    })
 }
 
 // Removed payment handlers - subscription.updated handles all status changes
@@ -183,101 +168,90 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
  * Now properly handles cancellation status and end dates
  */
 async function updateUserSubscription(userId: string, subscription: Stripe.Subscription) {
-  try {
-    const isActive = subscription.status === 'active'
-    const priceId = subscription.items.data[0]?.price.id || ''
+  const isActive = subscription.status === 'active'
+  const priceId = subscription.items.data[0]?.price.id || ''
 
-    // Get cancellation fields with proper TypeScript typing (no 'any' needed)
-    const cancelAtPeriodEnd = subscription.cancel_at_period_end
-    
-    // Get current_period_end from subscription items (correct location!)
-    const subscriptionItem = subscription.items.data[0]
-    const currentPeriodEnd = subscriptionItem?.current_period_end
+  // Get cancellation fields with proper TypeScript typing (no 'any' needed)
+  const cancelAtPeriodEnd = subscription.cancel_at_period_end
 
-    // Determine plan type from price nickname (Arabic)
-    let planType: 'monthly' | 'quarterly' | 'yearly' | undefined
-    
-    const price = subscription.items.data[0]?.price
-    if (price?.nickname) {
-      const nickname = price.nickname.toLowerCase()
-      if (nickname.includes('شهري') || nickname.includes('monthly')) planType = 'monthly'
-      else if (nickname.includes('ربع') || nickname.includes('quarterly')) planType = 'quarterly'  
-      else if (nickname.includes('سنوي') || nickname.includes('yearly')) planType = 'yearly'
+  // Get current_period_end from subscription items (correct location!)
+  const subscriptionItem = subscription.items.data[0]
+  const currentPeriodEnd = subscriptionItem?.current_period_end
+
+  // Determine plan type from price nickname (Arabic)
+  let planType: 'monthly' | 'quarterly' | 'yearly' | undefined
+
+  const price = subscription.items.data[0]?.price
+  if (price?.nickname) {
+    const nickname = price.nickname.toLowerCase()
+    if (nickname.includes('شهري') || nickname.includes('monthly')) planType = 'monthly'
+    else if (nickname.includes('ربع') || nickname.includes('quarterly')) planType = 'quarterly'
+    else if (nickname.includes('سنوي') || nickname.includes('yearly')) planType = 'yearly'
+  }
+
+  // Use actual Stripe dates from subscription item
+  const currentPeriodEndISO = currentPeriodEnd
+    ? new Date(currentPeriodEnd * 1000).toISOString()
+    : null
+
+  // Build subscription update object
+  const subscriptionData: SubscriptionUpdateData = {
+    status: isActive ? 'premium' as const : 'free' as const,
+    isActive,
+    stripeSubscriptionId: subscription.id,
+    stripePriceId: priceId
+  }
+
+  // Add plan type if available
+  if (planType) {
+    subscriptionData.plan = planType
+  }
+
+  // Handle cancellation status and dates properly
+  if (isActive) {
+    subscriptionData.stripeStatus = 'active' as const
+
+    if (cancelAtPeriodEnd && currentPeriodEndISO) {
+      // Subscription is cancelled but still active until period end
+      subscriptionData.stripeCancelAtPeriodEnd = true
+      subscriptionData.stripeCurrentPeriodEnd = currentPeriodEndISO
+      subscriptionData.nextBillingDate = currentPeriodEndISO // This becomes the end date
+    } else if (currentPeriodEndISO) {
+      // Active subscription with normal renewal
+      subscriptionData.stripeCancelAtPeriodEnd = false
+      subscriptionData.stripeCurrentPeriodEnd = currentPeriodEndISO
+      subscriptionData.nextBillingDate = currentPeriodEndISO
     }
+  }
 
-    // Use actual Stripe dates from subscription item
-    const currentPeriodEndISO = currentPeriodEnd 
-      ? new Date(currentPeriodEnd * 1000).toISOString()
-      : null
-
-    // Build subscription update object
-    const subscriptionData: SubscriptionUpdateData = {
-      status: isActive ? 'premium' as const : 'free' as const,
-      isActive,
-      stripeSubscriptionId: subscription.id,
-      stripePriceId: priceId
-    }
-
-    // Add plan type if available
-    if (planType) {
-      subscriptionData.plan = planType
-    }
-
-    // Handle cancellation status and dates properly
-    if (isActive) {
-      subscriptionData.stripeStatus = 'active' as const
-      
-      if (cancelAtPeriodEnd && currentPeriodEndISO) {
-        // Subscription is cancelled but still active until period end
-        subscriptionData.stripeCancelAtPeriodEnd = true
-        subscriptionData.stripeCurrentPeriodEnd = currentPeriodEndISO
-        subscriptionData.nextBillingDate = currentPeriodEndISO // This becomes the end date
-      } else if (currentPeriodEndISO) {
-        // Active subscription with normal renewal
-        subscriptionData.stripeCancelAtPeriodEnd = false
-        subscriptionData.stripeCurrentPeriodEnd = currentPeriodEndISO
-        subscriptionData.nextBillingDate = currentPeriodEndISO
-      }
-    }
-
-    await admin.firestore()
-      .collection('users')
-      .doc(userId)
-      .update({
-        subscription: subscriptionData
-      })
-
-    console.log(`✅ Updated subscription for user ${userId}:`, {
-      status: subscriptionData.status,
-      isActive: subscriptionData.isActive,
-      cancelAtPeriodEnd: subscriptionData.stripeCancelAtPeriodEnd,
-      periodEnd: subscriptionData.stripeCurrentPeriodEnd
+  await admin.firestore()
+    .collection('users')
+    .doc(userId)
+    .update({
+      subscription: subscriptionData
     })
 
-  } catch (error) {
-    console.error('Error updating user subscription:', error)
-    throw error
-  }
+  console.log(`✅ Updated subscription for user ${userId}:`, {
+    status: subscriptionData.status,
+    isActive: subscriptionData.isActive,
+    cancelAtPeriodEnd: subscriptionData.stripeCancelAtPeriodEnd,
+    periodEnd: subscriptionData.stripeCurrentPeriodEnd
+  })
 }
 
 /**
  * Find user by Stripe customer ID
  */
 async function findUserByCustomerId(customerId: string): Promise<string | null> {
-  try {
-    const usersSnapshot = await admin.firestore()
-      .collection('users')
-      .where('stripeCustomerId', '==', customerId)
-      .limit(1)
-      .get()
+  const usersSnapshot = await admin.firestore()
+    .collection('users')
+    .where('stripeCustomerId', '==', customerId)
+    .limit(1)
+    .get()
 
-    if (usersSnapshot.empty) {
-      return null
-    }
-
-    return usersSnapshot.docs[0].id
-  } catch (error) {
-    console.error('Error finding user by Stripe customer ID:', error)
+  if (usersSnapshot.empty) {
     return null
   }
+
+  return usersSnapshot.docs[0].id
 }
