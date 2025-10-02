@@ -21,8 +21,8 @@ export const PremiumHero = () => {
 
           {/* Subtitle - Code comment style */}
           <div className="text-lg lg:text-xl text-muted-foreground mb-8 max-w-4xl mx-auto leading-relaxed text-center font-mono">
-            <p className="mb-2">// تعلم المهارات الأساسية لاختبار البرمجيات الحديث</p>
-            <p>// مع الاستمتاع الكامل في العملية التعليمية</p>
+            <p className="mb-2">{'//'} تعلم المهارات الأساسية لاختبار البرمجيات الحديث</p>
+            <p>{'//'} مع الاستمتاع الكامل في العملية التعليمية</p>
           </div>
 
         </div>

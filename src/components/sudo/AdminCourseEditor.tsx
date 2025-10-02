@@ -5,16 +5,19 @@ import { useRouter } from 'next/navigation'
 import { Save, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AdminLessonManager } from './AdminLessonManager'
-import { CourseClient } from '@/clients/course.client'
+import { updateCourse } from '@/actions'
 import { Course } from '@/types'
 
 interface AdminCourseEditorProps {
   course: Course
-  refetch: () => Promise<void>
 }
 
-export const AdminCourseEditor = ({ course, refetch }: AdminCourseEditorProps) => {
+export const AdminCourseEditor = ({ course }: AdminCourseEditorProps) => {
   const router = useRouter()
+
+  const refetch = async () => {
+    router.refresh()
+  }
   const [isSubmitting, setIsSubmitting] = useState(false)
   
   // Form state
@@ -37,8 +40,8 @@ export const AdminCourseEditor = ({ course, refetch }: AdminCourseEditorProps) =
     setIsSubmitting(true)
 
     try {
-      // Update course using CourseClient
-      await CourseClient.updateCourse(course.id, {
+      // Update course using Server Action
+      await updateCourse(course.id, {
         title: formData.title.trim(),
         shortDescription: formData.shortDescription.trim(),
         vimeoId: formData.vimeoId.trim(),

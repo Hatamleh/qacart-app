@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Save, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { CourseClient } from '@/clients/course.client'
+import { createCourse } from '@/actions'
 
 export const NewCourseForm = () => {
   const router = useRouter()
@@ -30,8 +30,8 @@ export const NewCourseForm = () => {
     setIsSubmitting(true)
 
     try {
-      // Create course using CourseClient
-      await CourseClient.createCourse({
+      // Create course using Server Action
+      await createCourse({
         title: formData.title.trim(),
         shortDescription: formData.shortDescription.trim(),
         vimeoId: formData.vimeoId.trim() || '',

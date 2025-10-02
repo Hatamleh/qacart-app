@@ -107,10 +107,6 @@ export default function ProfilePage() {
     return null
   }
 
-  // Check if user has premium access (paid subscription or admin gift)
-  const isPremium = user.subscription.status === 'premium' && 
-    (user.subscription.isActive || user.subscription.giftDetails != null)
-  
   // Check if user is gifted (for different UI treatment)
   const isGifted = user.subscription.giftDetails != null
 

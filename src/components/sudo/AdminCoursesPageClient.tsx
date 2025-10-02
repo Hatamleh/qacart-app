@@ -1,15 +1,22 @@
+'use client'
+
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AdminCoursesTable } from './AdminCoursesTable'
 import { Course } from '@/types'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface AdminCoursesPageClientProps {
   courses: Course[]
-  refetch: () => Promise<void>
 }
 
-export const AdminCoursesPageClient = ({ courses, refetch }: AdminCoursesPageClientProps) => {
+export const AdminCoursesPageClient = ({ courses }: AdminCoursesPageClientProps) => {
+  const router = useRouter()
+
+  const refetch = async () => {
+    router.refresh()
+  }
 
   return (
     <>
@@ -24,7 +31,7 @@ export const AdminCoursesPageClient = ({ courses, refetch }: AdminCoursesPageCli
               إنشاء وتعديل وإدارة الدورات والدروس
             </p>
           </div>
-          
+
           {/* Create New Course Button */}
           <div className="flex gap-3">
             <Link href="/sudo/courses/new">

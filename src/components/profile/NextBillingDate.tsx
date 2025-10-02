@@ -1,7 +1,9 @@
+'use client'
+
 import { Calendar } from 'lucide-react'
 import { User } from '@/types'
 import { formatDate } from '@/lib'
-import { StripeClient } from '@/clients'
+import { createBillingPortalSession } from '@/actions'
 
 interface NextBillingDateProps {
   user: User
@@ -54,10 +56,11 @@ export const NextBillingDate = ({ user }: NextBillingDateProps) => {
               <p className="text-xs text-muted-foreground/70 mb-3">
                 بعد هذا التاريخ، ستعود لعضوية مجانية مع الوصول للمحتوى الأساسي فقط
               </p>
-              <button 
+              <button
                 onClick={async () => {
                   try {
-                    await StripeClient.redirectToBillingPortal()
+                    const { url } = await createBillingPortalSession(window.location.href)
+                    window.location.href = url
                   } catch (error) {
                     console.error('Error opening billing portal:', error)
                   }
@@ -88,10 +91,11 @@ export const NextBillingDate = ({ user }: NextBillingDateProps) => {
             <p className="text-sm text-muted-foreground mb-3">
               اشتراكك نشط حتى <span className="font-semibold text-foreground">{formatDate(user.subscription.nextBillingDate)}</span>
             </p>
-            <button 
+            <button
               onClick={async () => {
                 try {
-                  await StripeClient.redirectToBillingPortal()
+                  const { url } = await createBillingPortalSession(window.location.href)
+                  window.location.href = url
                 } catch (error) {
                   console.error('Error opening billing portal:', error)
                 }

@@ -1,18 +1,17 @@
+'use client'
+
 import { useState } from 'react'
 import { Users, Crown, UserCheck, Gift, Search, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AdminUsersTable } from './AdminUsersTable'
+import { useUsers } from '@/hooks'
 
-interface AdminUsersPageClientProps {
-  usersHook: ReturnType<typeof import('@/hooks').useUsers>
-}
-
-export const AdminUsersPageClient = ({ usersHook }: AdminUsersPageClientProps) => {
+export const AdminUsersPageClient = () => {
   const {
     users, total, hasMore, loading, loadingMore,
     currentFilter, currentSearch, setFilter, setSearch,
     loadMore, deleteUser, togglePremiumGift, refresh
-  } = usersHook
+  } = useUsers()
 
   const [searchInput, setSearchInput] = useState('')
 

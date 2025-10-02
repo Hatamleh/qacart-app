@@ -57,7 +57,7 @@ export const MagicLinkForm = ({ onEmailSent }: MagicLinkFormProps) => {
     <form onSubmit={handleSubmit} className="mb-8">
       <div className="mb-6">
         <label htmlFor="email" className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 font-mono">
-          // email_address
+          {'//'} email_address
         </label>
         <div className="relative group">
           <Mail className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-primary transition-colors group-focus-within:text-primary group-focus-within:drop-shadow-[0_0_8px_rgba(136,192,208,0.6)]" />

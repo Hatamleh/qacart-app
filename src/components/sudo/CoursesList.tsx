@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 import { Edit, Trash2, Clock, Users, Calendar, BookOpen } from 'lucide-react'
 import { Button, ConfirmationModal } from '@/components/ui'
-import { CourseClient } from '@/clients/course.client'
+import { deleteCourse } from '@/actions'
 import { Course } from '@/types'
 
 interface CoursesListProps {
@@ -40,8 +40,8 @@ export const CoursesList = ({ courses, refetch }: CoursesListProps) => {
     setDeletingCourseId(courseId)
 
     try {
-      await CourseClient.deleteCourse(courseId)
-      // Refresh courses list using hook's refetch method
+      await deleteCourse(courseId)
+      // Refresh courses list using router refresh
       await refetch()
     } catch (error) {
       console.error('❌ Failed to delete course:', error)

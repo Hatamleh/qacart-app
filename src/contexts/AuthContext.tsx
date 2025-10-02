@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User as FirebaseAuthUser, onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from '@/firebase/client'
 import { User } from '@/types'
-import { AuthClient } from '@/clients'
+import { createSession, logoutUser, deleteAccount as deleteAccountAction } from '@/actions/auth'
 
 interface AuthContextType {
   // Firebase Auth User (client-side)
@@ -45,7 +45,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsLoading(true)
         try {
           const idToken = await firebaseAuthUser.getIdToken()
-          const { user } = await AuthClient.createSession(idToken)
+          const user = await createSession(idToken)
           setUser(user)
         } catch (error) {
           console.error('Error creating session:', error)
@@ -66,12 +66,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const handleSignOut = async () => {
     try {
-      // Clear session cookie via API first
-      await AuthClient.logout()
-      
+      // Clear session cookie via Server Action first
+      await logoutUser()
+
       // Sign out from Firebase (this triggers the auth state change)
       await signOut(auth)
-      
+
       // State will be cleared by the auth state change listener
     } catch (error) {
       console.error('Error signing out:', error)
@@ -80,11 +80,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const refreshUser = async () => {
     if (!firebaseUser) return
-    
+
     setIsLoading(true)
     try {
       const idToken = await firebaseUser.getIdToken(true) // Force refresh
-      const { user } = await AuthClient.createSession(idToken)
+      const user = await createSession(idToken)
       setUser(user)
     } catch (error) {
       console.error('Error refreshing user:', error)
@@ -96,14 +96,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const handleDeleteAccount = async () => {
     try {
       setIsLoading(true)
-      
-      // Use AuthClient to delete account
-      await AuthClient.deleteAccount()
-      
+
+      // Use Server Action to delete account
+      await deleteAccountAction()
+
       // Account deleted successfully - clear state and redirect
       setUser(null)
       setFirebaseUser(null)
-      
+
       // Force page reload to ensure clean state
       window.location.href = '/'
     } catch (error) {

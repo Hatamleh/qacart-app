@@ -5,21 +5,21 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { User, GetUsersParams } from '@/types'
-import { UserClient } from '@/clients'
+import { getUsers, deleteUser as deleteUserAction, togglePremiumGift as togglePremiumGiftAction } from '@/actions'
 
 interface UseUsersResult {
   // Data
   users: User[]
   total: number
   hasMore: boolean
-  
+
   // State
   loading: boolean
   loadingMore: boolean
   error: string | null
   currentFilter: string
   currentSearch: string
-  
+
   // Actions
   fetchUsers: (params?: GetUsersParams) => Promise<void>
   loadMore: () => Promise<void>
@@ -36,12 +36,12 @@ export function useUsers(): UseUsersResult {
   const [users, setUsers] = useState<User[]>([])
   const [total, setTotal] = useState(0)
   const [hasMore, setHasMore] = useState(false)
-  
+
   // UI state
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  
+
   // Filter and search state
   const [currentFilter, setCurrentFilter] = useState<'all' | 'premium' | 'free' | 'gifted'>('all')
   const [currentSearch, setCurrentSearch] = useState('')
@@ -54,13 +54,13 @@ export function useUsers(): UseUsersResult {
   const fetchUsers = useCallback(async (params: GetUsersParams = {}) => {
     try {
       const isLoadMore = (params.offset || 0) > 0
-      
+
       if (isLoadMore) {
         setLoadingMore(true)
       } else {
         setLoading(true)
       }
-      
+
       setError(null)
 
       // Use current state values as defaults
@@ -72,8 +72,8 @@ export function useUsers(): UseUsersResult {
         ...params // Override with provided params
       }
 
-      const result = await UserClient.getAllUsers(finalParams)
-      
+      const result = await getUsers(finalParams)
+
       if (isLoadMore) {
         // Append to existing users
         setUsers(prevUsers => [...prevUsers, ...result.users])
@@ -81,10 +81,10 @@ export function useUsers(): UseUsersResult {
         // Replace users
         setUsers(result.users)
       }
-      
+
       setTotal(result.total)
       setHasMore(result.hasMore)
-      
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch users')
     } finally {
@@ -96,7 +96,7 @@ export function useUsers(): UseUsersResult {
   // Load more users (pagination)
   const loadMore = useCallback(async () => {
     if (!hasMore || loadingMore) return
-    
+
     await fetchUsers({
       offset: users.length
     })
@@ -109,7 +109,7 @@ export function useUsers(): UseUsersResult {
     fetchUsers({ filter, offset: 0 })
   }, [fetchUsers])
 
-  // Set search and refresh  
+  // Set search and refresh
   const setSearch = useCallback((search: string) => {
     setCurrentSearch(search)
     // Reset to first page when search changes
@@ -125,8 +125,8 @@ export function useUsers(): UseUsersResult {
   const deleteUser = useCallback(async (userId: string) => {
     try {
       setError(null)
-      await UserClient.deleteUser(userId)
-      
+      await deleteUserAction(userId)
+
       // Remove user from local state and refresh if needed
       setUsers(prevUsers => {
         const newUsers = prevUsers.filter(user => user.id !== userId)
@@ -136,10 +136,10 @@ export function useUsers(): UseUsersResult {
         }
         return newUsers
       })
-      
+
       // Update total count
       setTotal(prev => prev - 1)
-      
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete user')
       throw err
@@ -150,15 +150,15 @@ export function useUsers(): UseUsersResult {
   const togglePremiumGift = useCallback(async (userId: string): Promise<{ action: 'granted' | 'revoked'; user: User }> => {
     try {
       setError(null)
-      const result = await UserClient.togglePremiumGift(userId)
-      
+      const result = await togglePremiumGiftAction(userId)
+
       // Update the specific user in the local state (optimistic update)
-      setUsers(prevUsers => 
-        prevUsers.map(user => 
+      setUsers(prevUsers =>
+        prevUsers.map(user =>
           user.id === userId ? result.user : user
         )
       )
-      
+
       return { action: result.action, user: result.user }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to toggle premium gift')
@@ -176,14 +176,14 @@ export function useUsers(): UseUsersResult {
     users,
     total,
     hasMore,
-    
+
     // State
     loading,
     loadingMore,
     error,
     currentFilter,
     currentSearch,
-    
+
     // Actions
     fetchUsers,
     loadMore,

@@ -1,78 +1,32 @@
-'use client'
-
-import Head from 'next/head'
+import { Metadata } from 'next'
 import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation'
 import { AdminCourseEditor } from '@/components/sudo/AdminCourseEditor'
 import { AdminRouteGuard } from '@/components/auth/AdminRouteGuard'
-import { useCourses } from '@/hooks'
+import { getCourse } from '@/actions'
 
-export default function AdminCourseEditPage() {
-  return (
-    <AdminRouteGuard>
-      <AdminCourseEditPageContent />
-    </AdminRouteGuard>
-  )
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const course = await getCourse(id)
+
+  return {
+    title: `تعديل ${course.title} - QAcart Admin`,
+    description: `إدارة وتعديل دورة ${course.title}`,
+    robots: 'noindex, nofollow',
+    openGraph: {
+      title: `تعديل ${course.title} - QAcart Admin`,
+      description: `إدارة وتعديل دورة ${course.title}`,
+      type: 'website',
+      locale: 'ar_SA',
+    },
+  }
 }
 
-function AdminCourseEditPageContent() {
-  const params = useParams()
-  const router = useRouter()
-  const courseId = params.id as string
-  
-  const { course, loading, error, refetch } = useCourses({ courseId })
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">جارٍ تحميل الدورة...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-500 mb-4">خطأ في تحميل الدورة: {error}</p>
-          <div className="space-x-4">
-            <button 
-              onClick={() => refetch()} 
-              className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
-            >
-              إعادة المحاولة
-            </button>
-            <button 
-              onClick={() => router.push('/sudo/courses')} 
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-            >
-              العودة للقائمة
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (!course) {
-    return null
-  }
+export default async function AdminCourseEditPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const course = await getCourse(id)
 
   return (
-    <>
-      <Head>
-        <title>{`تعديل ${course.title} - QAcart Admin`}</title>
-        <meta name="description" content={`إدارة وتعديل دورة ${course.title}`} />
-        <meta name="robots" content="noindex, nofollow" />
-        <meta property="og:title" content={`تعديل ${course.title} - QAcart Admin`} />
-        <meta property="og:description" content={`إدارة وتعديل دورة ${course.title}`} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="ar_SA" />
-      </Head>
-      
+    <AdminRouteGuard>
       {/* Admin Course Editor */}
       <main className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
@@ -99,9 +53,9 @@ function AdminCourseEditPageContent() {
           </div>
 
           {/* Course Editor Component */}
-          <AdminCourseEditor course={course} refetch={refetch} />
+          <AdminCourseEditor course={course} />
         </div>
       </main>
-    </>
+    </AdminRouteGuard>
   )
 }

@@ -100,7 +100,7 @@ export const AuthForm = () => {
             {/* Welcome Badge - Coding style */}
             <div className="flex justify-center mb-8">
               <div className="px-6 py-2 bg-primary/10 border-2 border-primary/40 rounded shadow-[0_0_10px_rgba(136,192,208,0.2)]">
-                <h3 className="text-sm font-bold text-primary tracking-wider uppercase">// مرحباً_بك_في_QAcart</h3>
+                <h3 className="text-sm font-bold text-primary tracking-wider uppercase">{'//'} مرحباً_بك_في_QAcart</h3>
               </div>
             </div>
 

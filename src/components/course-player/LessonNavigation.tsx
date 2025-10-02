@@ -1,6 +1,6 @@
 'use client'
 
-import { Lock, Check, Clock, Circle, PlayCircle, FileText } from 'lucide-react'
+import { Lock, Check, Circle, PlayCircle, FileText } from 'lucide-react'
 import { Course, Lesson } from '@/types'
 import { Button } from '../ui/Button'
 import { useProgressContext } from '@/contexts/ProgressContext'

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Plus, GripVertical, Trash2, ChevronDown, Video, FileText, Save } from 'lucide-react'
 import { Button, ConfirmationModal } from '@/components/ui'
-import { LessonClient } from '@/clients'
+import { addLessonToCourse, updateLesson, deleteLesson, reorderLessons } from '@/actions'
 import { Course } from '@/types'
 
 interface AdminLessonManagerProps {
@@ -34,7 +34,7 @@ export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps)
     setIsCreating(true)
 
     try {
-      await LessonClient.createLesson(course.id, {
+      await addLessonToCourse(course.id, {
         title: 'درس جديد',
         durationInMinutes: 10,
         isFree: false,
@@ -45,9 +45,9 @@ export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps)
 
       // Refresh course data to get updated lessons
       await refetch()
-      
+
       // Keep all lessons collapsed for cleaner interface
-      
+
     } catch (error) {
       console.error('❌ Failed to create lesson:', error)
     } finally {
@@ -70,16 +70,16 @@ export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps)
     setDeletingLessonId(lessonId)
 
     try {
-      await LessonClient.deleteLesson(course.id, lessonId)
-      
+      await deleteLesson(course.id, lessonId)
+
       // Refresh course data to get updated lessons
       await refetch()
-      
+
       // Close expansion if we deleted the expanded lesson
       if (expandedLessonId === lessonId) {
         setExpandedLessonId(null)
       }
-      
+
     } catch (error) {
       console.error('❌ Failed to delete lesson:', error)
     } finally {
@@ -103,7 +103,7 @@ export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps)
 
       const lessonType = lessonTypeVideo.checked ? 'video' : 'article'
 
-      await LessonClient.updateLesson(course.id, lessonId, {
+      await updateLesson(course.id, lessonId, {
         title: titleInput.value.trim(),
         durationInMinutes: parseInt(durationInput.value) || 0,
         lessonType: lessonType,
@@ -178,7 +178,7 @@ export const AdminLessonManager = ({ course, refetch }: AdminLessonManagerProps)
       ]
 
       // Call reorder API with new lesson order
-      await LessonClient.reorderLessons(course.id, newOrder.map(l => l.id))
+      await reorderLessons(course.id, newOrder.map(l => l.id))
 
       // Refresh course data to get updated lesson order
       await refetch()

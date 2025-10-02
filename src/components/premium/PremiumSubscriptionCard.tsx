@@ -9,7 +9,7 @@ import { Plan, PricingOption } from '@/types'
 import { PlanFeatures } from './PlanFeatures'
 import { PriceSection } from './PriceSection'
 import { PricingOptionsDisplay } from './PricingOptionsDisplay'
-import { StripeClient } from '@/clients'
+import { createCheckoutSession } from '@/actions'
 import { useAuth, useIsAuthenticated } from '@/contexts/AuthContext'
 
 interface PremiumSubscriptionCardProps {
@@ -59,8 +59,15 @@ export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) 
     setError(null)
 
     try {
+      // Create checkout session and redirect
+      const { url } = await createCheckoutSession({
+        priceId: selectedPricing.stripePriceId,
+        successUrl: `${window.location.origin}/profile?checkout=success`,
+        cancelUrl: `${window.location.origin}/premium?checkout=cancelled`,
+      })
+
       // Redirect to Stripe checkout
-      await StripeClient.redirectToCheckout(selectedPricing.stripePriceId)
+      window.location.href = url
     } catch (error) {
       console.error('Checkout error:', error)
       setError(error instanceof Error ? error.message : 'حدث خطأ أثناء معالجة الدفع')
@@ -82,7 +89,7 @@ export const PremiumSubscriptionCard = ({ plan }: PremiumSubscriptionCardProps) 
           {/* Plan Badge - Coding style */}
           <div className="flex justify-center mb-8">
             <div className="px-6 py-2 bg-premium/10 border-2 border-premium/40 rounded shadow-[0_0_10px_rgba(163,190,140,0.2)]">
-              <h3 className="text-sm font-bold text-premium tracking-wider uppercase">// {plan.name}</h3>
+              <h3 className="text-sm font-bold text-premium tracking-wider uppercase">{'//'} {plan.name}</h3>
             </div>
           </div>
 

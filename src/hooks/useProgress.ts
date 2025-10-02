@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { UserProgress } from '@/types'
-import { ProgressClient } from '@/clients'
+import { getProgress, markLessonComplete as markLessonCompleteAction } from '@/actions'
 import { useAuth } from '@/contexts/AuthContext'
 
 /**
  * useProgress Hook - Centralized progress state management
  * Provides progress data and actions for course player components
- * 
+ *
  * @param courseId - Course document ID
  * @returns Progress state and actions
  */
@@ -30,7 +30,7 @@ export function useProgress(courseId: string) {
     try {
       setLoading(true)
       setError(null)
-      const userProgress = await ProgressClient.getProgress(courseId)
+      const userProgress = await getProgress(courseId)
       setProgress(userProgress)
     } catch (err) {
       console.error('Error fetching progress:', err)
@@ -49,7 +49,7 @@ export function useProgress(courseId: string) {
 
   // Mark a lesson as complete
   const markLessonComplete = useCallback(async (
-    lessonId: string, 
+    lessonId: string,
     totalLessons: number,
     timeSpent?: number
   ): Promise<void> => {
@@ -59,7 +59,7 @@ export function useProgress(courseId: string) {
 
     try {
       setError(null)
-      
+
       // Optimistic update - immediately add lesson to completed list
       if (progress && !progress.completedLessons.includes(lessonId)) {
         const optimisticProgress: UserProgress = {
@@ -73,8 +73,8 @@ export function useProgress(courseId: string) {
         setProgress(optimisticProgress)
       }
 
-      // Make API call to persist the change
-      const response = await ProgressClient.markLessonComplete(
+      // Make Server Action call to persist the change
+      const response = await markLessonCompleteAction(
         courseId,
         lessonId,
         totalLessons,
@@ -88,7 +88,7 @@ export function useProgress(courseId: string) {
       console.error('Error marking lesson complete:', err)
       const errorMessage = err instanceof Error ? err.message : 'فشل في تسجيل إكمال الدرس'
       setError(errorMessage)
-      
+
       // Rollback optimistic update on error
       await fetchProgress()
       throw err
