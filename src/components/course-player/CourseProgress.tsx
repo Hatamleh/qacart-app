@@ -1,35 +1,18 @@
-'use client'
-
 import type { Course } from '@/types'
-import { useProgressContext } from '@/contexts/ProgressContext'
 
 interface CourseProgressProps {
   course: Course
+  progressPercentage: number
+  completedLessonsCount: number
+  isAuthenticated: boolean
 }
 
-export const CourseProgress = ({ course }: CourseProgressProps) => {
-  const { 
-    progressPercentage, 
-    completedLessonsCount, 
-    loading, 
-    isAuthenticated 
-  } = useProgressContext()
-
-  // Show loading state
-  if (loading) {
-    return (
-      <div className="text-right ml-6">
-        <div className="bg-background/50 rounded-lg p-4 border border-primary/20">
-          <div className="text-sm text-muted-foreground mb-1">التقدم الإجمالي</div>
-          <div className="text-2xl font-bold text-primary animate-pulse">---%</div>
-          <div className="text-xs text-muted-foreground mt-1">
-            جارٍ التحميل...
-          </div>
-        </div>
-      </div>
-    )
-  }
-
+export const CourseProgress = ({
+  course,
+  progressPercentage,
+  completedLessonsCount,
+  isAuthenticated
+}: CourseProgressProps) => {
   // Show authentication required state
   if (!isAuthenticated) {
     return (

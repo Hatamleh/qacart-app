@@ -1,35 +1,56 @@
 'use server'
 
+import { cache } from 'react'
 import { revalidatePath } from 'next/cache'
-import { CourseRepository, LessonRepository } from '@/repositories'
+import { admin } from '@/firebase/admin'
 import { requireAdmin } from '@/lib/auth'
-import { Course } from '@/types'
+import { Course, Lesson } from '@/types'
 
 /**
  * Get all courses (public)
  * Can be called from Server Components
  */
-export async function getCourses(): Promise<Course[]> {
+export const getCourses = cache(async (): Promise<Course[]> => {
   try {
-    return await CourseRepository.getAllCourses()
+    const coursesSnapshot = await admin.firestore()
+      .collection('courses')
+      .orderBy('createdAt', 'desc')
+      .get()
+
+    return coursesSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    })) as Course[]
   } catch (error) {
     console.error('Error fetching courses:', error)
     throw new Error('Failed to fetch courses')
   }
-}
+})
 
 /**
  * Get course by ID (public)
  * Can be called from Server Components
  */
-export async function getCourse(courseId: string): Promise<Course> {
+export const getCourse = cache(async (courseId: string): Promise<Course> => {
   try {
-    return await CourseRepository.getCourseById(courseId)
+    const courseDoc = await admin.firestore()
+      .collection('courses')
+      .doc(courseId)
+      .get()
+
+    if (!courseDoc.exists) {
+      throw new Error('Course not found')
+    }
+
+    return {
+      id: courseDoc.id,
+      ...courseDoc.data()
+    } as Course
   } catch (error) {
     console.error(`Error fetching course ${courseId}:`, error)
     throw new Error('Course not found')
   }
-}
+})
 
 // ===== ADMIN-ONLY OPERATIONS =====
 
@@ -40,13 +61,26 @@ export async function createCourse(courseData: Omit<Course, 'id'>): Promise<Cour
   await requireAdmin()
 
   try {
-    const course = await CourseRepository.createCourse(courseData)
+    // Create course document in Firestore
+    const courseRef = await admin.firestore()
+      .collection('courses')
+      .add({
+        ...courseData,
+        lessons: courseData.lessons || [],
+        createdAt: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
+      })
 
     // Revalidate course pages
     revalidatePath('/courses')
     revalidatePath('/sudo/courses')
 
-    return course
+    // Return the complete course object
+    return {
+      id: courseRef.id,
+      ...courseData,
+      lessons: courseData.lessons || []
+    }
   } catch (error) {
     console.error('Error creating course:', error)
     throw new Error('Failed to create course')
@@ -63,7 +97,18 @@ export async function updateCourse(
   await requireAdmin()
 
   try {
-    await CourseRepository.updateCourse(courseId, updates)
+    // Remove id from updates to avoid conflicts
+    const updateData = { ...updates }
+    delete updateData.id
+
+    // Update course document in Firestore
+    await admin.firestore()
+      .collection('courses')
+      .doc(courseId)
+      .update({
+        ...updateData,
+        lastUpdated: new Date().toISOString()
+      })
 
     // Revalidate course pages
     revalidatePath('/courses')
@@ -84,7 +129,11 @@ export async function deleteCourse(courseId: string): Promise<void> {
   await requireAdmin()
 
   try {
-    await CourseRepository.deleteCourse(courseId)
+    // Delete course document from Firestore
+    await admin.firestore()
+      .collection('courses')
+      .doc(courseId)
+      .delete()
 
     // Revalidate course pages
     revalidatePath('/courses')
@@ -101,17 +150,49 @@ export async function deleteCourse(courseId: string): Promise<void> {
  */
 export async function addLessonToCourse(
   courseId: string,
-  lessonData: Record<string, unknown>
-): Promise<void> {
+  lessonData: Omit<Lesson, 'id'>
+): Promise<Lesson> {
   await requireAdmin()
 
   try {
-    await LessonRepository.createLesson(courseId, lessonData as Omit<import('@/types').Lesson, 'id'>)
+    // Get current course to find lesson count
+    const courseDoc = await admin.firestore()
+      .collection('courses')
+      .doc(courseId)
+      .get()
+
+    if (!courseDoc.exists) {
+      throw new Error('Course not found')
+    }
+
+    const course = courseDoc.data()
+    const currentLessons = course?.lessons || []
+
+    // Generate unique lesson ID
+    const newLessonId = `lesson_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
+
+    // Create new lesson
+    const newLesson: Lesson = {
+      ...lessonData,
+      id: newLessonId,
+      lessonOrder: currentLessons.length + 1
+    }
+
+    // Update course with new lesson
+    const updatedLessons = [...currentLessons, newLesson]
+    await admin.firestore()
+      .collection('courses')
+      .doc(courseId)
+      .update({
+        lessons: updatedLessons,
+        lastUpdated: new Date().toISOString()
+      })
 
     // Revalidate course pages
     revalidatePath(`/courses/${courseId}`)
     revalidatePath(`/sudo/courses/${courseId}`)
 
+    return newLesson
   } catch (error) {
     console.error('Error adding lesson:', error)
     throw new Error('Failed to add lesson')
@@ -124,12 +205,46 @@ export async function addLessonToCourse(
 export async function updateLesson(
   courseId: string,
   lessonId: string,
-  updates: Record<string, unknown>
+  updates: Partial<Lesson>
 ): Promise<void> {
   await requireAdmin()
 
   try {
-    await LessonRepository.updateLesson(courseId, lessonId, updates)
+    // Get current course
+    const courseDoc = await admin.firestore()
+      .collection('courses')
+      .doc(courseId)
+      .get()
+
+    if (!courseDoc.exists) {
+      throw new Error('Course not found')
+    }
+
+    const course = courseDoc.data()
+    const lessons = course?.lessons || []
+
+    // Find lesson index
+    const lessonIndex = lessons.findIndex((l: Lesson) => l.id === lessonId)
+    if (lessonIndex === -1) {
+      throw new Error('Lesson not found')
+    }
+
+    // Update lesson
+    const updatedLessons = [...lessons]
+    updatedLessons[lessonIndex] = {
+      ...updatedLessons[lessonIndex],
+      ...updates,
+      id: lessonId // Ensure ID doesn't change
+    }
+
+    // Update course with modified lessons array
+    await admin.firestore()
+      .collection('courses')
+      .doc(courseId)
+      .update({
+        lessons: updatedLessons,
+        lastUpdated: new Date().toISOString()
+      })
 
     // Revalidate course pages
     revalidatePath(`/courses/${courseId}`)
@@ -151,7 +266,41 @@ export async function deleteLesson(
   await requireAdmin()
 
   try {
-    await LessonRepository.deleteLesson(courseId, lessonId)
+    // Get current course
+    const courseDoc = await admin.firestore()
+      .collection('courses')
+      .doc(courseId)
+      .get()
+
+    if (!courseDoc.exists) {
+      throw new Error('Course not found')
+    }
+
+    const course = courseDoc.data()
+    const lessons = course?.lessons || []
+
+    // Find lesson index
+    const lessonIndex = lessons.findIndex((l: Lesson) => l.id === lessonId)
+    if (lessonIndex === -1) {
+      throw new Error('Lesson not found')
+    }
+
+    // Remove lesson and reorder
+    const updatedLessons = lessons
+      .filter((l: Lesson) => l.id !== lessonId)
+      .map((lesson: Lesson, index: number) => ({
+        ...lesson,
+        lessonOrder: index + 1
+      }))
+
+    // Update course with modified lessons array
+    await admin.firestore()
+      .collection('courses')
+      .doc(courseId)
+      .update({
+        lessons: updatedLessons,
+        lastUpdated: new Date().toISOString()
+      })
 
     // Revalidate course pages
     revalidatePath(`/courses/${courseId}`)
@@ -173,7 +322,40 @@ export async function reorderLessons(
   await requireAdmin()
 
   try {
-    await LessonRepository.reorderLessons(courseId, lessonIds)
+    // Get current course
+    const courseDoc = await admin.firestore()
+      .collection('courses')
+      .doc(courseId)
+      .get()
+
+    if (!courseDoc.exists) {
+      throw new Error('Course not found')
+    }
+
+    const course = courseDoc.data()
+    const lessons = course?.lessons || []
+
+    // Create new lessons array in the specified order
+    const reorderedLessons: Lesson[] = []
+
+    lessonIds.forEach((lessonId, index) => {
+      const lesson = lessons.find((l: Lesson) => l.id === lessonId)
+      if (lesson) {
+        reorderedLessons.push({
+          ...lesson,
+          lessonOrder: index + 1
+        })
+      }
+    })
+
+    // Update course with reordered lessons
+    await admin.firestore()
+      .collection('courses')
+      .doc(courseId)
+      .update({
+        lessons: reorderedLessons,
+        lastUpdated: new Date().toISOString()
+      })
 
     // Revalidate course pages
     revalidatePath(`/courses/${courseId}`)

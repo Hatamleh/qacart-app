@@ -1,8 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
-import { StripeRepository, UserRepository } from '@/repositories'
-import { SubscriptionUpdateData, UserSubscriptionUpdate } from '@/types'
+import { admin } from '@/firebase/admin'
+import { SubscriptionUpdateData } from '@/types'
 import Stripe from 'stripe'
+
+/**
+ * Get Stripe instance
+ */
+function getStripe(): Stripe {
+  const secretKey = process.env.STRIPE_SECRET_KEY
+  if (!secretKey) {
+    throw new Error('STRIPE_SECRET_KEY environment variable is not set')
+  }
+
+  return new Stripe(secretKey, {
+    apiVersion: '2025-07-30.basil'
+  })
+}
 
 /**
  * POST /api/stripe/webhooks
@@ -26,7 +40,14 @@ export async function POST(request: NextRequest) {
     // Verify and construct the webhook event
     let event: Stripe.Event
     try {
-      event = StripeRepository.constructWebhookEvent(body, signature)
+      const stripe = getStripe()
+      const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+
+      if (!webhookSecret) {
+        throw new Error('STRIPE_WEBHOOK_SECRET environment variable is not set')
+      }
+
+      event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
     } catch (error) {
       console.error('❌ Webhook signature verification failed:', error)
       return NextResponse.json(
@@ -88,7 +109,8 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     }
 
     // Get the subscription details
-    const subscription = await StripeRepository.getSubscription(subscriptionId)
+    const stripe = getStripe()
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId)
     if (!subscription) {
       console.error('Could not retrieve subscription:', subscriptionId)
       return
@@ -139,12 +161,15 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     }
 
     // Update user to free status
-    await UserRepository.updateUser(userId, {
-      subscription: {
-        status: 'free',
-        isActive: false
-      }
-    })
+    await admin.firestore()
+      .collection('users')
+      .doc(userId)
+      .update({
+        subscription: {
+          status: 'free',
+          isActive: false
+        }
+      })
 
   } catch (error) {
     console.error('Error handling subscription deletion:', error)
@@ -215,11 +240,12 @@ async function updateUserSubscription(userId: string, subscription: Stripe.Subsc
       }
     }
 
-    const subscriptionUpdate: UserSubscriptionUpdate = {
-      subscription: subscriptionData
-    }
-
-    await UserRepository.updateUser(userId, subscriptionUpdate)
+    await admin.firestore()
+      .collection('users')
+      .doc(userId)
+      .update({
+        subscription: subscriptionData
+      })
 
     console.log(`✅ Updated subscription for user ${userId}:`, {
       status: subscriptionData.status,
@@ -238,5 +264,20 @@ async function updateUserSubscription(userId: string, subscription: Stripe.Subsc
  * Find user by Stripe customer ID
  */
 async function findUserByCustomerId(customerId: string): Promise<string | null> {
-  return await UserRepository.findUserByStripeCustomerId(customerId)
+  try {
+    const usersSnapshot = await admin.firestore()
+      .collection('users')
+      .where('stripeCustomerId', '==', customerId)
+      .limit(1)
+      .get()
+
+    if (usersSnapshot.empty) {
+      return null
+    }
+
+    return usersSnapshot.docs[0].id
+  } catch (error) {
+    console.error('Error finding user by Stripe customer ID:', error)
+    return null
+  }
 }

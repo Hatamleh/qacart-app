@@ -1,24 +1,101 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Users, Crown, UserCheck, Gift, Search, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AdminUsersTable } from './AdminUsersTable'
-import { useUsers } from '@/hooks'
+import { getUsers, deleteUser as deleteUserAction, togglePremiumGift as togglePremiumGiftAction } from '@/actions'
+import type { GetUsersResponse, User } from '@/types'
 
-export const AdminUsersPageClient = () => {
-  const {
-    users, total, hasMore, loading, loadingMore,
-    currentFilter, currentSearch, setFilter, setSearch,
-    loadMore, deleteUser, togglePremiumGift, refresh
-  } = useUsers()
+interface AdminUsersPageClientProps {
+  initialData: GetUsersResponse
+}
 
-  const [searchInput, setSearchInput] = useState('')
+export const AdminUsersPageClient = ({ initialData }: AdminUsersPageClientProps) => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const [users, setUsers] = useState(initialData.users)
+  const [total, setTotal] = useState(initialData.total)
+  const [hasMore, setHasMore] = useState(initialData.hasMore)
+  const [loadingMore, setLoadingMore] = useState(false)
+
+  const currentFilter = (searchParams.get('filter') || 'all') as 'all' | 'premium' | 'free' | 'gifted'
+  const currentSearch = searchParams.get('search') || ''
+  const [searchInput, setSearchInput] = useState(currentSearch)
 
   // Calculate category counts from current users (for display purposes)
   const premiumCount = users.filter(u => u.subscription.status === 'premium').length
   const freeCount = users.filter(u => u.subscription.status === 'free').length  
   const giftedCount = users.filter(u => u.subscription.status === 'premium' && u.subscription.giftDetails != null).length
+
+  // Action handlers
+  const setFilter = (filter: 'all' | 'premium' | 'free' | 'gifted') => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('filter', filter)
+    params.delete('offset')
+    router.push(`/sudo/users?${params.toString()}`)
+  }
+
+  const setSearch = (search: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (search) {
+      params.set('search', search)
+    } else {
+      params.delete('search')
+    }
+    params.delete('offset')
+    router.push(`/sudo/users?${params.toString()}`)
+  }
+
+  const loadMore = async () => {
+    if (!hasMore || loadingMore) return
+
+    setLoadingMore(true)
+    try {
+      const result = await getUsers({
+        filter: currentFilter,
+        search: currentSearch,
+        offset: users.length,
+        limit: 20
+      })
+
+      setUsers(prev => [...prev, ...result.users])
+      setTotal(result.total)
+      setHasMore(result.hasMore)
+    } catch (error) {
+      console.error('Error loading more users:', error)
+    } finally {
+      setLoadingMore(false)
+    }
+  }
+
+  const deleteUser = async (userId: string) => {
+    try {
+      await deleteUserAction(userId)
+      setUsers(prev => prev.filter(u => u.id !== userId))
+      setTotal(prev => prev - 1)
+    } catch (error) {
+      console.error('Error deleting user:', error)
+      throw error
+    }
+  }
+
+  const togglePremiumGift = async (userId: string): Promise<{ action: 'granted' | 'revoked'; user: User }> => {
+    try {
+      const result = await togglePremiumGiftAction(userId)
+      setUsers(prev => prev.map(u => u.id === userId ? result.user : u))
+      return result
+    } catch (error) {
+      console.error('Error toggling premium gift:', error)
+      throw error
+    }
+  }
+
+  const refresh = () => {
+    router.refresh()
+  }
 
   // Handle search input submission
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -74,7 +151,6 @@ export const AdminUsersPageClient = () => {
               size="sm"
               variant="outline"
               icon={RotateCcw}
-              disabled={loading}
             >
               تحديث
             </Button>
@@ -160,7 +236,6 @@ export const AdminUsersPageClient = () => {
             variant={currentFilter === 'all' ? 'primary' : 'outline'}
             size="sm"
             onClick={() => setFilter('all')}
-            disabled={loading}
           >
             الكل
           </Button>
@@ -168,7 +243,6 @@ export const AdminUsersPageClient = () => {
             variant={currentFilter === 'premium' ? 'primary' : 'outline'}
             size="sm"
             onClick={() => setFilter('premium')}
-            disabled={loading}
           >
             بريميوم
           </Button>
@@ -176,7 +250,6 @@ export const AdminUsersPageClient = () => {
             variant={currentFilter === 'free' ? 'primary' : 'outline'}
             size="sm"
             onClick={() => setFilter('free')}
-            disabled={loading}
           >
             مجاني
           </Button>
@@ -184,7 +257,6 @@ export const AdminUsersPageClient = () => {
             variant={currentFilter === 'gifted' ? 'primary' : 'outline'}
             size="sm"
             onClick={() => setFilter('gifted')}
-            disabled={loading}
           >
             هدايا
           </Button>

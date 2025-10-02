@@ -3,7 +3,6 @@
 import { ChevronLeft, ChevronRight, Check, Star } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { Lesson } from '@/types'
-import { useProgressContext } from '@/contexts/ProgressContext'
 
 interface LessonControlsProps {
   currentLesson: Lesson
@@ -14,22 +13,20 @@ interface LessonControlsProps {
   onMarkComplete?: () => void
   isMarkingComplete?: boolean
   afterArticle?: boolean
+  isCompleted?: boolean
 }
 
 export const LessonControls = ({
-  currentLesson,
   previousLesson,
   nextLesson,
   onPrevious,
   onNext,
   onMarkComplete,
   isMarkingComplete = false,
-  afterArticle = false
+  afterArticle = false,
+  isCompleted = false
 }: LessonControlsProps) => {
-  const { isLessonCompleted } = useProgressContext()
-
-  // Check if the current lesson is completed
-  const lessonCompleted = isLessonCompleted(currentLesson.id)
+  const lessonCompleted = isCompleted
 
   return (
     <div className={`p-6 mx-8 rounded-lg border border-primary/10 bg-muted ${afterArticle ? 'mb-24' : ''}`}>

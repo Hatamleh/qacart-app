@@ -3,20 +3,21 @@
 import { Lock, Check, Circle, PlayCircle, FileText } from 'lucide-react'
 import { Course, Lesson } from '@/types'
 import { Button } from '../ui/Button'
-import { useProgressContext } from '@/contexts/ProgressContext'
 
 interface LessonNavigationProps {
   course: Course
   currentLesson: Lesson | null
   onLessonSelect?: (lesson: Lesson) => void
+  completedLessons?: string[]
 }
 
 export const LessonNavigation = ({
   course,
   currentLesson,
-  onLessonSelect
+  onLessonSelect,
+  completedLessons = []
 }: LessonNavigationProps) => {
-  const { isLessonCompleted } = useProgressContext()
+  const isLessonCompleted = (lessonId: string) => completedLessons.includes(lessonId)
 
   return (
     <div className="min-h-screen bg-primary/10 flex flex-col mr-2 rounded-lg"> {/* Added blue background with opacity */}
