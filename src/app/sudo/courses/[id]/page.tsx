@@ -4,6 +4,8 @@ import { AdminCourseEditor } from '@/components/sudo/AdminCourseEditor'
 import { AdminRouteGuard } from '@/components/auth/AdminRouteGuard'
 import { getCourse } from '@/actions'
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
   const course = await getCourse(id)

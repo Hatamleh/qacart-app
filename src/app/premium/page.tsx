@@ -3,6 +3,8 @@ import { PremiumHero } from '@/components/premium/PremiumHero'
 import { PremiumSubscriptionCard } from '@/components/premium/PremiumSubscriptionCard'
 import { getPlan } from '@/actions'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'خطة بريميوم - QAcart',
   description: 'انضم إلى خطة بريميوم واحصل على وصول كامل لجميع الدورات المتقدمة والمميزات الحصرية',

@@ -3,6 +3,8 @@ import { AdminCoursesPageClient } from '@/components/sudo/AdminCoursesPageClient
 import { AdminRouteGuard } from '@/components/auth/AdminRouteGuard'
 import { getCourses } from '@/actions'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'إدارة الدورات - QAcart Admin',
   description: 'لوحة تحكم إدارة الدورات والدروس',
