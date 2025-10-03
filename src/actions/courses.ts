@@ -7,6 +7,14 @@ import { requireAdmin } from '@/lib/auth'
 import { Course, Lesson } from '@/types'
 
 /**
+ * Calculate total duration from lessons
+ */
+function calculateTotalDuration(lessons: Lesson[]): number {
+  return lessons.reduce((total, lesson) => total + (lesson.durationInMinutes || 0), 0)
+}
+
+
+/**
  * Get all courses (public)
  * Can be called from Server Components
  */
@@ -50,12 +58,20 @@ export const getCourse = cache(async (courseId: string): Promise<Course> => {
 export async function createCourse(courseData: Omit<Course, 'id'>): Promise<Course> {
   await requireAdmin()
 
+  const lessons = courseData.lessons || []
+
+  // Calculate duration and student count
+  const durationInMinutes = calculateTotalDuration(lessons)
+  const studentsCount = 0 // New course has no students
+
   // Create course document in Firestore
   const courseRef = await admin.firestore()
     .collection('courses')
     .add({
       ...courseData,
-      lessons: courseData.lessons || [],
+      lessons,
+      durationInMinutes,
+      studentsCount,
       createdAt: new Date().toISOString(),
       lastUpdated: new Date().toISOString()
     })
@@ -68,7 +84,9 @@ export async function createCourse(courseData: Omit<Course, 'id'>): Promise<Cour
   return {
     id: courseRef.id,
     ...courseData,
-    lessons: courseData.lessons || []
+    lessons,
+    durationInMinutes,
+    studentsCount
   }
 }
 
@@ -150,13 +168,16 @@ export async function addLessonToCourse(
     lessonOrder: currentLessons.length + 1
   }
 
-  // Update course with new lesson
+  // Update course with new lesson and recalculate duration
   const updatedLessons = [...currentLessons, newLesson]
+  const durationInMinutes = calculateTotalDuration(updatedLessons)
+
   await admin.firestore()
     .collection('courses')
     .doc(courseId)
     .update({
       lessons: updatedLessons,
+      durationInMinutes,
       lastUpdated: new Date().toISOString()
     })
 
@@ -204,12 +225,16 @@ export async function updateLesson(
     id: lessonId // Ensure ID doesn't change
   }
 
+  // Recalculate duration
+  const durationInMinutes = calculateTotalDuration(updatedLessons)
+
   // Update course with modified lessons array
   await admin.firestore()
     .collection('courses')
     .doc(courseId)
     .update({
       lessons: updatedLessons,
+      durationInMinutes,
       lastUpdated: new Date().toISOString()
     })
 
@@ -254,12 +279,16 @@ export async function deleteLesson(
       lessonOrder: index + 1
     }))
 
+  // Recalculate duration
+  const durationInMinutes = calculateTotalDuration(updatedLessons)
+
   // Update course with modified lessons array
   await admin.firestore()
     .collection('courses')
     .doc(courseId)
     .update({
       lessons: updatedLessons,
+      durationInMinutes,
       lastUpdated: new Date().toISOString()
     })
 

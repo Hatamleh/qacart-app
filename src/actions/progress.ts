@@ -78,6 +78,18 @@ export async function markLessonComplete(
       .collection('progress')
       .doc(docId)
       .set(currentProgress)
+
+    // Update course student count (new student started the course)
+    const studentsCount = await admin.firestore()
+      .collection('progress')
+      .where('courseId', '==', courseId)
+      .get()
+      .then(snapshot => snapshot.size)
+
+    await admin.firestore()
+      .collection('courses')
+      .doc(courseId)
+      .update({ studentsCount })
   } else {
     currentProgress = progressDoc.data() as UserProgress
   }
