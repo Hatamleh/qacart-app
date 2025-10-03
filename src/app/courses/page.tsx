@@ -3,6 +3,9 @@ import { CoursesHero } from '@/components/courses/CoursesHero'
 import { CoursesGrid } from '@/components/courses/CoursesGrid'
 import { getCourses } from '@/actions'
 
+// Force dynamic rendering - courses data comes from Firebase
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'الدورات - QAcart',
   description: 'استكشف دورات البرمجة، اختبار البرمجيات، والذكاء الاصطناعي المتاحة في منصة QAcart',
