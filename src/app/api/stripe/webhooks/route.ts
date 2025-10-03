@@ -4,6 +4,9 @@ import { admin } from '@/firebase/admin'
 import { SubscriptionUpdateData } from '@/types'
 import Stripe from 'stripe'
 
+// Mark route as dynamic to prevent build-time errors
+export const dynamic = 'force-dynamic'
+
 /**
  * Get Stripe instance
  */
